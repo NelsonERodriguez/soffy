@@ -1,0 +1,42 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Power BI - TGI Ventas {% endblock title %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">poll</i>
+                        </div>
+                        <h4 class="card-title">Power BI - TGI Ventas</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="embedContainer" class="w-100 h-100" style="width: 100%; height: 100vh !important;"></div>
+                            </div>
+                        </div>
+                        <!--<iframe width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=292546d7-d57f-46e2-bfaf-ada78066eab1&autoAuth=true&ctid=5f21eaea-d1a9-4353-aa48-68ab1975b164&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly93YWJpLXNvdXRoLWNlbnRyYWwtdXMtcmVkaXJlY3QuYW5hbHlzaXMud2luZG93cy5uZXQvIn0%3D" frameborder="0" allowFullScreen="true"></iframe>-->
+                    </div>
+                    <!-- end content-->
+                  </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const reportid_ventas = '{{ reportid_ventas }}';
+        const groups_ventas = '{{ groups_ventas }}';
+        const token_ventas = '{{ token_ventas }}';
+        const urlpower = '{% url 'powerbi-ventas' %}';
+    </script>
+    <script src="/static/modules/core/powerbi/power-bi.js?v=1.0.0" type="text/javascript" async defer></script>
+    <script src="/static/modules/core/powerbi/powerbi-ventas.js?v=1.0.0" type="text/javascript" async defer></script>
+{% endblock javascripts %}

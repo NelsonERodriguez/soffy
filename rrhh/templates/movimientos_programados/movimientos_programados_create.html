@@ -1,0 +1,75 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Movimientos Programados - Crear {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <style>
+        .cntInputDataForm { margin-top: 20px; }
+        .btnCalculate { margin-top: 40px; }
+        #formSaveUpa, #formSaveFigua { width: 100%; }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">alarm_on</i>
+                        </div>
+                        <h4 class="card-title">Movimientos Programados - Crear</h4>
+                    </div>
+                    <div class="card-body">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col text-right">
+                                <button class="btn btn-outline-danger" type="button" id="btnBack" onclick="goBack()">
+                                    <i class='material-icons'>history</i>
+                                    Regresar
+                                </button>
+                            </div>
+                        </div>
+
+                        <ul class="nav nav-pills nav-pills-warning nav-pills-icons justify-content-center" role="tablist">
+                            {% for option in options %}
+                                <li class="nav-item">
+                                    <a class="nav-link {% if option.default %}active{% endif %}" data-toggle="tab" href="#{{option.str_search}}" role="tablist" onclick="drawElementsIntoTabs('{{option.str_search}}')">
+                                        <i class="{{ option.icon }}"></i> {{ option.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                        <div class="tab-content tab-space tab-subcategories">
+                            {% for option in options %}
+                                <div class="tab-pane {% if option.default %}active{% endif %}" id="{{option.str_search}}"></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script async defer>
+        const urlGetInfoUsers = "{% url 'rrhh-movimientos_programados_get_users' %}",
+            urlCalculateFigua = "{% url 'rrhh-movimientos_programados_calculate_figua' %}"
+            urlCalculateUPA = "{% url 'rrhh-movimientos_programados_calculate_upa' %}"
+            urlSaveUpa = "{% url 'rrhh-movimientos_programados_save_upa' %}"
+            urlSaveFigua = "{% url 'rrhh-movimientos_programados_save_figua' %}"
+            objNominas = {{ nominas|safe }},
+            objPeriods = {{ periods|safe }},
+            objKeysDiscounts = {{ keys|safe }},
+            dateNow = "{% now 'Y-m-d' %}",
+            valCSRF = document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            urlBase = "{% url 'rrhh-movimientos_programados' %}",
+            urlSave = "{% url 'rrhh-movimientos_programados_save' %}";
+    </script>
+    <script src="{% static 'modules/rrhh/movimientos_programados/movimientos_programados_create.js' %}" async defer></script>
+{% endblock javascripts %}

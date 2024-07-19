@@ -1,0 +1,89 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Negociaciones DCI {% endblock title %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">event</i>
+                        </div>
+                        <h4 class="card-title">Negociaciones DCI</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <div class="col-12 text-right">
+                                {% if perms.ventas.add_negociaciones_dci %}
+                                    <button type="button" rel="tooltip" class="btn btn-info" data-original-title="Agregar" onclick="simple_redireccion('{% url 'ventas-negociaciones_dci_create_edit' 0 %}');">
+                                        <i class="material-icons">add</i>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="material-datatables table-hover">
+                                    <table id="datatables" class="table" cellspacing="0" width="100%" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Semana</th>
+                                                <th>Cerrado</th>
+                                                <th class="disabled-sorting"></th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <th>Semana</th>
+                                                <th>Cerrado</th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+                                        <tbody>
+                                            {% for semana in semanas %}
+                                                <tr>
+                                                    <td>
+                                                        {{ semana.year }} - {{ semana.semana }}
+                                                    </td>
+                                                    <td>{% if semana.cerrado %}Si{% else %}No{% endif %}</td>
+                                                    <td>
+                                                        <button type="button" rel="tooltip" class="btn btn-link btn-just-icon btn-success" onclick="simple_redireccion('{% url 'ventas-negociaciones_dci_create_edit' semana.id %}');">
+                                                          <i class="material-icons">{% if semana.cerrado %}visibility{% else %}edit{% endif %}</i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                  </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+  <script>
+    $(document).ready(function() {
+        $('#datatables').DataTable({
+            "pagingType": "full_numbers",
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            responsive: true,
+            language: objLenguajeDataTable,
+        });
+    });
+  </script>
+
+{% endblock javascripts %}

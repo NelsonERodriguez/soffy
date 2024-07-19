@@ -1,0 +1,184 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block title %} Reporte de Vacaciones {% endblock title %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">calendar_month</i>
+                        </div>
+                        <h4 class="card-title">Reporte de Vacaciones</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="sltDepartamento">Departamento</label>
+                                <select class="form-control" name="sltDepartamento" id="sltDepartamento"
+                                        onchange="fntChangeDepto();">
+                                    <option value="">Todos</option>
+                                    {% for departamento in departamentos %}
+                                        <option value="{{ departamento.id }}">{{ departamento.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <label for="sltEmpleado">Empleado</label>
+                                <select class="form-control" name="sltEmpleado" id="sltEmpleado"
+                                        onchange="fntGetEvents();">
+                                    <option value="0">Seleccione un empleado...</option>
+                                    {% for empleado in empleados_master %}
+                                        <option value="{{ empleado.empleado_id }}">{{ empleado.no_empleado }} - {{ empleado.nombre_completo }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 25px 0;">
+                            <div class="col-12">
+                                <div id="divCalendar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="{% static 'assets/js/plugins/fullcalendar-6.1.11/dist/index.global.js' %}"></script>
+
+    <script>
+
+        const strUrlGetData = "{% url 'rrhh-reporte_vacaciones_empleados_data' %}",
+            strUrlGetEmpleados = "{% url 'rrhh-reporte_vacaciones_empleados_get_empleados' %}";
+        let objEventos;
+        let calendarEl = document.getElementById('divCalendar');
+        let calendar;
+        let intAnioAnterior = 0;
+
+        const fntGetEvents = async () => {
+            const objFormData = new FormData();
+            let strDepartamento = document.getElementById("sltDepartamento").value,
+                strEmpleado = document.getElementById("sltEmpleado").value;
+
+            objFormData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+            objFormData.append('intYear', intAnioAnterior);
+            objFormData.append('strDepartamento', strDepartamento);
+            objFormData.append('strEmpleado', strEmpleado);
+
+            let objInit = {
+                method: 'POST',
+                body: objFormData
+            };
+
+            calendar.removeAllEvents();
+
+            open_loading();
+            await coreFetch(strUrlGetData, objInit, (data) => {
+                calendar.addEventSource(data.data.map(evento => ({
+                    title: evento.title,
+                    start: evento.start,
+                    end: evento.end
+                })));
+                close_loading();
+            });
+        };
+
+        const fntGetEmpleados = async () => {
+            const objFormData = new FormData();
+            let strDepartamento = document.getElementById("sltDepartamento").value,
+                objEmpleado = document.getElementById("sltEmpleado");
+
+            objFormData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+            objEmpleado.innerHTML = "";
+
+            let objAttrs = {
+                element: 'option',
+                value: '0',
+            };
+            let objOptionDefault = await createElement(objAttrs);
+            objOptionDefault.innerText = "Seleccione un empleado...";
+
+            objEmpleado.appendChild(objOptionDefault);
+
+            objFormData.append('strDepartamento', strDepartamento);
+
+            let objInit = {
+                method: 'POST',
+                body: objFormData
+            };
+
+            open_loading();
+            await coreFetch(strUrlGetEmpleados, objInit, (data) => {
+                let objOptionEmp;
+                if (data.data.empleados.length > 0) {
+                    data.data.empleados.forEach( async function(element) {
+                        objAttrs = {
+                            element: 'option',
+                            value: element.empleado_id,
+                        };
+                        objOptionEmp = await createElement(objAttrs);
+                        objOptionEmp.innerText = element.no_empleado + " - " + element.nombre_completo;
+                        objEmpleado.appendChild(objOptionEmp);
+                    });
+                }
+                close_loading();
+            });
+        };
+
+        const fntChangeDepto = async() => {
+            await fntGetEmpleados();
+            await fntGetEvents();
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            $("#sltDepartamento").select2();
+            $("#sltEmpleado").select2();
+
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                locale: 'es',
+                initialView: mobileCheck() ? 'dayGridMonth' : 'multiMonthYear',
+                selectable: false,
+                buttonText: {
+                    today: 'Hoy',
+                    month: 'Mes',
+                    week: 'Semana',
+                    day: 'Día',
+                    list: 'Listado',
+                    year: 'Año'
+                },
+                headerToolbar: {
+                    start: '',
+                    center: 'title',
+                    end: 'today prev next dayGridMonth multiMonthYear',
+                },
+                eventDidMount: function (info) {
+                    $(info.el).popover({
+                        title: 'Información',
+                        content: info.event.title,
+                        html: true,
+                        trigger: 'hover'
+                    });
+                },
+                datesSet: function (info) {
+                    let newYear = info.view.currentStart.getFullYear();
+                    if (intAnioAnterior !== newYear) {
+                        intAnioAnterior = newYear;
+                        fntGetEvents();
+                    }
+                },
+            });
+            calendar.render();
+        });
+
+    </script>
+{% endblock javascripts %}

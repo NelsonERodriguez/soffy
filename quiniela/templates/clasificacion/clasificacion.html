@@ -1,0 +1,177 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Clasificación {% endblock title %}
+{% load static %}
+{% load humanize %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/static/assets/css/jquery-ui.min.css">
+    <style>
+        .required:after {
+            content:" *";
+            color:red;
+        }
+
+        .slidein {
+            animation-duration: 2s;
+            animation-name: slidein;
+        }
+
+        @keyframes slidein {
+            from {
+                margin-left:100%;
+                width:300%
+            }
+
+            to {
+                margin-left:0%;
+                width:100%;
+            }
+        }
+
+        .divHeader > div {
+            font-size: 1.063rem;
+            color: #9c27b0 !important;
+            padding: 12px 8px;
+        }
+
+        .divBody > div {
+            /*font-size: 1.063rem;*/
+            /*color: #9c27b0 !important;*/
+            padding: 12px 8px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .primerLugar {
+            background-color: #018d1c;
+            color: white;
+        }
+
+        .segundoLugar {
+            background-color: #47d94c;
+            color: white;
+        }
+
+        .tercerLugar {
+            background-color: #30daab;
+            color: white;
+        }
+
+        .cuartoLugar {
+            background-color: #0ab4c9;
+            color: white;
+        }
+
+        .quintoLugar {
+            background-color: #0a87c9;
+            color: white;
+        }
+
+        .sextoLugar {
+            background-color: #0a51c9;
+            color: white;
+        }
+
+        .septimoLugar {
+            background-color: #0a15c9;
+            color: white;
+        }
+
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">workspace_premium</i>
+                        </div>
+                        <h4 class="card-title">Clasificación</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="offset-md-2 col-md-8">
+                                <div class="row divHeader">
+                                    <div class="col-2 col-sm-2 text-center">
+                                        Lugar
+                                    </div>
+                                    <div class="col-6 col-sm-6">
+                                        Participante
+                                    </div>
+                                    <div class="col-2 col-sm-2">
+                                        Puntos
+                                    </div>
+                                    <div class="col-2 col-sm-2">
+                                        Perfectos
+                                    </div>
+                                </div>
+                                {% for clasificado in datos %}
+                                    <div class="row divBody para-slide {% if forloop.counter == 1 %}
+                                                    primerLugar
+                                                {% elif  forloop.counter == 2 %}
+                                                    segundoLugar
+                                                {% elif  forloop.counter == 3 %}
+                                                    tercerLugar
+                                                {% elif  forloop.counter == 4 %}
+                                                    cuartoLugar
+                                                {% elif  forloop.counter == 5 %}
+                                                    quintoLugar
+                                                {% elif  forloop.counter == 6 %}
+                                                    sextoLugar
+                                                {% elif  forloop.counter == 7 %}
+                                                    septimoLugar
+                                                {% endif %}" style="visibility: hidden;">
+                                        <div class="col-2 col-sm-2 text-center">
+                                            {{ forloop.counter }}
+                                        </div>
+                                        <div class="col-6 col-sm-6">
+                                            {{ clasificado.name }}
+                                        </div>
+                                        <div class="col-2 col-sm-2">
+                                            {{ clasificado.SUMA|intcomma }}
+                                        </div>
+                                        <div class="col-2 col-sm-2">
+                                            {{ clasificado.total|intcomma }}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="/static/assets/js/core/jquery-ui.min.js"></script>
+
+    <script>
+        const strUrlGuardar = "{% url 'quiniela-resultados_guardar' %}",
+            strUrlCongelar = "{% url 'quiniela-resultados_congelar' %}";
+
+        window.addEventListener("load", function(event) {
+            let intervalID =setInterval(function(){
+                let divRow = document.querySelector(`div.para-slide:not(.slidein)`);
+                if( divRow ){
+                    divRow.style.visibility = "visible";
+                    divRow.classList.add("slidein");
+                }
+                else{
+                    clearInterval(intervalID);
+                }
+            }, 200);
+        });
+
+        $(document).ready(function() {
+
+        });
+    </script>
+
+{% endblock javascripts %}

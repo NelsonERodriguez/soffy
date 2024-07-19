@@ -1,0 +1,48 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} INGRESO DE HORAS EXTRAS SEMANAL {% endblock title %}
+
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">date_range</i>
+                        </div>
+                        <h4 class="card-title">INGRESO DE HORAS EXTRAS SEMANAL</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                {% now 'F, Y' %}
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 50px;">
+                            <div class="col-12">
+                                <div id="contenido"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const strUrlHorasExtras = '{% url 'rrhh-ingreso_horas_extras' %}',
+            strUrlGetHorarios = '{% url 'rrhh-ingreso_horas_extras_get_horarios' %}'
+            strUrlCerrarQuincena = '{% url 'rrhh-ingreso_horas_extras_cerrar_quincena' %}'
+            objCsrfToken = '{% csrf_token %}';
+    </script>
+    <script src="{% static 'modules/rrhh/ingreso_horas_extras/ingreso_horas_extras.js' %}" async defer></script>
+
+{% endblock javascripts %}

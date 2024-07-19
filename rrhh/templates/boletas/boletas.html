@@ -1,0 +1,102 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Boletas {% endblock title %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">checklist</i>
+                        </div>
+                        <h4 class="card-title">Boletas</h4>
+                    </div>
+                    <div class="card-body">
+                        {% if user_id %}
+                            <div class="row">
+                                <div class="offset-md-8 col-md-4 text-right">
+                                    <a class="btn btn-outline-danger" id="regresar" href="{% url 'rrhh-boletas_reporte' %}">
+                                        <span class="material-icons">arrow_back</span> Regresar
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="offset-md-4 col-md-4 text-center">
+                                    <h4><b>{{ user.name }}</b></h4>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row">
+                            {% for dato in datos %}
+                                <div class="col-md-4">
+                                    <div class="card cardEmpleados" style="cursor: pointer;"
+                                         id="{{ dato.sql_name }}_{{ dato.no_empleado }}_{{ dato.no_empresa }}"
+                                         onclick="getPeriodos('{{ dato.sql_name }}', {{ dato.no_empresa }}, '{{ dato.base }}', {{ dato.no_empleado }}, {{ dato.base_id }});">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-4 d-none d-sm-block">
+                                                    <img src="https://nova.ffinter.com{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'assets/img/default-avatar.png' %}{% endif %}"
+                                                         alt="Mi Fotografía" class="img-responsive img-thumbnail"/>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <h3>{{ dato.base }}</h3>
+                                                    <h4>{{ dato.empresa }}</h4>
+                                                    <h5>Código empleado: <b>{{ dato.no_empleado }}</b></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="contenido"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal_firma" tabindex="-1" role="dialog" aria-labelledby="modal_firma"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Impresión de boleta</h4>
+                    <button type="button" class="close" id="close" data-dismiss="modal" aria-hidden="true">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="mdlFirma">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-info" id="btnPrint" onclick="printDocument();">
+                        <span class="material-icons">print</span>
+                        Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        (function () {
+            window.strUrlGetPeriodos = "{% url 'rrhh-boletas_get_periodos' %}";
+            window.strUrlGetBoleta = "{% url 'rrhh-boletas_get_boleta' %}";
+            window.strUrlSaveFirma = "{% url 'rrhh-boletas_save_firma' %}";
+        })();
+    </script>
+    <script src="{% static 'modules/rrhh/boletas/boletas.js' %}" async defer></script>
+
+{% endblock javascripts %}

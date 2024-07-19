@@ -1,0 +1,486 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Quiniela {% endblock title %}
+{% load static %}
+{% load humanize %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/static/assets/css/jquery-ui.min.css">
+    <style>
+        @media screen and (min-width: 576px) {
+            table.table-responsive {
+                display: inline-table;
+            }
+        }
+        .ui-front {
+            z-index: 1060;
+        }
+        .required:after {
+            content:" *";
+            color:red;
+        }
+
+        .table > thead > tr > th,
+        .table > tbody > tr > th,
+        .table > tfoot > tr > th,
+        .table > thead > tr > td,
+        .table > tbody > tr > td,
+        .table > tfoot > tr > td {
+            padding: 1px;
+            vertical-align: middle;
+            border-color: #ddd;
+        }
+
+        .rowHeader {
+            font-weight: bold;
+        }
+
+        .rowTipo1 {
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+        }
+
+        .rowTipo2 {
+            background-color: white;
+            border-top: 1px solid #ddd;
+        }
+
+        .link-modal {
+            color: #9c27b0 !important;
+            cursor: pointer !important;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="row justify-content-center">
+        {% for grupo in quiniela %}
+            {% if grupo.id_grupo == 1 or grupo.id_grupo == 11 or grupo.id_grupo == 12 or grupo.id_grupo == 13 or grupo.id_grupo == 14 %}
+                </div>
+                <div class="row justify-content-center">
+            {% endif %}
+            <div class="col-xl-6">
+
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">sports_soccer</i>
+                        </div>
+                        <h4 class="card-title">{{ grupo.nombre_grupo }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm">
+                            <tbody>
+                                {% if forloop.first %}
+                                    <tr>
+                                        <td colspan="7" class="alert-primary" style="font-weight: bold;">
+                                            <i class="material-icons">error</i>
+                                            Para la quiniela a ingresar en las fases finales, solamente se tomará en cuenta los 90 minutos reglamentarios de cada partido.
+                                            Si ocurre un empate y se van a tiempos extras, el partido se registará como un empate.
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                {% for partido in grupo.partidos %}
+                                    <tr>
+                                        <td colspan="7" class="text-center" style="">
+                                            {{ partido.fecha|date:"d/m/Y" }} {{ partido.hora }}
+                                            {% if partido.bloqueado or partido.resultado_congelado %}
+                                                <a class="link-modal" onclick="fntVerVaticinios({{ partido.id_partido }});"><i class="fas fa-eye"></i> Ver Vaticinios</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 10%;border: unset;">
+                                            {% if partido.hay_penales %}
+                                                <input type="number" class="form-control text-center" id="txtPenalesEquipo1_{{ partido.id_partido }}" value="{{ partido.penales_equipo_1|intcomma }}" data-id_partido="{{ partido.id_partido }}" placeholder="p" {% if partido.bloqueado or partido.bool_readonly_penales %}readonly=""{% endif %} onchange="fntGuardarResultado(this)" onkeydown="return validar_caracteres(event, 2);">
+                                            {% endif %}
+                                        </td>
+                                        <td style="width: 10%;border: unset;">
+                                            <input type="number" class="form-control text-center" id="txtGolesEquipo1_{{ partido.id_partido }}" value="{{ partido.goles_equipo_1|intcomma }}" data-id_partido="{{ partido.id_partido }}" placeholder="-" {% if partido.bloqueado or partido.resultado_congelado %}readonly=""{% endif %} onchange="fntGuardarResultado(this)" onkeydown="return validar_caracteres(event, 2);">
+                                        </td>
+                                        <td style="width: 25%;text-align: right;border: unset;">
+
+                                            <div class="row flex-column-reverse flex-sm-row">
+                                                <div class="col-md-8 text-right">
+                                                    {{ partido.equipo1 }}
+                                                </div>
+                                                <div class="col-md-4">
+                                                    {% if partido.icono1 %}
+                                                        <img src="{% static partido.icono1 %}" style="width: 30px;">
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="width: 10%;text-align: center;border: unset;">
+                                            vs.
+                                        </td>
+                                        <td style="width: 25%;border: unset;">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    {% if partido.icono2 %}
+                                                        <img src="{% static partido.icono2 %}" style="width: 30px;">
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-8 text-left">
+                                                    {{ partido.equipo2 }}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="width: 10%;border: unset;">
+                                            <input type="number" class="form-control text-center" id="txtGolesEquipo2_{{ partido.id_partido }}" value="{{ partido.goles_equipo_2|intcomma }}" data-id_partido="{{ partido.id_partido }}" placeholder="-" {% if partido.bloqueado or partido.resultado_congelado %}readonly=""{% endif %} onchange="fntGuardarResultado(this)" onkeydown="return validar_caracteres(event, 2);">
+                                        </td>
+                                        <td style="width: 10%;border: unset;">
+                                            {% if partido.hay_penales %}
+                                                <input type="number" class="form-control text-center" id="txtPenalesEquipo2_{{ partido.id_partido }}" value="{{ partido.penales_equipo_2|intcomma }}" data-id_partido="{{ partido.id_partido }}" placeholder="p"  {% if partido.bloqueado or partido.bool_readonly_penales %}readonly=""{% endif %} onchange="fntGuardarResultado(this)" onkeydown="return validar_caracteres(event, 2);">
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% if partido.resultado_congelado %}
+                                        <tr>
+                                            <td class="text-center" style="border: none;font-weight: bold;"><span class="text-primary">{{ partido.r_penales_equipo_1 }}</span></td>
+                                            <td class="text-center" style="border: none;font-weight: bold;"><span class="text-primary">{{ partido.r_goles_equipo_1 }}</span></td>
+                                            <td colspan="3" class="text-center" style="border: none;">
+                                                Puntos obtenidos: {{ partido.puntos }}
+                                            </td>
+                                            <td class="text-center" style="border: none;font-weight: bold;"><span class="text-primary">{{ partido.r_goles_equipo_2 }}</span></td>
+                                            <td class="text-center" style="border: none;font-weight: bold;"><span class="text-primary">{{ partido.r_penales_equipo_2 }}</span></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-md-8 offset-md-2 text-center">
+                <h3>No está inscrito a ningún evento.</h3>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlVaticinios" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Vaticinios del Partido</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="divBodyVaticinios">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="/static/assets/js/core/jquery-ui.min.js"></script>
+
+    <script>
+        const strUrlGuardar = "{% url 'quiniela-guardar' %}",
+            strUrlVaticinios = "{% url 'quiniela-vaticinios' %}";
+
+        const fntMostrarPenales = async (intCorrelativo) => {
+            let objPenalesEquipo1 = document.getElementById(`txtPenalesEquipo1_${intCorrelativo}`),
+                objPenalesEquipo2 = document.getElementById(`txtPenalesEquipo2_${intCorrelativo}`);
+            if( document.getElementById(`txtGolesEquipo1_${intCorrelativo}`).value === document.getElementById(`txtGolesEquipo2_${intCorrelativo}`).value ){
+                if( objPenalesEquipo1 && objPenalesEquipo2 ){
+                    objPenalesEquipo1.readOnly = false;
+                    objPenalesEquipo2.readOnly = false;
+                }
+            }
+            else{
+                if( objPenalesEquipo1 && objPenalesEquipo2 ) {
+                    let boolChange1 = objPenalesEquipo1.value.length > 0
+                    let boolChange2 = objPenalesEquipo2.value.length > 0
+                    objPenalesEquipo1.value = '';
+                    if( boolChange1 ) objPenalesEquipo1.onchange();
+                    objPenalesEquipo1.readOnly = true;
+                    objPenalesEquipo2.value = '';
+                    if( boolChange2 ) objPenalesEquipo2.onchange();
+                    objPenalesEquipo2.readOnly = true;
+                }
+            }
+        }
+
+        const fntGuardarResultado = async (object) => {
+            const csrftoken = getCookie('csrftoken'),
+            objForm = new FormData();
+
+            let arrSplit = object.id.split("_");
+            let intGolesEquipo1 = null, intGolesEquipo2 = null,
+                intPenalesEquipo1 = null, intPenalesEquipo2 = null;
+
+            if( arrSplit[0] === "txtGolesEquipo1" ){
+                await fntMostrarPenales(arrSplit[1]);
+                intGolesEquipo1 = object.value;
+            }
+            else if( arrSplit[0] === "txtGolesEquipo2" ){
+                await fntMostrarPenales(arrSplit[1]);
+                intGolesEquipo2 = object.value;
+            }
+            else if( arrSplit[0] === "txtPenalesEquipo1" ){
+                intPenalesEquipo1 = object.value;
+            }
+            else if( arrSplit[0] === "txtPenalesEquipo2" ){
+                intPenalesEquipo2 = object.value;
+            }
+
+            if( intGolesEquipo1 === null ){
+                if( document.getElementById(`txtGolesEquipo1_${arrSplit[1]}`) ){
+                    intGolesEquipo1 = document.getElementById(`txtGolesEquipo1_${arrSplit[1]}`).value;
+                }
+            }
+            if( intGolesEquipo2 === null ){
+                if( document.getElementById(`txtGolesEquipo2_${arrSplit[1]}`) ){
+                    intGolesEquipo2 = document.getElementById(`txtGolesEquipo2_${arrSplit[1]}`).value;
+                }
+            }
+            if( intPenalesEquipo1 === null ){
+                if( document.getElementById(`txtPenalesEquipo1_${arrSplit[1]}`) ){
+                    intPenalesEquipo1 = document.getElementById(`txtPenalesEquipo1_${arrSplit[1]}`).value;
+                }
+            }
+            if( intPenalesEquipo2 === null ){
+                if( document.getElementById(`txtPenalesEquipo2_${arrSplit[1]}`) ){
+                    intPenalesEquipo2 = document.getElementById(`txtPenalesEquipo2_${arrSplit[1]}`).value;
+                }
+            }
+
+            objForm.append('goles_equipo_1', intGolesEquipo1);
+            objForm.append('goles_equipo_2', intGolesEquipo2);
+            objForm.append('penales_equipo_1', intPenalesEquipo1);
+            objForm.append('penales_equipo_2', intPenalesEquipo2);
+            objForm.append('id_partido', arrSplit[1]);
+
+            open_loading();
+            await fetch(strUrlGuardar, {
+                method: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                body: objForm
+            })
+            .then(response => response.json())
+            .then( async (data) => {
+
+                if (data.status) {
+                    alert_nova.showNotification("Vaticinio guardado exitosamente.", "add_alert", "success");
+                }
+                else {
+                    alert_nova.showNotification(data.mensaje, "warning", "danger");
+                }
+
+                close_loading();
+            })
+            .catch((error) => {
+                console.error(error);
+                alert_nova.showNotification('Error de conexión, comuníquese con IT.', "warning", "danger");
+                close_loading();
+            });
+        }
+
+        const fntVerVaticinios = async (intPartido) => {
+            const csrftoken = getCookie('csrftoken'),
+            objForm = new FormData();
+
+            objForm.append('partido', intPartido);
+
+            open_loading();
+            await fetch(strUrlVaticinios, {
+                method: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                body: objForm
+            })
+            .then(response => response.json())
+            .then( async (data) => {
+
+                if (data.status) {
+                    let objBodyVat = document.getElementById("divBodyVaticinios");
+                    objBodyVat.innerHTML = "";
+
+                    let objOptions = {
+                        element: 'div',
+                        classes: ["row", "rowHeader"],
+                    };
+                    let objRowH = await createElement(objOptions);
+
+                    objOptions = {
+                        element: 'div',
+                        classes: ["col-sm-7"],
+                    };
+                    let objNombreH = await createElement(objOptions);
+                    objNombreH.innerHTML = "Participante";
+
+                    objOptions = {
+                        element: 'div',
+                        classes: ["col-sm-2", "text-right"],
+                    };
+                    let objE1H = await createElement(objOptions);
+                    objE1H.innerHTML = data.partido.equipo_1__nombre;
+
+                    objOptions = {
+                        element: 'div',
+                        classes: ["col-sm-1", "text-center"],
+                    };
+                    let objVSH = await createElement(objOptions);
+                    objVSH.innerHTML = "vs";
+
+                    objOptions = {
+                        element: 'div',
+                        classes: ["col-sm-2"],
+                    };
+                    let objE2H = await createElement(objOptions);
+                    objE2H.innerHTML = data.partido.equipo_2__nombre;
+
+                    objRowH.appendChild(objNombreH);
+                    objRowH.appendChild(objE1H);
+                    objRowH.appendChild(objVSH);
+                    objRowH.appendChild(objE2H);
+
+                    objOptions = {
+                        element: 'div',
+                        classes: ["row"],
+                    };
+                    let objRowH2 = await createElement(objOptions);
+
+                    objOptions = {
+                        element: 'div',
+                        classes: ["offset-sm-7", "col-sm-1", "text-right"],
+                    };
+                    let objT1 = await createElement(objOptions);
+                    objT1.innerHTML = data.partido.hay_penales ? "Penales" : "";
+
+                    objOptions = {
+                        element: 'div',
+                        classes: ["col-sm-1", "text-right"],
+                    };
+                    let objT2 = await createElement(objOptions);
+                    objT2.innerHTML = "Goles";
+
+                    objOptions = {
+                        element: 'div',
+                        classes: ["col-sm-1"],
+                    };
+                    let objVsVacio = await createElement(objOptions);
+                    objVsVacio.innerHTML = "";
+
+                    objOptions = {
+                        element: 'div',
+                        classes: ["col-sm-1"],
+                    };
+                    let objT3 = await createElement(objOptions);
+                    objT3.innerHTML = "Goles";
+
+                    objOptions = {
+                        element: 'div',
+                        classes: ["col-sm-1"],
+                    };
+                    let objT4 = await createElement(objOptions);
+                    objT4.innerHTML = data.partido.hay_penales ? "Penales" : "";
+
+
+                    objRowH2.appendChild(objT1);
+                    objRowH2.appendChild(objT2);
+                    objRowH2.appendChild(objVsVacio);
+                    objRowH2.appendChild(objT3);
+                    objRowH2.appendChild(objT4);
+
+                    objBodyVat.appendChild(objRowH);
+                    objBodyVat.appendChild(objRowH2);
+
+                    let strClass = "rowTipo1";
+                    for (let key in data.vaticinios){
+                        const objVaticinio = data.vaticinios[key];
+                        let objOptions = {
+                            element: 'div',
+                            classes: ["row", strClass],
+                        };
+                        let objRow = await createElement(objOptions);
+
+                        objOptions = {
+                            element: 'div',
+                            classes: ["col-sm-7"],
+                        };
+                        let objNombre = await createElement(objOptions);
+                        objNombre.innerHTML = objVaticinio.name;
+
+                        objOptions = {
+                            element: 'div',
+                            classes: ["col-sm-1", "text-right"],
+                        };
+                        let objPE1 = await createElement(objOptions);
+                        objPE1.innerHTML = objVaticinio.penales_equipo_1;
+
+                        objOptions = {
+                            element: 'div',
+                            classes: ["col-sm-1", "text-right"],
+                        };
+                        let objGE1 = await createElement(objOptions);
+                        objGE1.innerHTML = objVaticinio.goles_equipo_1;
+
+                        objOptions = {
+                            element: 'div',
+                            classes: ["col-sm-1"],
+                        };
+                        let objVS = await createElement(objOptions);
+                        objVS.innerHTML = "";
+
+                        objOptions = {
+                            element: 'div',
+                            classes: ["col-sm-1"],
+                        };
+                        let objGE2 = await createElement(objOptions);
+                        objGE2.innerHTML = objVaticinio.goles_equipo_2;
+
+                        objOptions = {
+                            element: 'div',
+                            classes: ["col-sm-1"],
+                        };
+                        let objPE2 = await createElement(objOptions);
+                        objPE2.innerHTML = objVaticinio.penales_equipo_2;
+
+                        objRow.appendChild(objNombre);
+                        objRow.appendChild(objPE1);
+                        objRow.appendChild(objGE1);
+
+                        objRow.appendChild(objVS);
+
+                        objRow.appendChild(objGE2);
+                        objRow.appendChild(objPE2);
+
+                        objBodyVat.appendChild(objRow);
+
+                        strClass = strClass == "rowTipo1" ? "rowTipo2" : "rowTipo1";
+                    }
+
+                    $("#mdlVaticinios").modal("show");
+                }
+                else {
+                    alert_nova.showNotification("Ha ocurrido un error al mostrar los vaticinios.", "warning", "danger");
+                }
+
+                close_loading();
+            })
+            .catch((error) => {
+                alert_nova.showNotification('Error de conexión, comuníquese con IT.', "warning", "danger");
+                close_loading();
+            });
+        }
+
+        const fntCambioValor = async(object) => {
+            dialogConfirm(fntGuardarResultado, [object], '¿Estás seguro de guardar este elemento?', '¡Si lo desea recuperar, favor de comunicarse a IT!')
+        }
+
+        $(document).ready(function() {
+
+        });
+    </script>
+    <!-- <script src="/static/modules/ventas/encuestas/encuestas.js?v=1.1.0" type="text/javascript" async defer></script> -->
+
+{% endblock javascripts %}

@@ -1,0 +1,160 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Mi Vale {% endblock title %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">list</i>
+                        </div>
+                        <h4 class="card-title">Reporte</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" style="margin: 20px 0;">
+                            <div class="col-12 text-right">
+                                <button type="button" rel="tooltip" class="btn btn-outline-primary" id="btnAgregar" onclick="$('#modal_vales').modal('show');">
+                                    <i class="material-icons">add</i>Agregar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <form action="{% url 'rrhh-vales_qr_user' %}" method="POST" target="_blank" name="frm_vales" id="frm_vales">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="empleado_id" id="empleado_id">
+                                    <table class="table table-hover" id="datatables">
+                                        <thead>
+                                            <tr>
+                                                <th>Empleado</th>
+                                                <th>Lomo</th>
+                                                <th>Canjeado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for vale in vales %}
+                                                <tr>
+                                                    <td>{{ vale.empleado }}</td>
+                                                    <td>
+                                                        {% if vale.pavo_pierna == "pavo" %}
+                                                            <i class="fas fa-2x fa-turkey"></i>
+                                                        {% elif vale.pavo_pierna == "pierna" %}
+{#                                                            <i class="fas fa-2x fa-drumstick"></i>#}
+                                                            <i class="fas fa-2x fa-duotone fa-piggy-bank"></i>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if vale.estado == 0 %}
+                                                            <button type="button" class="btn btn-just-icon btn-danger btn-link" onclick="printQr({{ vale.user_id }}, {{ vale.correlativo }})">
+                                                                <i class="material-icons">highlight_off</i>
+                                                            </button>
+                                                        {% elif vale.estado == 1 %}
+                                                            <button type="button" class="btn btn-just-icon btn-success btn-link" onclick="printQr({{ vale.user_id }}, {{ vale.correlativo }})">
+                                                                <i class="material-icons">check_circle_outline</i>
+                                                            </button>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal_vales" tabindex="-1" role="dialog" aria-labelledby="modal_valesLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Usuario</h4>
+                    <button type="button" class="close" id="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <form method="POST" name="frm_save_config" id="frm_save_config">
+                    {% csrf_token %}
+                    <div class="modal-body" id="modal_body_vales">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="txt_empleado" class="bmd-label-floating">Nombre completo</label>
+                                    <input type="text" name="txt_empleado" id="txt_empleado" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-12 text-center">
+                                <div class="form-group">
+{#                                    <input type="radio" name="radio_pavo_pierna" id="radio_pavo" value="pavo"> <label for="radio_pavo">Pavo</label>#}
+                                    <input type="radio" name="radio_pavo_pierna" id="radio_pierna" value="pierna"> <label for="radio_pierna">Lomo</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger btn-link" onclick="saveNewUser();">
+                      Grabar
+                  </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+    $(document).ready(function() {
+      $('#datatables').DataTable({
+        "pagingType": "full_numbers",
+        "lengthMenu": [
+            [10, 25, 50, -1],
+            [10, 25, 50, "All"]
+        ],
+        responsive: false,
+        language: objLenguajeDataTable,
+      });
+    });
+
+    const printQr = (empleado_id, correlativo) => {
+        document.getElementById('empleado_id').value = empleado_id;
+        console.log(correlativo);
+        if (correlativo) {
+            $('#frm_vales').append(`
+                <input type="hidden" name="user_extra" id="user_extra" value="1">
+                <input type="hidden" name="correlativo" id="correlativo" value="${correlativo}">
+            `);
+        }
+
+        simple_submit('frm_vales');
+    };
+
+    const saveNewUser = () => {
+        const objEmpleado = document.getElementById('txt_empleado');
+        const strEmpleado = objEmpleado.value.trim();
+        const objPavoPierna = document.querySelector(`input[name="radio_pavo_pierna"]:checked`);
+        const strPavoPierna = (objPavoPierna)? objPavoPierna.value : '';
+
+        if (strEmpleado === '' || strPavoPierna === '') {
+            alert_nova.showNotification('Por favor debe ingresar el nombre y seleccionar una opción..', "warning", "danger");
+            return false;
+        }
+
+        document.getElementById('empleado_id').value = 1;
+        $('#frm_vales').append(`
+            <input type="hidden" name="nombre" id="nombre" value="${strEmpleado}">
+            <input type="hidden" name="pavo_pierna" id="pavo_pierna" value="${strPavoPierna}">
+            <input type="hidden" name="user_extra" id="user_extra" value="1">
+        `).submit();
+        simple_redireccion('{% url 'rrhh-vales_qr_user_reporte' %}');
+    };
+    </script>
+{% endblock javascripts %}

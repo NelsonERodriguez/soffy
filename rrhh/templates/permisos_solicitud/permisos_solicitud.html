@@ -1,0 +1,135 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Solicitud de permiso laboral {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-sm-2 col-sm-8">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">edit_note</i>
+                        </div>
+                        <h4 class="card-title">Solicitud de permiso laboral</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 text-right">
+                                <button type="button" class="btn btn-outline-primary" onclick="showModal(true);">
+                                    <span class="material-icons">add</span> Agregar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="material-datatables table-hover">
+                                    <table id="datatablesSolicitudes" class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Fecha</th>
+                                            <th>Razón del permiso</th>
+                                            <th>Estatus</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tfoot>
+                                        <tr>
+                                            <th></th>
+                                            <th>Fecha</th>
+                                            <th>Razón del permiso</th>
+                                            <th>Estatus</th>
+                                            <th></th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_tipo" tabindex="-1" role="dialog" aria-labelledby="modal_TipoLabel"
+         aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Solicitud</h4>
+                    <button type="button" class="close" id="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal_body_tipo">
+                    <form name="formSolicitud" id="formSolicitud">
+                        <input type="hidden" id="id" name="id">
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="tipo">Tipo</label>
+                                <select name="tipo" id="tipo" class="form-control">
+                                    <option value=""></option>
+                                    {% for tipo in tipos %}
+                                        <option value="{{ tipo.id }}"
+                                                data-dias_permitidos="{{ tipo.dias_permitidos }}">{{ tipo.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="fecha_solicitud">Fecha solicitud</label>
+                                <input type="date" name="fecha_solicitud" id="fecha_solicitud" class="form-control">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="observacion">Observacion</label>
+                                <textarea name="observacion" id="observacion" cols="30" rows="5"
+                                          style="height: auto" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4>HORARIO AUTORIZADO DEL PERMISO</h4>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="fecha_inicio">De</label>
+                                <input type="datetime-local" name="fecha_inicio" id="fecha_inicio" class="form-control" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="fecha_fin">Hasta</label>
+                                <input type="datetime-local" name="fecha_fin" id="fecha_fin" class="form-control" readonly>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-success" onclick="dialogConfirm(saveSolicitud);">
+                        <span class="material-icons">save</span> Grabar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const strUrlGetSolicitudes = "{% url 'rrhh-permisos_solicitud_get_solicitudes' %}",
+            strUrlGetSolicitud = "{% url 'rrhh-permisos_solicitud_get_solicitud' %}",
+            strUrlSaveSolicitud = "{% url 'rrhh-permisos_solicitud_save_solicitud' %}";
+    </script>
+    <script src="{% static 'modules/rrhh/permisos_solicitud/permisos_solicitud.js' %}" async defer></script>
+{% endblock javascripts %}

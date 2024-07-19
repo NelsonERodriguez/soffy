@@ -1,0 +1,239 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Comisiones Modificadas {% endblock title %}
+
+{% load static %}
+{% load humanize %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+    <style>
+        .input-percentage:after {
+            content: '%';
+            position: absolute;
+            top: 35%;
+            left: 86%;
+        }
+        input[type="file"] {
+            -webkit-appearance: listbox; }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">paid</i>
+                        </div>
+                        <h4 class="card-title">Comisiones Modificadas</h4>
+                    </div>
+                    <div class="card-body">
+                        <!--form class="form-horizontal" method="post" id="frm_polizas"-->
+                        <form action="{% url 'rrhh-comisiones_modificadas' %}" method="POST" name="frm_horas_extras" id="frm_horas_extras">
+                            {% csrf_token %}
+                            <div class="row justify-content-center">
+                                <div class="col-md-3">
+                                    <label for="sltMes" class="bmd-label-floating required">Mes</label>
+                                    <select name="sltMes" id="sltMes" class="select2">
+                                        {% for mes in meses %}
+                                            <option value="{{ mes.id }}" {% if mes.id == mes_selected %} selected {% endif %}>{{ mes.mes }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="sltAnio" class="bmd-label-floating required">Año</label>
+                                    <select name="sltAnio" id="sltAnio" class="select2">
+                                        {% for anio in anios %}
+                                            <option value="{{ anio }}" {% if anio == anio_selected %} selected {% endif %}>{{ anio }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="sltVendedor" class="bmd-label-floating required">Vendedor</label>
+                                    <select name="sltVendedor" id="sltVendedor" class="select2">
+                                        <option value="">Todos</option>
+                                        {% for vendedor in vendedores %}
+                                            <option value="{{ vendedor.no_vendedor }}" {% if vendedor.no_vendedor == vendedor_selected %} selected {% endif %}>{{ vendedor.nombre_vendedor }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="button" class="btn btn-outline-info" id="btnSearch" onclick="fntCargarData();">
+                                        <i class="fa fa-search"></i>
+                                        Revisar Comisiones
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-body" style="display: none;" id="divDatosComisiones">
+
+                        <div class="row">
+                            <div class="col-sm-12" id="div_tabla">
+                                <table class="table table-striped table-hover" id="tblComisiones">
+                                    <thead>
+                                        <tr>
+                                            <th>Vendedor</th>
+                                            <th>No. Cliente</th>
+                                            <th>Cliente</th>
+                                            <th>No. Recibo</th>
+                                            <th>Fecha Recibo</th>
+                                            <th>No. Factura</th>
+                                            <th>Fecha Factura</th>
+                                            <th>Tipo</th>
+                                            <th>Producto</th>
+                                            <th>Dias Crédito</th>
+                                            <th>Dias Diferencia</th>
+                                            <th>Valor o Porcentaje</th>
+                                            <th>Comisión</th>
+                                            <th>Abono</th>
+                                            <th>Cajas</th>
+                                            <th>Observaciones</th>
+                                            <th>Adjunto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="/static/assets/js/plugins/jasny-bootstrap.min.js"></script>
+
+    <script>
+        const strUrlData = "{% url 'rrhh-comisiones_modificadas_data' %}",
+            valCSRF = getCookie('csrftoken');
+
+        let tblComisiones;
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $(".select2").select2();
+        });
+
+        const fntCargarData = () => {
+            const data = new FormData();
+
+            data.append('csrfmiddlewaretoken', valCSRF);
+            data.append('sltMes', document.getElementById("sltMes").value);
+            data.append('sltAnio', document.getElementById("sltAnio").value);
+            data.append('sltVendedor', document.getElementById("sltVendedor").value);
+
+            open_loading();
+            fetch(strUrlData, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(data => {
+                $("#tblComisiones tbody").html("");
+                if(data.status){
+                    if( tblComisiones ) tblComisiones.destroy();
+                    let strHtml = '';
+                    data.comisiones.forEach((value)=>{
+                        let fechaRec = new Date(value.fecha_rec);
+                        let fechaRecGt = dateGTFormat.format(fechaRec);
+
+                        let fechaFac = new Date(value.fecha_fac);
+                        let fechaFacGt = dateGTFormat.format(fechaFac);
+
+                        let strAdjunto = "--";
+                        if( value.archivo_respaldo !== null ){
+                            strAdjunto = `<a href="/${value.archivo_respaldo}" target="_blank">Ver archivo</a>`;
+                        }
+
+                        strHtml += `
+                            <tr>
+                                <td>${value.nombre_vendedor}</td>
+                                <td>${value.codigo_cliente}</td>
+                                <td>${value.nombre_cliente}</td>
+                                <td>${value.numero_recibo}</td>
+                                <td>${fechaRecGt}</td>
+                                <td>${value.numero_factura}</td>
+                                <td>${fechaFacGt}</td>
+                                <td>${value.tipo_producto}</td>
+                                <td>${value.nombre_producto}</td>
+                                <td>${value.dias_credito}</td>
+                                <td>${value.diferencias_dias}</td>
+                                <td class="text-right">${value.afectiva_float}</td>
+                                <td class="text-right">${value.comision_pagada}</td>
+                                <td class="text-right">${value.abono_producto}</td>
+                                <td class="text-right">${value.cajas_abonadas}</td>
+                                <td class="text-right">${value.observaciones}</td>
+                                <td class="text-right">${strAdjunto}</td>
+                            </tr>
+                        `;
+                    });
+
+                    $("#tblComisiones tbody").html(strHtml);
+
+                    tblComisiones = $('#tblComisiones').DataTable({
+                        "pagingType": "full_numbers",
+                        "lengthMenu": [
+                            [10, 25, 50, -1],
+                            [10, 25, 50, "Todos"]
+                        ],
+                        responsive: false,
+                        order: [[1, 'asc']],
+                        language: objLenguajeDataTable,
+                        dom: 'lBfrtip',
+                        buttons: [
+                            {
+                                extend: 'excel',
+                                text: 'Excel',
+                                className: 'btn btn-default',
+                                exportOptions: {
+                                    format: {
+                                        body: function ( data, row, column, node ) {
+                                            if( column === 13){
+                                                return $(data).find("input").length > 0?
+                                                $(data).find("input").val():
+                                                data;
+                                            }
+                                            else if(column === 14 ){
+                                                return ($(data).is("label") ?
+                                                $(data).text():
+                                                ($(data).find("span").length > 0 ?
+                                                $(data).find("span").text():
+                                                data));
+                                            }
+                                            else{
+                                                return data;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    });
+                    $("#divDatosComisiones").show();
+                }
+                else{
+                    $("#divDatosComisiones").hide();
+                    alert_nova.showNotification(`${data.msj}`, "warning", "danger");
+                }
+                close_loading();
+            })
+            .catch(error => {
+                $("#divDatosComisiones").hide();
+                alert_nova.showNotification(`Ocurrió un error inesperado. Revise su conexión a internet o contacte a TI.`, "warning", "danger");
+                console.error(error)
+                close_loading();
+            });
+        }
+    </script>
+
+{% endblock javascripts %}

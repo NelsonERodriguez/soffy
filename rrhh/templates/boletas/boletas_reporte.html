@@ -1,0 +1,49 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Boletas {% endblock title %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/static/assets/css/jquery-ui.min.css">
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-sm-2 col-sm-8">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">checklist</i>
+                        </div>
+                        <h4 class="card-title">Boletas</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="offset-md-4 col-md-4">
+                                <div class="form-group" style="margin: 35px;">
+                                    <label for="autocomplete_user" class="bmd-label-floating">Usuario</label>
+                                    <input type="text" class="form-control" id="autocomplete_user" value="{{ equipo.user.name }}" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="{% static 'assets/js/core/jquery-ui.min.js' %}"></script>
+    <script>
+        (function () {
+            window.strUrlBoletas = "{% url 'rrhh-boletas' %}";
+            window.strUrlGetUsers = "{% url 'rrhh-boletas_reporte_get_users' %}";
+        })();
+    </script>
+    <script src="{% static 'modules/rrhh/boletas/boletas.js' %}" async defer></script>
+
+{% endblock javascripts %}

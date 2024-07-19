@@ -1,0 +1,30 @@
+{% load i18n static %}
+
+{% csrf_token %}
+
+<div class="sidebar" data-color="gray">
+    <div class="logo">
+        <a rel="noopener noreferrer" href="{% url 'home_core' %}" class="simple-text logo-mini">
+            <img src="{% static 'assets/img/icon.png' %}" class="img-sidebar" alt="Logo">
+        </a>
+        <a rel="noopener noreferrer" href="{% url 'home_core' %}" class="simple-text logo-normal">
+            Soffybiz
+        </a>
+    </div>
+    <div class="sidebar-wrapper">
+        <ul class="nav" id='cntGlobalAllMenu'>
+            <li class="nav-item {% if request.path == '/index/' or request.path == '/index' or request.path == 'index' %} active {% endif %}">
+                <a class="nav-link" href="/index">
+                    <i class="material-icons">dashboard</i>
+                    <p>Dashboard</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<script type="text/ecmascript" async defer>
+    let intIDUser = '{{  request.user.id  }}';
+</script>
+<script src="{% static 'modules/core/sidebar/sidebar.js' %}" type="text/ecmascript" async defer></script>

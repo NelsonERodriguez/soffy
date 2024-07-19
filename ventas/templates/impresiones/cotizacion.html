@@ -1,0 +1,108 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/mundo.png">
+        <link rel="icon" type="image/png" href="/static/assets/img/mundo.png">
+        <title>Cotización</title>
+        <style>
+
+        </style>
+    </head>
+    <body style="margin: 0; padding: 0;">
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="4" style="padding-top: 4px; font-size: 15px;">{{ cotizacion.NombreComercial }}</th>
+                </tr>
+                <tr>
+                    <th colspan="4" style="border: black solid 1px; padding-top: 4px;">PEDIDO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><th colspan="4"></th></tr>
+                <tr>
+                    <th style="text-align: left;">Nombre:</th>
+                    <td style="text-align: left;">{{ cotizacion.Nombre }}</td>
+                    <th style="text-align: left;">Fecha:</th>
+                    <td style="text-align: left;">{{ cotizacion.Fecha|date:"d/m/Y" }}</td>
+                </tr>
+                <tr><th colspan="4"></th></tr>
+                <tr>
+                    <th style="text-align: left;">Código:</th>
+                    <td style="text-align: left;">{{ cotizacion.CodigoCliente }}</td>
+                    <th style="text-align: left;">Forma de Pago:</th>
+                    <td style="text-align: left;">{{ cotizacion.Descripcion }}</td>
+                </tr>
+                <tr><th colspan="4"></th></tr>
+                <tr>
+                    <th style="text-align: left;">No Ruta:</th>
+                    <td style="text-align: left;">{{ cotizacion.NoRuta }}</td>
+                </tr>
+                <tr><th colspan="4"></th></tr>
+                <tr>
+                    <th style="text-align: left;">Dirección:</th>
+                    <td style="text-align: left;" colspan="3">{{ cotizacion.Direccion }}</td>
+                </tr>
+                <tr><th colspan="4"></th></tr>
+                <tr>
+                    <th style="text-align: left;">Observaciones:</th>
+                    <td style="text-align: left;">{% if cotizacion.Observaciones %}{{ cotizacion.Observaciones }}{% endif %}</td>
+                </tr>
+                <tr><th colspan="4"></th></tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+                <tr>
+                    <th style="border-top: black solid 1px; border-bottom: black solid 1px; padding-top: 4px;">Código</th>
+                    <th style="border-top: black solid 1px; border-bottom: black solid 1px; padding-top: 4px;">Descripción</th>
+                    <th style="border-top: black solid 1px; border-bottom: black solid 1px; padding-top: 4px;">Libras</th>
+                    <th style="border-top: black solid 1px; border-bottom: black solid 1px; padding-top: 4px;">Cajas</th>
+                    <th style="border-top: black solid 1px; border-bottom: black solid 1px; padding-top: 4px;">Unitario</th>
+                    <th style="border-top: black solid 1px; border-bottom: black solid 1px; padding-top: 4px;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detalle in detalles %}
+                    <tr><td colspan="6"></td></tr>
+                    <tr>
+                        <td>{{ detalle.CodigoProducto }}</td>
+                        <td>{{ detalle.Descripcion }}</td>
+                        <td style="text-align: right;">{{ detalle.Cantidad|intcomma }}</td>
+                        <td style="text-align: right;">{{ detalle.Cajas|intcomma }}</td>
+                        <td style="text-align: right;">Q {{ detalle.VUnitario|intcomma }}</td>
+                        <td style="text-align: right;">Q {{ detalle.Total|intcomma }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr><td colspan="6"></td></tr>
+                <tr>
+                    <td colspan="5" style="text-align: right;"><b>Total Pedido:</b></td>
+                    <td style="text-align: right;"><b>Q {{ cotizacion.Total|intcomma }}</b></td>
+                </tr>
+            </tfoot>
+        </table>
+        <div style="width: 100%; position: absolute; margin-top: 60px;">
+            <div style="width: 100%; padding-left: 25px; position: relative;">
+                <b>APROBADO CLIENTE</b>
+            </div>
+            <div style="width: 25%; position: relative; margin-top: 15px;">
+                <b>Nombre:</b> _______________________
+            </div>
+            <div style="width: 25%; position: relative; margin-top: 15px;">
+                <b>Fecha:</b> &nbsp;&nbsp;&nbsp;_______________________
+            </div>
+            <div style="padding: 25%; width: 25%; position: relative; text-align: center;">
+                _______________________ <br> <b>Firma Cliente</b>
+            </div>
+        </div>
+        <div style="width: 100%; position: absolute; margin-top: 5px;">
+            <div style="width: 100%; position: relative; text-align: center;">
+                <b>Orden generada desde el pedido : </b> {{ cotizacion.NoDocumento }}
+            </div>
+        </div>
+    </body>
+</html>

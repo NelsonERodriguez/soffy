@@ -1,0 +1,47 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Indicador Planeación de la Demanda {% endblock title %}
+
+{% load static %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">query_stats</i>
+                        </div>
+                        <h4 class="card-title">Indicador Planeación de la Demanda</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="embedContainer" class="w-100 h-100" style="width: 100%; height: 100vh !important;"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        const reportid_planeacion_demanda = '{{ reportid_planeacion_demanda }}';
+        const groups_planeacion_demanda = '{{ groups_planeacion_demanda }}';
+        const token_planeacion_demanda = '{{ token_planeacion_demanda }}';
+        const urlpower = '{% url 'powerbi-ventas' %}';
+    </script>
+    <script src="{% static 'modules/core/powerbi/power-bi.js' %}" type="text/javascript" async defer></script>
+    <script src="{% static 'modules/ventas/planeacion_demanda/indicador_planeacion_demanda.js' %}" type="text/javascript" async defer></script>
+
+{% endblock javascripts %}

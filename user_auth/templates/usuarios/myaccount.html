@@ -1,0 +1,185 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Mi cuenta {% endblock title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+    <style>
+    .picture-container {
+        position: relative;
+        cursor: pointer;
+        text-align: center;
+    }
+    .picture:hover {
+        border-color: #e91e63;
+    }
+    .picture {
+        width: 106px;
+        height: 106px;
+        background-color: #999999;
+        border: 4px solid #CCCCCC;
+        color: #FFFFFF;
+        border-radius: 50%;
+        margin: 5px auto;
+        overflow: hidden;
+        transition: all 0.2s;
+        -webkit-transition: all 0.2s;
+    }
+
+    .picture-src{
+        width: 100%;
+    }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">account_box</i>
+                        </div>
+                        <h4 class="card-title">Mi cuenta</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                        <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+                        <form action="{% url 'myaccount' %}" method="POST" name="frm_myaccount" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <div class="form-group {% if form.avatar.errors %}has-danger{% endif %}">
+                                        <div class="picture-container" id="div-picture">
+                                          <div class="picture">
+                                            <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}/static/assets/img/default-avatar.png{% endif %}" class="picture-src" id="avatarPicturePreview" title="" alt="Foto" />
+                                            <input type="file" name="avatar" id="avatar">
+                                          </div>
+                                          <h6 class="description">Elige foto</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group {% if form.first_name.errors %}has-danger{% endif %}">
+                                        <label for="first_name" class="bmd-label-floating">Nombres</label>
+                                        <input type="text" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" id="first_name" name="first_name" value="{% if form.first_name.value %}{{ form.first_name.value }}{% else %}{{ user.first_name }}{% endif %}" onchange="change_nombre();">
+                                        <input type="hidden" name="user" id="user" value="{{ user.id }}">
+                                        <input type="hidden" name="user_id" id="user_id" value="{{ user.id }}">
+                                        <div class="invalid-feedback">
+                                            {% for error in form.first_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group {% if form.last_name.errors %}has-danger{% endif %}">
+                                        <label for="last_name" class="bmd-label-floating">Apellidos</label>
+                                        <input type="text" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" id="last_name" name="last_name" value="{% if form.last_name.value %}{{ form.last_name.value }}{% else %}{{ user.last_name }}{% endif %}" onchange="change_nombre();">
+                                        <div class="invalid-feedback">
+                                            {% for error in form.last_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group {% if form.name.errors %}has-danger{% endif %}">
+                                        <label for="name" class="bmd-label-floating">Nombre completo</label>
+                                        <input type="text" readonly class="form-control {% if form.name.errors %}is-invalid{% endif %}" id="name" name="name" value="{% if form.name.value %}{{ form.name.value }}{% else %}{{ user.name }}{% endif %}">
+                                        <div class="invalid-feedback">
+                                            {% for error in form.name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                        <label for="email" class="bmd-label-floating">E-Mail</label>
+                                        <input type="email" readonly class="form-control {% if form.email.errors %}is-invalid{% endif %}" id="email" name="email" value="{% if form.email.value %}{{ form.email.value }}{% else %}{{ user.email }}{% endif %}">
+                                        <div class="invalid-feedback">
+                                            {% for error in form.email.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 text-center">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-outline-success" id="btnSave">
+                                            <span class="material-icons">save</span>
+                                            Actualizar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+  
+  <script>
+    const btnSave = document.getElementById('btnSave');
+
+    if (btnSave) {
+        btnSave.addEventListener('click', () => {
+            dialogConfirm(simple_submit, 'frm_myaccount');
+        });
+    }
+
+    const divPicture = document.getElementById('div-picture');
+
+    if (divPicture) {
+        divPicture.addEventListener('click', () => {
+            document.getElementById('avatar').click();
+        });
+    }
+
+    const imgAvatar = document.getElementById('avatar');
+
+    if (imgAvatar) {
+        imgAvatar.addEventListener('change', () => {
+            readURL(imgAvatar);
+        });
+    }
+
+    function change_nombre() {
+        const strFirstName = document.getElementById('first_name').value.trim();
+        const strLastName = document.getElementById('last_name').value.trim();
+
+        if (strFirstName !== '' && strLastName !== '') {
+            document.getElementById('name').value = `${strFirstName}, ${strLastName}`;
+        }
+    }
+
+    function readURL(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+          $('#avatarPicturePreview').attr('src', e.target.result).fadeIn('slow');
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+  </script>
+
+{% endblock javascripts %}

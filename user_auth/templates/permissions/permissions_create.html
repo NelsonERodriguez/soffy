@@ -1,0 +1,112 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Permisos {% endblock title %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">verified_user</i>
+                        </div>
+                        <h4 class="card-title">Permisos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+                        <form action="{% url 'user-permissions_create' %}" name="frm_permissions" id="frm_permissions"
+                              method="POST">
+                            {% csrf_token %}
+                            <div class="row" style="margin-bottom: 25px;">
+                                <div class="col-12 text-right">
+                                    <button type="button" class="btn btn-outline-danger"
+                                            onclick="simple_redireccion('{% url 'user-permissions' %}');">
+                                        <span class="material-icons">arrow_back</span> Regresar
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 25px;">
+                                <div class="col-md-4">
+                                    <div class="form-group {% if form.content_type_id.errors %}has-danger{% endif %}">
+                                        <label for="content_type_id"></label>
+                                        <select name="content_type_id" id="content_type_id"
+                                                class="form-control {% if form.content_type_id.errors %}is-invalid{% endif %}">
+                                            <option value="">Modulo</option>
+                                            {% for modulo in modulos %}
+                                                <option value="{{ modulo.id }}"
+                                                        {% if form.content_type_id.value == modulo.id|floatformat:"0" %}selected{% endif %}>{{ modulo.app }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.content_type_id.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 25px;">
+                                <div class="col-md-4">
+                                    <div class="form-group {% if form.name.errors %}has-danger{% endif %}">
+                                        <label for="name" class="bmd-label-floating">Descripción</label>
+                                        <input name="name" id="name"
+                                               class="form-control {% if form.name.errors %}is-invalid{% endif %}"
+                                               value="{% if form.name.value %}{{ form.name.value }}{% endif %}">
+                                        <div class="invalid-feedback">
+                                            {% for error in form.name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group {% if form.codename.errors %}has-danger{% endif %}">
+                                        <label for="codename" class="bmd-label-floating">Código</label>
+                                        <input name="codename" id="codename"
+                                               class="form-control {% if form.codename.errors %}is-invalid{% endif %}"
+                                               value="{% if form.codename.value %}{{ form.codename.value }}{% endif %}">
+                                        <div class="invalid-feedback">
+                                            {% for error in form.codename.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button type="button" class="btn btn-outline-success" id="btnSave">
+                                        <span class="material-icons">save</span>
+                                        Grabar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- end content-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+    <script>
+        $("#content_type_id").select2();
+        const btnSave = document.getElementById('btnSave');
+
+        if (btnSave) {
+            btnSave.addEventListener('click', () => {
+                dialogConfirm(simple_submit, 'frm_permissions');
+            });
+        }
+    </script>
+
+{% endblock javascripts %}

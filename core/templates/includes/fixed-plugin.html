@@ -1,0 +1,16 @@
+<div class="fixed-plugin">
+    <div class="dropdown">
+        <a href="#" data-toggle="dropdown"> <i class="fal fa-cogs"></i> </a>
+        <ul class="dropdown-menu" id='menuGlobalCustomStyles'></ul>
+    </div>
+</div>
+
+{% csrf_token %}
+
+{% load static %}
+<script async defer>
+    const urlGetConfigMenu = "{% url 'core-get_styles_custom' %}",
+        urlSaveConfigMenu = "{% url 'core-save_custom_styles' %}";
+    let csrfTokenFP = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+</script>
+<script src="{% static 'assets/js/components/fixed-plugin.js' %}" type="text/javascript" async defer></script>

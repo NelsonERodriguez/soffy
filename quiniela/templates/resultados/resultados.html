@@ -1,0 +1,339 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Ingreso de Resultados {% endblock title %}
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/static/assets/css/jquery-ui.min.css">
+    <style>
+        @media screen and (min-width: 576px) {
+            table.table-responsive {
+                display: inline-table;
+            }
+        }
+        .ui-front {
+            z-index: 1060;
+        }
+        .required:after {
+            content:" *";
+            color:red;
+        }
+
+        .table > thead > tr > th,
+        .table > tbody > tr > th,
+        .table > tfoot > tr > th,
+        .table > thead > tr > td,
+        .table > tbody > tr > td,
+        .table > tfoot > tr > td {
+            padding: 1px;
+            vertical-align: middle;
+            border-color: #ddd;
+        }
+
+
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">file_open</i>
+                        </div>
+                        <h4 class="card-title">Ingreso de Resultados</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for grupo in quiniela %}
+                                <div class="col-md-6">
+
+                                    <div class="card">
+                                        <div class="card-header card-header-primary card-header-icon">
+                                            <div class="card-icon">
+                                                <i class="material-icons">format_list_numbered</i>
+                                            </div>
+                                            <h4 class="card-title">{{ grupo.nombre_grupo }}</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="table table-sm">
+                                                <tbody>
+                                                    {% for partido in grupo.partidos %}
+                                                        <tr>
+                                                            <td colspan="7" class="text-center" style="">
+                                                                {{ partido.fecha|date:"d/m/Y" }} {{ partido.hora }}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="width: 5%;border: unset;">
+                                                                {% if partido.hay_penales %}
+                                                                    <input type="text" class="form-control text-center" id="txtPenalesEquipo1_{{ partido.id_partido }}" value="{{ partido.penales_equipo_1 }}" data-id_partido="{{ partido.id_partido }}" placeholder="p" {% if partido.bool_readonly_penales %}readonly=""{% endif %} onchange="fntGuardarResultado(this)" onkeydown="return validar_caracteres(event, 2);">
+                                                                {% endif %}
+                                                            </td>
+                                                            <td style="width: 5%;border: unset;">
+                                                                <input type="text" class="form-control text-center" id="txtGolesEquipo1_{{ partido.id_partido }}" value="{{ partido.goles_equipo_1 }}" data-id_partido="{{ partido.id_partido }}" placeholder="-" {% if partido.resultado_congelado %}readonly=""{% endif %} onchange="fntGuardarResultado(this)" onkeydown="return validar_caracteres(event, 2);">
+                                                            </td>
+                                                            <td style="width: 30%;text-align: right;border: unset;">
+                                                                {{ partido.equipo1 }}
+                                                                {% if partido.icono1 %}
+                                                                    <img src="{% static partido.icono1 %}" style="width: 30px;">
+                                                                {% endif %}
+                                                            </td>
+                                                            <td style="width: 10%;text-align: center;border: unset;">
+                                                                vs.
+                                                            </td>
+                                                            <td style="width: 30%;border: unset;">
+                                                                {% if partido.icono2 %}
+                                                                    <img src="{% static partido.icono2 %}" style="width: 30px;">
+                                                                {% endif %}
+                                                                {{ partido.equipo2 }}
+                                                            </td>
+                                                            <td style="width: 5%;border: unset;">
+                                                                <input type="text" class="form-control text-center" id="txtGolesEquipo2_{{ partido.id_partido }}" value="{{ partido.goles_equipo_2 }}" data-id_partido="{{ partido.id_partido }}" placeholder="-" {% if partido.resultado_congelado %}readonly=""{% endif %} onchange="fntGuardarResultado(this)" onkeydown="return validar_caracteres(event, 2);">
+                                                            </td>
+
+                                                            <td style="width: 5%;border: unset;">
+                                                                {% if partido.hay_penales %}
+                                                                    <input type="text" class="form-control text-center" id="txtPenalesEquipo2_{{ partido.id_partido }}" value="{{ partido.penales_equipo_2 }}" data-id_partido="{{ partido.id_partido }}" placeholder="p"  {% if partido.bool_readonly_penales %}readonly=""{% endif %} onchange="fntGuardarResultado(this)" onkeydown="return validar_caracteres(event, 2);">
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="7" class="text-center" style="border: unset;">
+                                                                {% if not partido.resultado_congelado %}
+                                                                    {% if request.user.id == 4 or request.user.id == 186 or request.user.id == 1 or request.user.id == 853 or request.user.id == 894 or request.user.id == 830 %}
+                                                                        <button class="btn btn-sm btn-success" id="btnCongelar_{{ partido.id_partido }}" type="button" onclick="fntCongelarResultado(this);">Congelar Resultado</button>
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                    <span style="font-style: italic;color: gray;">Resultado congelado</span>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="/static/assets/js/core/jquery-ui.min.js"></script>
+
+    <script>
+        const strUrlGuardar = "{% url 'quiniela-resultados_guardar' %}",
+            strUrlCongelar = "{% url 'quiniela-resultados_congelar' %}";
+
+        const fntMostrarPenales = async (intCorrelativo) => {
+            let objPenalesEquipo1 = document.getElementById(`txtPenalesEquipo1_${intCorrelativo}`),
+                objPenalesEquipo2 = document.getElementById(`txtPenalesEquipo2_${intCorrelativo}`);
+            if( document.getElementById(`txtGolesEquipo1_${intCorrelativo}`).value === document.getElementById(`txtGolesEquipo2_${intCorrelativo}`).value ){
+                if( objPenalesEquipo1 && objPenalesEquipo2 ){
+                    objPenalesEquipo1.readOnly = false;
+                    objPenalesEquipo2.readOnly = false;
+                }
+            }
+            else{
+                if( objPenalesEquipo1 && objPenalesEquipo2 ) {
+                    let boolChange1 = objPenalesEquipo1.value.length > 0
+                    let boolChange2 = objPenalesEquipo2.value.length > 0
+                    objPenalesEquipo1.value = '';
+                    if( boolChange1 ) objPenalesEquipo1.onchange();
+                    objPenalesEquipo1.readOnly = true;
+                    objPenalesEquipo2.value = '';
+                    if( boolChange2 ) objPenalesEquipo2.onchange();
+                    objPenalesEquipo2.readOnly = true;
+                }
+            }
+        }
+
+        const fntGuardarResultado = async (object) => {
+            const csrftoken = getCookie('csrftoken'),
+            objForm = new FormData();
+
+            let arrSplit = object.id.split("_");
+            let intGolesEquipo1 = null, intGolesEquipo2 = null,
+                intPenalesEquipo1 = null, intPenalesEquipo2 = null;
+
+            if( arrSplit[0] === "txtGolesEquipo1" ){
+                intGolesEquipo1 = object.value;
+                await fntMostrarPenales(arrSplit[1]);
+            }
+            else if( arrSplit[0] === "txtGolesEquipo2" ){
+                intGolesEquipo2 = object.value;
+                await fntMostrarPenales(arrSplit[1]);
+            }
+            else if( arrSplit[0] === "txtPenalesEquipo1" ){
+                intPenalesEquipo1 = object.value;
+            }
+            else if( arrSplit[0] === "txtPenalesEquipo2" ){
+                intPenalesEquipo2 = object.value;
+            }
+
+            if( intGolesEquipo1 === null ){
+                if( document.getElementById(`txtGolesEquipo1_${arrSplit[1]}`) ){
+                    intGolesEquipo1 = document.getElementById(`txtGolesEquipo1_${arrSplit[1]}`).value;
+                }
+            }
+            if( intGolesEquipo2 === null ){
+                if( document.getElementById(`txtGolesEquipo2_${arrSplit[1]}`) ){
+                    intGolesEquipo2 = document.getElementById(`txtGolesEquipo2_${arrSplit[1]}`).value;
+                }
+            }
+            if( intPenalesEquipo1 === null ){
+                if( document.getElementById(`txtPenalesEquipo1_${arrSplit[1]}`) ){
+                    intPenalesEquipo1 = document.getElementById(`txtPenalesEquipo1_${arrSplit[1]}`).value;
+                }
+            }
+            if( intPenalesEquipo2 === null ){
+                if( document.getElementById(`txtPenalesEquipo2_${arrSplit[1]}`) ){
+                    intPenalesEquipo2 = document.getElementById(`txtPenalesEquipo2_${arrSplit[1]}`).value;
+                }
+            }
+
+            objForm.append('goles_equipo_1', intGolesEquipo1);
+            objForm.append('goles_equipo_2', intGolesEquipo2);
+            objForm.append('penales_equipo_1', intPenalesEquipo1);
+            objForm.append('penales_equipo_2', intPenalesEquipo2);
+            objForm.append('id_partido', arrSplit[1]);
+
+            open_loading();
+            await fetch(strUrlGuardar, {
+                method: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                body: objForm
+            })
+            .then(response => response.json())
+            .then( async (data) => {
+
+                if (data.status) {
+                    alert_nova.showNotification("Vaticinio guardado exitosamente.", "add_alert", "success");
+                }
+                else {
+                    alert_nova.showNotification(data.mensaje, "warning", "danger");
+                }
+
+                close_loading();
+            })
+            .catch((error) => {
+                console.error(error);
+                alert_nova.showNotification('Error de conexión, comuníquese con IT.', "warning", "danger");
+                close_loading();
+            });
+        }
+
+        const fntCambioValor = async(object) => {
+            dialogConfirm(fntGuardarResultado, [object], '¿Estás seguro de guardar este elemento?', '¡Si lo desea recuperar, favor de comunicarse a IT!')
+        }
+
+        const fntCongelarResultado = async (object) => {
+            const csrftoken = getCookie('csrftoken'),
+            objForm = new FormData();
+
+            let arrSplit = object.id.split("_");
+            let intGolesEquipo1 = null, intGolesEquipo2 = null,
+                intPenalesEquipo1 = null, intPenalesEquipo2 = null;
+
+            if( document.getElementById(`txtGolesEquipo1_${arrSplit[1]}`) ){
+                intGolesEquipo1 = document.getElementById(`txtGolesEquipo1_${arrSplit[1]}`).value;
+            }
+            if( document.getElementById(`txtGolesEquipo2_${arrSplit[1]}`) ){
+                intGolesEquipo2 = document.getElementById(`txtGolesEquipo2_${arrSplit[1]}`).value;
+            }
+            if( document.getElementById(`txtPenalesEquipo1_${arrSplit[1]}`) ){
+                intPenalesEquipo1 = document.getElementById(`txtPenalesEquipo1_${arrSplit[1]}`).value;
+            }
+            if( document.getElementById(`txtPenalesEquipo2_${arrSplit[1]}`) ){
+                intPenalesEquipo2 = document.getElementById(`txtPenalesEquipo2_${arrSplit[1]}`).value;
+            }
+
+            let boolErrorEquipo1 = false, boolErrorEquipo2 = false, boolErrorPenalesVacios = false;
+            if( intGolesEquipo1 === null || intGolesEquipo1 === '' ){
+                boolErrorEquipo1 = true;
+            }
+            if( intGolesEquipo2 === null || intGolesEquipo2 === '' ){
+                boolErrorEquipo2 = true;
+            }
+
+            if( intPenalesEquipo1 !== null && intPenalesEquipo2 !== null ) {
+                if (intGolesEquipo1 == intGolesEquipo2 && (intPenalesEquipo1 === null || intPenalesEquipo1 === '')) {
+                    boolErrorPenalesVacios = true;
+                }
+                if (intGolesEquipo1 == intGolesEquipo2 && (intPenalesEquipo2 === null || intPenalesEquipo2 === '')) {
+                    boolErrorPenalesVacios = true;
+                }
+            }
+
+            if( boolErrorEquipo1 || boolErrorEquipo2 || boolErrorPenalesVacios ){
+                if( boolErrorEquipo1 ){
+                    alert_nova.showNotification('Debe de ingresar la cantidad de goles del equipo 1.', "warning", "danger");
+                }
+                if( boolErrorEquipo2 ){
+                    alert_nova.showNotification('Debe de ingresar la cantidad de goles del equipo 2.', "warning", "danger");
+                }
+                if( boolErrorPenalesVacios ){
+                    alert_nova.showNotification('Al existir un empate, debe de ingresar los penales para cada equipo.', "warning", "danger");
+                }
+
+                return false;
+            }
+
+            objForm.append('id_partido', arrSplit[1]);
+
+            open_loading();
+            await fetch(strUrlCongelar, {
+                method: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                body: objForm
+            })
+            .then(response => response.json())
+            .then( async (data) => {
+
+                if (data.status) {
+                    alert_nova.showNotification(data.mensaje, "add_alert", "success");
+                    object.parentNode.innerHTML = '<span style="font-style: italic;color: gray;">Resultado congelado</span>';
+
+                    if( document.getElementById(`txtGolesEquipo1_${arrSplit[1]}`) ){
+                        document.getElementById(`txtGolesEquipo1_${arrSplit[1]}`).readOnly = true;
+                    }
+                    if( document.getElementById(`txtGolesEquipo2_${arrSplit[1]}`) ){
+                        document.getElementById(`txtGolesEquipo2_${arrSplit[1]}`).readOnly = true;
+                    }
+                    if( document.getElementById(`txtPenalesEquipo1_${arrSplit[1]}`) ){
+                        document.getElementById(`txtPenalesEquipo1_${arrSplit[1]}`).readOnly = true;
+                    }
+                    if( document.getElementById(`txtPenalesEquipo2_${arrSplit[1]}`) ){
+                        document.getElementById(`txtPenalesEquipo2_${arrSplit[1]}`).readOnly = true;
+                    }
+                }
+                else {
+                    alert_nova.showNotification(data.mensaje, "warning", "danger");
+                }
+
+                close_loading();
+            })
+            .catch((error) => {
+                console.error(error);
+                alert_nova.showNotification('Error de conexión, comuníquese con IT.', "warning", "danger");
+                close_loading();
+            });
+        }
+
+        $(document).ready(function() {
+
+        });
+    </script>
+    <!-- <script src="/static/modules/ventas/encuestas/encuestas.js?v=1.1.0" type="text/javascript" async defer></script> -->
+
+{% endblock javascripts %}

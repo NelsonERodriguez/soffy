@@ -1,0 +1,66 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Reprocesar Comisiones {% endblock title %}
+
+{% load static %}
+{% load humanize %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+    <style>
+        .input-percentage:after {
+            content: '%';
+            position: absolute;
+            top: 35%;
+            left: 86%;
+        }
+        input[type="file"] {
+            -webkit-appearance: listbox; }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">paid</i>
+                        </div>
+                        <h4 class="card-title">Reprocesar Comisiones</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="{% url 'rrhh-comisiones_reprocesar' %}" method="POST" name="frm_reprocesar_mes_actual" id="frm_reprocesar_mes_actual">
+                            <input type="hidden" name="mes" value="actual">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-sm-12 text-center">
+                                    <button type="button" class="btn btn-lg btn-outline-primary" onclick="dialogConfirm(()=>{document.frm_reprocesar_mes_actual.submit()}, false, '¿Estás seguro?', '¡Se cerrarán todas las comisiones que se mostraron al generar!')">
+                                        <i class="fad fa-sync-alt"></i>
+                                        Reprocesar Comisiones Abiertas del Mes Actual
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <form action="{% url 'rrhh-comisiones_reprocesar' %}" method="POST" name="frm_reprocesar_mes_anterior" id="frm_reprocesar_mes_anterior">
+                            <input type="hidden" name="mes" value="anterior">
+                            {% csrf_token %}
+                            <div class="row mt-5 mb-5">
+                                <div class="col-sm-12 text-center">
+                                    <button type="button" class="btn btn-outline-primary" onclick="dialogConfirm(()=>{document.frm_reprocesar_mes_anterior.submit()}, false, '¿Estás seguro?', '¡Se cerrarán todas las comisiones que se mostraron al generar!')">
+                                        <i class="fad fa-sync-alt"></i>
+                                        Reprocesar Comisiones Abiertas del Mes Anterior
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+

@@ -1,0 +1,139 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Facturación {% endblock title %}
+
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">task</i>
+                        </div>
+                        <h4 class="card-title">Enviar a firmar documento</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 text-right">
+                                <button class="btn btn-outline-success" type="button" onclick="simple_redireccion('{% url 'ventas-enviar_cola_fel' %}');">
+                                    <span class="material-icons">cloud_sync</span> Recargar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <table id="tblPorFacturar" style="width: 100%;" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Pedido</th>
+                                            <th>NIT Factura</th>
+                                            <th>Nombre Factura</th>
+                                            <th>Observaciones</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in reporte %}
+                                            <tr>
+                                                <td>{{ row.NoDocumento }}</td>
+                                                <td>{{ row.NoNit }}</td>
+                                                <td>{{ row.Nombre }}</td>
+                                                <td>{{ row.Observaciones }}</td>
+                                                <td class="text-center">
+                                                    <a class="fas fa-save fa-lg text-primary" style="cursor: pointer;" onclick="fntFel({{ row.NoCotizacion }}, {{ row.NoFactura }});" title="FEL" data-toggle="tooltip" data-placement="right"></a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        let strUrlImpresion = '{% url 'ventas-pedido_cotizacion_impresion' 0 'factura' %}';
+        const arrDataTables = [];
+
+        const arrTable = [];
+        arrTable["por_facturar"] =  "tblPorFacturar";
+
+        const valCSRF = getCookie('csrftoken');
+
+        function fntFel( id_cotizacion, int_factura ){
+            let strUrl = "{% url 'ventas-api_enviar_cola_fel' %}";
+
+            open_loading();
+            let formData = new FormData();
+            formData.append('cotizacion', id_cotizacion);
+            formData.append('csrfmiddlewaretoken', valCSRF);
+
+            fetch(strUrl, {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+
+                if (data.status) {
+                    printDocument(int_factura);
+                    alert_nova.showNotification("Factura firmada.", "add_alert", "success");
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 3000);
+                } else {
+                    alert_nova.showNotification("Error al firmar el documento: <br><br>" + data.message , "warning", "danger");
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 4000);
+                }
+
+                close_loading();
+            })
+            .catch(error => {
+                console.error(error)
+                close_loading();
+                alert_nova.showNotification("Error en comunicación, intente de nuevo. Si continua el error comuníquese con IT.", "warning", "danger");
+            })
+
+        }
+
+        const printDocument = (id) => {
+            const strUrl = strUrlImpresion.replace('/0/', `/${id}/`);
+            window.open(strUrl);
+        };
+
+        $(document).ready(function(){
+            $.fn.dataTable.ext.errMode = 'throw';
+
+            arrDataTables["tblPorFacturar"] = $("#tblPorFacturar").DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "Todos"]
+                ],
+                responsive: true,
+                language: objLenguajeDataTable,
+            });
+
+            arrDataTables["tblPorFacturar"].on( 'draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+
+        });
+
+    </script>
+
+{% endblock javascripts %}

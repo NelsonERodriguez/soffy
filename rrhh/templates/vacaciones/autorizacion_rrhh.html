@@ -1,0 +1,436 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block title %} Proceso de Vacaciones {% endblock title %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">calendar_month</i>
+                        </div>
+                        <h4 class="card-title">Proceso de Vacaciones</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="sltDepartamento">Departamento</label>
+                                <select class="form-control" name="sltDepartamento" id="sltDepartamento"
+                                        onchange="fntChangeDepto();">
+                                    <option value="0">Todos</option>
+                                    {% for departamento in departamentos %}
+                                        <option value="{{ departamento.id }}">{{ departamento.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <label for="sltEmpleado">Empleado</label>
+                                <select class="form-control" name="sltEmpleado" id="sltEmpleado"
+                                        onchange="fntGetEvents();">
+                                    <option value="0">Seleccione un empleado...</option>
+                                    {% for empleado in empleados_master %}
+                                        <option value="{{ empleado.empleado_id }}">{{ empleado.no_empleado }} - {{ empleado.nombre_completo }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-2 text-left">
+                                <label for="chkFinalizadas">Ver Finalizadas</label>
+                                <input type="checkbox" name="chkFinalizadas" id="chkFinalizadas" class="form-control" style="text-align: left;width: 20px;" onchange="fntGetEvents();">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 25px 0;">
+                            <div class="col-sm-12 table-responsive">
+                                <table id="tblConceptos" class="table table-striped" cellspacing="0"
+                                       width="100%">
+                                    <thead class="bg-black">
+                                        <tr>
+                                            <th>No. Empleado</th>
+                                            <th>Nombre</th>
+                                            <th>Departamento</th>
+                                            <th>Estatus</th>
+                                            <th>Fecha Inicio</th>
+                                            <th>Fecha Fin</th>
+                                            <th>Cantidad Días</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlVer" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de Solicitud</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12" id="divContentVer">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlRechazar" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Rechazar Solicitud</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <input type="text" id="txtMotivoRechazo" name="txtMotivoRechazo" placeholder="Mótivo del rechazo" class="form-control" maxlength="500">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="fntRechazar();">Rechazar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="{% static 'assets/js/plugins/fullcalendar-6.1.11/dist/index.global.js' %}"></script>
+
+    <script>
+
+        const strUrlGetListado = "{% url 'rrhh-vacaciones_autorizacion_rrhh_listado_solicitudes' %}",
+            strUrlGetEmpleados = "{% url 'rrhh-vacaciones_autorizacion_rrhh_get_empleados' %}",
+            strUrlImprimir = "{% url 'rrhh-vacaciones_autorizacion_rrhh_imprimir' 0 %}",
+            strUrlFinalizar = "{% url 'rrhh-vacaciones_autorizacion_rrhh_finalizar' %}",
+            strUrlVer = "{% url 'rrhh-vacaciones_autorizacion_rrhh_ver' %}",
+            strUrlRechazar = "{% url 'rrhh-vacaciones_autorizacion_rrhh_rechazar' %}",
+            strUrlImprimirConstancia = "{% url 'rrhh-vacaciones_autorizacion_rrhh_imprimir_constancia' 0 %}";
+        let objEventos;
+        let intAnioAnterior = 0;
+        let objTblListado = null;
+
+        const fntGetEvents = async () => {
+            const objFormData = new FormData();
+            let strDepartamento = document.getElementById("sltDepartamento").value,
+                strEmpleado = document.getElementById("sltEmpleado").value,
+                boolChecked = document.getElementById("chkFinalizadas").checked;
+
+            objFormData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+            objFormData.append('strDepartamento', strDepartamento);
+            objFormData.append('strEmpleado', strEmpleado);
+            objFormData.append('boolFinalizadas', (boolChecked) ? "1" : "0");
+
+            fntCleanTable();
+
+            let objInit = {
+                method: 'POST',
+                body: objFormData
+            };
+
+            open_loading();
+            await coreFetch(strUrlGetListado, objInit, (data) => {
+                objTblListado.rows.add(data.data).draw();
+                objTblListado.responsive.recalc();
+                objTblListado.columns.adjust();
+
+                $('[rel="tooltip"]').tooltip();
+
+                close_loading();
+            }, {boolShowSuccessAlert: false});
+        };
+
+        const fntCleanTable = () => {
+            if (objTblListado) {
+                $(".ui-tooltip").remove();
+                objTblListado.clear().draw();
+            }
+        }
+
+        const fntGetEmpleados = async () => {
+            const objFormData = new FormData();
+            let strDepartamento = document.getElementById("sltDepartamento").value,
+                objEmpleado = document.getElementById("sltEmpleado");
+
+            objFormData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+            objEmpleado.innerHTML = "";
+
+            let objAttrs = {
+                element: 'option',
+                value: '0',
+            };
+            let objOptionDefault = await createElement(objAttrs);
+            objOptionDefault.innerText = "Seleccione un empleado...";
+
+            objEmpleado.appendChild(objOptionDefault);
+
+            objFormData.append('strDepartamento', strDepartamento);
+
+            let objInit = {
+                method: 'POST',
+                body: objFormData
+            };
+
+            open_loading();
+            await coreFetch(strUrlGetEmpleados, objInit, (data) => {
+                let objOptionEmp;
+                if (data.data.empleados.length > 0) {
+                    data.data.empleados.forEach( async function(element) {
+                        objAttrs = {
+                            element: 'option',
+                            value: element.empleado_id,
+                        };
+                        objOptionEmp = await createElement(objAttrs);
+                        objOptionEmp.innerText = element.no_empleado + " - " + element.nombre_completo;
+                        objEmpleado.appendChild(objOptionEmp);
+                    });
+                }
+                close_loading();
+            });
+        };
+
+        const fntChangeDepto = async() => {
+            await fntGetEmpleados();
+            await fntGetEvents();
+        };
+
+        const fntImprimir = async(objButton) => {
+            let strUrl = strUrlImprimir;
+            strUrl = strUrl.replace("/0/", "/"+String(objButton.dataset.id)+"/")
+
+            window.open(strUrl);
+            setTimeout(() => {
+                fntGetEvents();
+            }, 2000)
+        }
+
+        const fntFinalizar = async(objButton) => {
+            const objFormData = new FormData();
+
+            objFormData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+            objFormData.append('intId', objButton.dataset.id);
+
+            let objInit = {
+                method: 'POST',
+                body: objFormData
+            };
+
+            open_loading();
+            await coreFetch(strUrlFinalizar, objInit, async (data) => {
+                await fntGetEvents();
+                close_loading();
+            });
+        }
+
+        const fntVer = async (objButton) => {
+            const objFormData = new FormData();
+
+            objFormData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+            objFormData.append('intId', objButton.dataset.id);
+
+            let objInit = {
+                method: 'POST',
+                body: objFormData
+            };
+
+            document.getElementById('divContentVer').innerHTML = "";
+
+            open_loading();
+            await coreFetch(strUrlVer, objInit, (data) => {
+                document.getElementById('divContentVer').innerHTML = data.data;
+
+                $("#mdlVer").modal("show");
+
+                let arrHistoricoVacaciones = data.historico_vacaciones;
+
+                let calendarEl = document.getElementById('divCalendar');
+                let objCalendar = new FullCalendar.Calendar(calendarEl, {
+                    locale: 'es',
+                    height: 800,
+                    initialView: mobileCheck() ? 'dayGridMonth' : 'multiMonthYear',
+                    selectable: true,
+                    events: arrHistoricoVacaciones,
+                    headerToolbar: {
+                        start: '',
+                        center: 'title',
+                        end: 'today prev next dayGridMonth multiMonthYear',
+                    },
+                    buttonText: {
+                        today: 'Hoy',
+                        month: 'Mes',
+                        year: 'Año',
+                    },
+                    weekends: false,
+                });
+                setTimeout(() => {
+                    objCalendar.render();
+                }, 200)
+
+                close_loading();
+            }, {boolShowSuccessAlert: false});
+        }
+
+        const fntConfirmarRechazar = async (objButton) => {
+            window.id_vacacion = objButton.dataset.id;
+            $("#mdlRechazar").modal("show");
+            document.getElementById("txtMotivoRechazo").focus();
+        }
+
+        const fntRechazar = async() => {
+            const objFormData = new FormData();
+            let strId = window.id_vacacion,
+            strMotivoRechazo = document.getElementById("txtMotivoRechazo").value;
+
+            if( strMotivoRechazo.trim() === "" ){
+                alert_nova.showNotification("El motivo del rechazo es obligatorio.", "warning", "danger");
+                return false;
+            }
+
+            objFormData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+            objFormData.append('intId', strId);
+            objFormData.append('strMotivoRechazo', strMotivoRechazo);
+
+            let objInit = {
+                method: 'POST',
+                body: objFormData
+            };
+
+            open_loading();
+            await coreFetch(strUrlRechazar, objInit, async (data) => {
+                $("#mdlRechazar").modal("hide");
+                document.getElementById("txtMotivoRechazo").value = "";
+                await fntGetEvents();
+                close_loading();
+            });
+        }
+
+        const fntImprimirConstancia = async(objButton) => {
+            let strUrl = strUrlImprimirConstancia;
+            strUrl = strUrl.replace("/0/", "/"+String(objButton.dataset.id)+"/")
+
+            window.open(strUrl);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            $("#sltDepartamento").select2();
+            $("#sltEmpleado").select2();
+            
+            objTblListado = $('#tblConceptos').DataTable({
+                data: [],
+                processing: true,
+                responsive: true,
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "Todos"]
+                ],
+                columns: [
+
+                    {data: 'no_empleado'},
+                    {data: 'nombre_completo'},
+                    {data: 'nombre_depto'},
+                    {data: 'estatus'},
+
+                    {
+                        data: 'fecha_inicio',
+                        "render": function ( data, type, row ) {
+                            if ( type === 'display' || type === 'filter' ) {
+                                let date = new Date(data);
+                                return dateGTFormat.format(date);
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        data: 'fecha_fin',
+                        "render": function ( data, type, row ) {
+                            if ( type === 'display' || type === 'filter' ) {
+                                let date = new Date(data);
+                                return dateGTFormat.format(date);
+                            }
+                            return data;
+                        }
+                    },
+                    {data: 'dias_solicitados'},
+                    {
+                        "defaultContent": '&nbsp;',
+                        orderable: false,
+                        "render": function ( data, type, row ) {
+                            if ( type === 'display' ) {
+                                let strContenido = '';
+                                if( row.estatus_id === 6 ) {
+                                    strContenido = `
+                                        <button type="button" class="btn btn-sm btn-outline-primary" href="#" onclick="fntImprimirConstancia(this);"
+                                            data-id="${row.id}" rel="tooltip" title="Imprimir Constancia" position="right">
+                                            <i class="fas fa-print"></i>
+                                        </button>
+                                    `;
+                                }
+                                else{
+                                    strContenido = `
+                                        <button type="button" class="btn btn-sm btn-outline-primary" href="#" onclick="fntVer(this);"
+                                            data-id="${row.id}" rel="tooltip" title="Ver Detalle" position="right">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    `;
+                                    if (row.estatus_id === 5) {
+                                        strContenido += `
+                                            <button type="button" class="btn btn-sm btn-outline-primary" href="#" onclick="fntFinalizar(this);"
+                                                data-id="${row.id}" rel="tooltip" title="Finalizar Solicitud" position="right">
+                                                <i class="fas fa-clipboard-list-check"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-primary" href="#" onclick="fntConfirmarRechazar(this);"
+                                                data-id="${row.id}" rel="tooltip" title="Rechazar Solicitud" position="right">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        `;
+                                    }
+                                }
+                                return strContenido;
+                            }
+                            return data;
+                        }
+
+                    },
+                ],
+                order: [[1, 'asc']],
+                dom: 'Blfrtip',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        className: 'btn-flat btn-aquadeep'
+                    },
+                ],
+                language: objLenguajeDataTable,
+            });
+
+            fntGetEvents();
+
+        });
+
+    </script>
+{% endblock javascripts %}

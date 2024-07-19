@@ -1,0 +1,113 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Solicitud de vacaciones {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+    <style>
+        .cursorPointer {
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">early_on</i>
+                        </div>
+                        <h4 class="card-title">Solicitud de vacaciones</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="alert alert-info alert-with-icon d-none d-sm-block" data-notify="container">
+                                    <i class="material-icons" data-notify="icon">notifications</i>
+                                    <span data-notify="icon" class="now-ui-icons ui-1_bell-53"></span>
+                                    <span data-notify="message">
+                                        Se te presenta el listado de la disponibilidad de días que tienes para poder solicitar vacaciones y a que periodo pertenecen.
+                                    </span>
+                                </div>
+                                <button class="btn btn-outline-info d-sm-none" type="button"
+                                        onclick="showInfoPeriodosMobile();">
+                                    <span class="material-icons">info</span> Información
+                                </button>
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Periodo</th>
+                                        <th>Disponible</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for periodos_disponible in periodos_disponibles %}
+                                        <tr>
+                                            <td>{{ periodos_disponible.Periodo }}</td>
+                                            <td>{{ periodos_disponible.DiasPendientes }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="alert alert-warning alert-with-icon d-none d-sm-block"
+                                     data-notify="container">
+                                    <i class="material-icons" data-notify="icon">notifications</i>
+                                    <span data-notify="icon" class="now-ui-icons ui-1_bell-53"></span>
+                                    <span data-notify="message">
+                                        En el calendario de abajo podrás seleccionar las fechas en las cuales deseas tomar vacaciones. <br>
+                                        Si te equivocaste al seleccionar alguna fecha, puedes quitarla dando clic a esta misma. <br>
+                                        No podrás seleccionar más de 15 días hábiles, 21 días consecutivos, tampoco puedes superar la cantidad de días disponibles.
+                                    </span>
+                                </div>
+                                <button class="btn btn-outline-warning d-sm-none" type="button"
+                                        onclick="showInfoCalendarioMobile();">
+                                    <span class="material-icons">info</span> Información
+                                </button>
+                                <br><br>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <button type="button" class="btn btn-outline-success" id="btnEnviar"
+                                        style="display: none;">
+                                    <span class="material-icons">send</span> Enviar solicitud
+                                </button>
+                                <br><br>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="divCalendar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const strUrlSaveSolicitud = '{% url 'rrhh-solicitud_vacaciones_calendar_save_solicitud_vacaciones' %}'
+        const arrHistoricoVacaciones = {{ historico_vacaciones|safe }};
+        const arrNuevas = {{ vacaciones_nuevas|safe }};
+        let arrPeriodosDisponibles = {{ periodos_disponibles|safe }};
+        const arrPeriodosDisponiblesBKP = {{ periodos_disponibles|safe }};
+        const intTotalDiasDisponibles = {{ total_dias_disponibles }};
+        const boolVacacionesNoFirmadas = {% if vacaciones_no_firmadas %}true{% else %}false{% endif %};
+    </script>
+    <script src="{% static 'assets/js/jspdf.umd.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/fullcalendar-6.1.11/dist/index.global.js' %}"></script>
+    <script src="{% static 'modules/rrhh/solicitud_vacaciones/solicitud_vacaciones.js' %}"></script>
+{% endblock javascripts %}

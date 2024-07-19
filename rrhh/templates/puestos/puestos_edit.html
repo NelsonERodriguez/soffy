@@ -1,0 +1,92 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Puesto {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <form action="{% url 'rrhh-puestos_edit' form.id %}" method="POST" name="frm_puesto">
+                    {% csrf_token %}
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">account_tree</i>
+                            </div>
+                            <h4 class="card-title">Puesto</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group {% if form.nombre.errors %}has-danger{% endif %}">
+                                        <label for="nombre" class="bmd-label-floating">Nombre del puesto</label>
+                                        <input type="text" class="form-control {% if form.nombre.errors %}is-invalid{% endif %}" id="nombre" name="nombre" value="{% if form.nombre %}{{ form.nombre }}{% endif %}">
+                                        <div class="invalid-feedback">
+                                            {% for error in form.nombre.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group">
+                                        <select name="departamento" id="departamento" class="form-control {% if form.departamento.errors %}is-invalid{% endif %}">
+                                            <option value="0">Nombre del departamento</option>
+                                            {% for departamento in departamentos %}
+                                                <option value="{{ departamento.id }}" {% if departamento.id == form.departamento_id %} selected {% endif %}>{{ departamento.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.departamento.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-check {% if form.activo.errors %}has-danger{% endif %}">
+                                        <label class="form-check-label">Activo
+                                            <input class="form-check-input {% if form.activo.errors %}is-invalid{% endif %}" type="checkbox" id="activo" name="activo" {% if form.activo %}checked{% endif %}>
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.activo.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-fill btn-outline-success" id="btnSave">
+                                    <span class="material-icons">save</span>
+                                    Actualizar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}  
+    <script>
+        const btnSave = document.getElementById('btnSave');
+        if (btnSave) {
+            btnSave.addEventListener('click', () => {
+                dialogConfirm(simple_submit, 'frm_puesto')
+            });
+        }
+    </script>
+{% endblock javascripts %}

@@ -1,0 +1,101 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Aprobación de permiso {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">event_busy</i>
+                        </div>
+                        <h4 class="card-title">Aprobación de permiso</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table" id="tablePermisos">
+                                    <thead>
+                                    <tr>
+                                        <th>Empleado</th>
+                                        <th>Razón</th>
+                                        <!--th>Fecha solicitud</th-->
+                                        <th>De</th>
+                                        <th>Hasta</th>
+                                        <th>Observación</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for permiso in permisos %}
+                                        <tr>
+                                            <td>{{ permiso.name }}</td>
+                                            <td>{{ permiso.tipo }}</td>
+                                            <!--td>{{ permiso.fecha_solicitud|date:"d/m/Y" }}</td-->
+                                            <td>{{ permiso.fecha_inicio|date:"d/m/Y H:i" }}</td>
+                                            <td>{{ permiso.fecha_fin|date:"d/m/Y H:i" }}</td>
+                                            <td>{{ permiso.observacion }}</td>
+                                            <td style="text-align: center;">
+                                                <button class="btn btn-outline-success" type="button" name="btn-outline-success" value="{{ permiso.id }}"
+                                                        onclick="dialogConfirm(aprobarSolicitud, {{ permiso.id }})">
+                                                    <span class="material-icons">check</span> Aceptar
+                                                </button>
+                                                <button class="btn btn-outline-danger" onclick="openDialog({{ permiso.id }});">
+                                                    <span class="material-icons">cancel</span> Rechazar
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalPermiso" tabindex="-1" role="dialog" aria-labelledby="modalPermiso"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content modalContainerPermiso">
+                <div class="modal-header" style='height: 80px;'>
+                    <button type="button" class="close" id="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body" id="cntBodyPermiso">
+                    <div class="row">
+                        <div class="col-12">
+                            <input type="hidden" name="permiso_id" id="permiso_id">
+                            <label for="observacion">Motivo rechazo</label>
+                            <textarea name="observacion" id="observacion" cols="30" rows="3" style="height: auto"
+                                      class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-success" type="button" id="btnRechazado" onclick="dialogConfirm(rechazarSolicitud);">
+                        <span class="material-icons">save</span> Enviar rechazo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const strAprobarPermiso = "{% url 'rrhh-permisos_aprobar_aprobar_permiso' %}",
+            strRechazarPermiso = "{% url 'rrhh-permisos_aprobar_rechazar_permiso' %}";
+    </script>
+    <script src="{% static 'modules/rrhh/permisos_aprobar/permisos_aprobar.js' %}" async defer></script>
+{% endblock javascripts %}

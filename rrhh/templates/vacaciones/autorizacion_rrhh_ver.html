@@ -1,0 +1,49 @@
+{% load static %}
+
+<div class="row" style="margin-top: 35px;">
+    <div class="col-sm-6">
+        <div style="text-align: center; font-weight: bold;"><h4>Detalle de solicitud</h4></div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Inicia</th>
+                <th>Finaliza</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for vacacion in historico_vacaciones %}
+                <tr>
+                    <td>{{ vacacion.fecha_inicio }}</td>
+                    <td>{{ vacacion.fecha_fin }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="col-sm-6">
+        <div style="text-align: center; font-weight: bold;"><h4>Periodos de vacaciones del
+            empleado</h4></div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Periodo</th>
+                <th>Disponible</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for periodos_disponible in periodos_disponibles %}
+                <tr>
+                    <td>{{ periodos_disponible.Periodo }}</td>
+                    <td>{{ periodos_disponible.DiasPendientes }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row" style="margin-top: 35px;">
+    <div class="col-12">
+        <h4>Visualización de solicitud</h4>
+        <div id="divCalendar" style="height: 800px;" height="800px"></div>
+    </div>
+</div>

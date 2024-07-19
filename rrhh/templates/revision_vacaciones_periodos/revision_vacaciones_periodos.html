@@ -1,0 +1,51 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block title %} Disponibilidad de vacaciones {% endblock title %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">manage_search</i>
+                        </div>
+                        <h4 class="card-title">Disponibilidad de vacaciones</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" style="margin: 25px 0;">
+                            <div class="col-4">
+                                <label for="user" style="font-weight: bold;">Empleado</label>
+                                <input type="text" name="user" id="user" class="form-control">
+                                <input type="hidden" name="user_id" id="user_id">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 25px 0;">
+                            <div class="col-12">
+                                <div id="contenido"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const strUrlGetUsers = "{% url 'rrhh-revision_vacaciones_periodos_get_users' %}",
+            strUrlGetPeriodos = "{% url 'rrhh-revision_vacaciones_periodos_get_periodos' %}";
+    </script>
+    <script src="{% static 'assets/js/core/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'modules/rrhh/revision_vacaciones_periodos/revision_vacaciones_periodos.js' %}" async defer></script>
+{% endblock javascripts %}

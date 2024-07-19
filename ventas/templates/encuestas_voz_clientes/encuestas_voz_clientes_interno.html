@@ -1,0 +1,516 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Voz del Cliente {% endblock title %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/static/assets/css/jquery-ui.min.css">
+    <style>
+    @media screen and (min-width: 576px) {
+        table.table-responsive {
+            display: inline-table;
+        }
+    }
+    .ui-front {
+        z-index: 1060;
+    }
+    .required:after {
+        content:" *";
+        color:red;
+    }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">question_answer</i>
+                        </div>
+                        <h4 class="card-title">Voz del Cliente</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row justify-content-center">
+                            <div class="col-12">
+                                <form method="post" action="{% url 'ventas-encuestas_voz_clientes_save_interno' %}" class="form-horizontal" id="frmEncuesta">
+                                {% csrf_token %}
+                                <div class="card">
+                                    <img src="/static/assets/img/logo_vertical.jpg" class="card-img-top" alt="No se puedo cargar la imagen">
+                                </div>
+                                <div class="card">
+                                    <h5 class="card-header"><b>Voz del Cliente: Nivel de Servicio</b></h5>
+                                    <div class="card-body">
+                                        Evaluar la calidad del servicio al cliente en términos de atención, frecuencia y OTIF.
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row justify-content-center">
+                                            <div class="col-2 text-center">
+                                                <i class="far fa-smile-beam fa-7x" style="color: #066434;"></i>
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                <i class="far fa-smile fa-7x" style="color: #36b749;"></i>
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                <i class="far fa-meh fa-7x" style="color: #f59321;"></i>
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                <i class="far fa-frown fa-7x" style="color: #f45b1d;"></i>
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                <i class="far fa-angry fa-7x" style="color: #cf3b0b;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <h5 class="card-header required"><b>Nit del Cliente</b></h5>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" name="txtNitCliente" id="txtNitCliente" placeholder="Nit del Cliente" required="true">
+                                                    <input type="hidden" name="hdnNoCliente" id="hdnNoCliente">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" id="txtNombreCliente" placeholder="Nombre del Cliente" value="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <h5 class="card-header required"><b>Nombre del Vendedor</b></h5>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" name="txtNombreVendedor" id="txtNombreVendedor" placeholder="Nombre del Vendedor" readonly="readonly">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <h5 class="card-header required"><b>Teléfono</b></h5>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" name="txtTelefono" id="txtTelefono" placeholder="Teléfono" required="true">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <h5 class="card-header required"><b>1- ¿Cómo evalúa el servicio que le brinda el vendedor que le atiende? Nota: no se evalúa "que tan bien me cae, sino qué tan profesional es su servicio"</b></h5>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col checkbox-radios">
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaEvaluarServicio" value="MALO"> Malo
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaEvaluarServicio" value="REGULAR"> Regular
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaEvaluarServicio" value="MUY_BUENO"> Muy Bueno
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaEvaluarServicio" value="EXCELENTE"> Excelente
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <h5 class="card-header required"><b>2- ¿Cómo se comunica el vendedor con usted?</b></h5>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col checkbox-radios">
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaComunicaVendedor" value="TELEFONICAMENTE"> Telefónicamente
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaComunicaVendedor" value="PERSONALMENTE"> Personalmente
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaComunicaVendedor" value="WHATSAPP"> WhatsApp
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaComunicaVendedor" value="OTRO"> Otro
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                    <input class="form-control" type="text" name="txtPreguntaComunicaVendedor" id="txtPreguntaComunicaVendedor" value="" placeholder="Otro" readonly="readonly">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <h5 class="card-header required"><b>3- Al realizar su pedido...</b></h5>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col checkbox-radios">
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaRealizarPedido" value="VENDEDOR_LLAMA"> Vendedor le llama
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaRealizarPedido" value="USTED_LLAMA"> Usted llama al vendedor
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <h5 class="card-header required"><b>4- ¿Cuál es el método preferido para programar los pedidos?</b></h5>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col checkbox-radios">
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaMetodoPedido" value="TELEFONO"> Teléfono
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaMetodoPedido" value="VISITA"> Visita
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaMetodoPedido" value="OTRO"> Otro
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                    <input class="form-control" type="text" name="txtPreguntaMetodoPedido" id="txtPreguntaMetodoPedido" value="" placeholder="Otro" readonly="readonly">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <h5 class="card-header required"><b>5- ¿Le ofrece el vendedor toda la gama de productos?</b></h5>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col checkbox-radios">
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaOfreceVendedor" value="SI"> Si
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaOfreceVendedor" value="NO"> No
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <h5 class="card-header required"><b>6- Cuando hay cambios de precio, el vendedor le avisa con tiempo o hasta que usted hace pedido?</b></h5>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col checkbox-radios">
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaCambioPrecio" value="SI"> Si
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaCambioPrecio" value="NO"> No
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <h5 class="card-header required"><b>7- ¿Cada cuántos días los visita el vendedor que lo atiende?</b></h5>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col checkbox-radios">
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaVisitaVendedor" value="SEMANAL"> Semanal
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaVisitaVendedor" value="QUINCENAL"> Quincenal
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaVisitaVendedor" value="MENSUAL"> Mensual
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaVisitaVendedor" value="DOS_MESES"> Cada 2 meses
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="chkPreguntaVisitaVendedor" value="NUNCA"> Nunca
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <h5 class="card-header "><b>8- Comentarios</b></h5>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <input class="form-control" type="text" name="txtComentarios" value="" placeholder="Comentarios">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-center">
+                                        <button class="btn btn-primary" type="submit">Guardar</button>
+                                    </div>
+                                </div>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+<script src="/static/assets/js/core/jquery-ui.min.js"></script>
+
+<script>
+    const valCSRF = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
+    function setFormValidation(id) {
+        $(id).validate({
+            highlight: function(element) {
+                $(element).closest('.form-group').removeClass('has-success').addClass('has-danger');
+                $(element).closest('.form-check').removeClass('has-success').addClass('has-danger');
+            },
+            success: function(element) {
+                $(element).closest('.form-group').removeClass('has-danger').addClass('has-success');
+                $(element).closest('.form-check').removeClass('has-danger').addClass('has-success');
+            },
+            errorPlacement: function(error, element) {
+                $(element).closest('.form-group').append(error);
+            },
+        });
+    }
+
+    function fntAccionRadio( strNombre ){
+        $("input[name^='"+strNombre+"']").click(function(){
+            let strName = $(this).attr("name");
+            let strValue = $("input[name='"+strName+"']:checked").val();
+
+            let strInput = strName.replace('chk','txt');
+
+            console.log(strValue);
+            if( strValue == "OTRO" ){
+                $("#"+strInput).attr("readonly",false);
+            }
+            else{
+                $("#"+strInput).attr("readonly",true);
+            }
+        });
+    }
+
+    function fntBuscarCliente(){
+        let strUrl = "{% url 'ventas-encuestas_voz_clientes_buscar_cliente' %}";
+        let strNitCliente = document.getElementById("txtNitCliente").value
+
+        open_loading();
+        let formData = new FormData();
+        formData.append('strNitCliente', strNitCliente);
+        formData.append('csrfmiddlewaretoken', valCSRF);
+
+        fetch(strUrl, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data[0].status){
+                document.getElementById("txtNombreCliente").value = data[0].cliente.Nombre
+                document.getElementById("hdnNoCliente").value = data[0].cliente.NoCliente
+                document.getElementById("txtNombreVendedor").value = data[0].cliente.NombreVendedor
+                document.getElementById("txtTelefono").value = data[0].cliente.Telefono
+
+                alert_nova.showNotification(`${data[0].msj}`, "add_alert", "success");
+            }
+            else{
+                alert_nova.showNotification(`${data[0].msj}`, "warning", "danger");
+            }
+            close_loading();
+        })
+        .catch(error => {
+            close_loading();
+        })
+    }
+
+    $(document).ready(function() {
+        setFormValidation('#frmEncuesta');
+
+        fntAccionRadio("chkPreguntaComunicaVendedor");
+        fntAccionRadio("chkPreguntaMetodoPedido");
+
+        $("#txtNitCliente").change(function(){
+            fntBuscarCliente();
+        });
+        
+        $( "#txtNombreCliente" ).autocomplete({
+            minLength: 1,
+            source: function( request, response ) {
+                open_loading();
+                let strUrl = "{% url 'ventas-encuestas_voz_clientes_get_clientes' 'search' %}";
+                strUrl = strUrl.replace('search', request.term);
+                const data = new FormData();
+                data.append('csrfmiddlewaretoken', valCSRF);
+
+                fetch(strUrl, {
+                    method: 'POST',
+                    body: data,
+                })
+                .then(response => response.json())
+                .then( (data) => {
+                    close_loading();
+                    response($.map(data, function (item) {
+                        return {
+                            label: item.name,
+                            value: item.name,
+                            nit: item.nit,
+                            telefono: item.telefono,
+                            nombreVendedor: item.nombreVendedor,
+                            id: item.id
+                        }
+                    }))
+                })
+                .catch((error) => {
+                    close_loading();
+                });
+            },
+            select: function( event, ui ) {
+                event.preventDefault();
+                document.getElementById('hdnNoCliente').value = ui.item.id;
+                document.getElementById('txtNitCliente').value = ui.item.nit;
+                document.getElementById('txtTelefono').value = ui.item.telefono;
+                document.getElementById('txtNombreVendedor').value = ui.item.nombreVendedor;
+                this.value = ui.item.label;
+
+                $("#txtTelefono").focus();
+                //location = window.location+"#divGrande"
+            }
+        }).focus(function () {
+            $(this).val('');
+            document.getElementById('hdnNoCliente').value = '';
+            document.getElementById('txtNitCliente').value = '';
+            document.getElementById('txtTelefono').value = '';
+            document.getElementById('txtNombreVendedor').value = '';
+        });
+    });
+</script>
+
+{% endblock javascripts %}

@@ -1,0 +1,821 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Empresas {% endblock title %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Empresas</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <div class="row">
+                                <div class="col-12 text-right">
+                                    <button type="button" class="btn btn-outline-danger"
+                                            onclick="simple_redireccion('{% url 'mantenimiento-empresas' %}');">
+                                        <span class="material-icons">arrow_back</span> Regresar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <form action="{% url 'mantenimiento-empresas_create' %}" method="POST" name="frm_save">
+                            {% csrf_token %}
+                            
+                            
+                            <div class="row">
+                                <div class="col-12">
+                                    <ul class="nav nav-pills nav-pills-icons" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="tab" href="#link1" role="tablist">Datos Empresa</a>
+                                            
+                                        </li>
+                                      <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link2" role="tablist">Finanzas</a>
+                                        </li>
+                                          <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link3" role="tablist">Parametros Fel</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link4" role="tablist">Parametros Contables</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link5" role="tablist">Parametros de Importacion</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link6" role="tablist">Parametros Corte de Caja</a>
+                                        </li>
+
+                                        <!-- Campos para datos de empresa -->
+                                    </ul>
+                                    <div class="tab-content tab-space">
+                                        <div class="tab-pane active" id="link1">
+                                            <div class="row">
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.nombre.errors %}has-danger{% endif %}">
+                                                       
+                                                        <label for="nombreempresa" class="bmd-label-floating">Nombre Comercial</label>
+                                                        <input type="text" class="form-control {% if form.nombreempresa.errors %}is-invalid{% endif %}" id="nombreempresa" name="nombreempresa" value="{% if form.nombreempresa.value %}{{ form.nombreempresa.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.nombreempresa.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.direccion.errors %}has-danger{% endif %}">
+                                                        <label for="direccion" class="bmd-label-floating">Direccion Comercial</label>
+                                                        <input type="text" class="form-control {% if form.direccion.errors %}is-invalid{% endif %}" id="direccion" name="direccion" value="{% if form.direccion.value %}{{ form.direccion.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.direccion.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.razonsocial.errors %}has-danger{% endif %}">
+                                                        
+                                                        <label for="razonsocial" class="bmd-label-floating">Razon Social</label>
+                                                        <input type="text" class="form-control {% if form.razonsocial.errors %}is-invalid{% endif %}" id="razonsocial" name="razonsocial" value="{% if form.razonsocial.value %}{{ form.razonsocial.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.razonsocial.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.dirsocial.errors %}has-danger{% endif %}">
+                                                        
+                                                        <label for="dirsocial" class="bmd-label-floating">Direccion Social</label>
+                                                        <input type="text" class="form-control {% if form.dirsocial.errors %}is-invalid{% endif %}" id="dirsocial" name="dirsocial" value="{% if form.dirsocial.value %}{{ form.dirsocial.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.dirsocial.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.telefono.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="nombre" class="bmd-label-floating">Telefono</label>
+                                                        <input type="text" class="form-control {% if form.telefono.errors %}is-invalid{% endif %}" id="telefono" name="telefono" value="{% if form.telefono.value %}{{ form.telefono.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.telefono.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>    
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.nitempresa.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="nitempresa" class="bmd-label-floating">Nit empresa</label>
+                                                        <input type="text" class="form-control {% if form.nitempresa.errors %}is-invalid{% endif %}" id="nitempresa" name="nitempresa" value="{% if form.nitempresa.value %}{{ form.nitempresa.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.nitempresa.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.cloud.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="cloud" class="bmd-label-floating">Cloud</label>
+                                                        <input type="text" class="form-control {% if form.cloud.errors %}is-invalid{% endif %}" id="cloud" name="cloud" value="{% if form.cloud.value %}{{ form.cloud.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.cloud.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.usarlector.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="usarlector" class="bmd-label-floating">Lector de Barras</label>
+                                                        <input type="text" class="form-control {% if form.usarlector.errors %}is-invalid{% endif %}" id="usarlector" name="usarlector" value="{% if form.usarlector.value %}{{ form.usarlector.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.usarlector.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.rolempresa.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="rolempresa" class="bmd-label-floating">Rol Empresa</label>
+                                                        <input type="text" class="form-control {% if form.rolempresa.errors %}is-invalid{% endif %}" id="rolempresa" name="rolempresa" value="{% if form.rolempresa.value %}{{ form.rolempresa.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.rolempresa.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.manejainv.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="manejainv" class="bmd-label-floating">Maneja Inventario</label>
+                                                        <input type="text" class="form-control {% if form.manejainv.errors %}is-invalid{% endif %}" id="manejainv" name="manejainv" value="{% if form.manejainv.value %}{{ form.manejainv.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.manejainv.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.preciomanual.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="preciomanual" class="bmd-label-floating">Precio Manual</label>
+                                                        <input type="text" class="form-control {% if form.preciomanual.errors %}is-invalid{% endif %}" id="preciomanual" name="preciomanual" value="{% if form.preciomanual.value %}{{ form.preciomanual.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.preciomanual.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.metodoimporta.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="metodoimporta" class="bmd-label-floating">Modulo Contable</label>
+                                                        <input type="text" class="form-control {% if form.metodoimporta.errors %}is-invalid{% endif %}" id="metodoimporta" name="metodoimporta" value="{% if form.metodoimporta.value %}{{ form.metodoimporta.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.metodoimporta.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.codexport.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="codexport" class="bmd-label-floating">Codigo Exportador</label>
+                                                        <input type="text" class="form-control {% if form.codexport.errors %}is-invalid{% endif %}" id="codexport" name="codexport" value="{% if form.codexport.value %}{{ form.codexport.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.codexport.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.logo.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="logo" class="bmd-label-floating">Logo</label>
+                                                        <input type="text" class="form-control {% if form.logo.errors %}is-invalid{% endif %}" id="logo" name="logo" value="{% if form.logo.value %}{{ form.logo.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.logo.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="link2">
+                                            <div class="row"> 
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctaclientes.errors %}has-danger{% endif %}">
+                                                       
+                                                        <label for="ctaclientes" class="bmd-label-floating">Cuentas Clientes</label>
+                                                        <input type="text" class="form-control {% if form.ctaclientes.errors %}is-invalid{% endif %}" id="ctaclientes" name="ctaclientes" value="{% if form.ctaclientes.value %}{{ form.ctaclientes.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctaclientes.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.tasausd.errors %}has-danger{% endif %}">
+                                                        <label for="tasausd" class="bmd-label-floating">Tipo USD</label>
+                                                        <input type="text" class="form-control {% if form.tasausd.errors %}is-invalid{% endif %}" id="tasausd" name="tasausd" value="{% if form.tasausd.value %}{{ form.tasausd.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.tasausd.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ivatasa.errors %}has-danger{% endif %}">
+                                                        
+                                                        <label for="ivatasa" class="bmd-label-floating">Iva Tasa</label>
+                                                        <input type="text" class="form-control {% if form.ivatasa.errors %}is-invalid{% endif %}" id="ivatasa" name="ivatasa" value="{% if form.ivatasa.value %}{{ form.ivatasa.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ivatasa.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.agretiva.errors %}has-danger{% endif %}">
+                                                        
+                                                        <label for="agretiva" class="bmd-label-floating">Agente Retenedor Iva</label>
+                                                        <input type="text" class="form-control {% if form.agretiva.errors %}is-invalid{% endif %}" id="agretiva" name="agretiva" value="{% if form.agretiva.value %}{{ form.agretiva.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.agretiva.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctaivaxpag.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="ctaivaxpag" class="bmd-label-floating">Cuenta Iva *rev</label>
+                                                        <input type="text" class="form-control {% if form.ctaivaxpag.errors %}is-invalid{% endif %}" id="ctaivaxpag" name="ctaivaxpag" value="{% if form.ctaivaxpag.value %}{{ form.ctaivaxpag.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctaivaxpag.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>    
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctaret.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="ctaret" class="bmd-label-floating">Cuenta Retencion</label>
+                                                        <input type="text" class="form-control {% if form.ctaret.errors %}is-invalid{% endif %}" id="ctaret" name="ctaret" value="{% if form.ctaret.value %}{{ form.ctaret.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctaret.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctacxp.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="ctacxp" class="bmd-label-floating">Cuenta por Pagar</label>
+                                                        <input type="text" class="form-control {% if form.ctacxp.errors %}is-invalid{% endif %}" id="cloud" name="cloud" value="{% if form.ctacxp.value %}{{ form.ctacxp.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctacxp.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctaxliq.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="ctaxliq" class="bmd-label-floating">Cuenta por Liquidar</label>
+                                                        <input type="text" class="form-control {% if form.ctaxliq.errors %}is-invalid{% endif %}" id="ctaxliq" name="ctaxliq" value="{% if form.ctaxliq.value %}{{ form.ctaxliq.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctaxliq.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctaivaxpag.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="ctaivaxpag" class="bmd-label-floating">Cuenta Iva por Pagar</label>
+                                                        <input type="text" class="form-control {% if form.ctaivaxpag.errors %}is-invalid{% endif %}" id="ctaivaxpag" name="ctaivaxpag" value="{% if form.ctaivaxpag.value %}{{ form.ctaivaxpag.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctaivaxpag.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctaexec.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="ctaexec" class="bmd-label-floating"> Cuenta Exencion</label>
+                                                        <input type="text" class="form-control {% if form.ctaexec.errors %}is-invalid{% endif %}" id="ctaexec" name="ctaexec" value="{% if form.ctaexec.value %}{{ form.ctaexec.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctaexec.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctautilidades.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="ctautilidades" class="bmd-label-floating">Cuenta Utilidades</label>
+                                                        <input type="text" class="form-control {% if form.ctautilidades.errors %}is-invalid{% endif %}" id="ctautilidades" name="ctautilidades" value="{% if form.ctautilidades.value %}{{ form.ctautilidades.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctautilidades.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctaperdidas.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="ctaperdidas" class="bmd-label-floating">Cuenta Perdidas </label>
+                                                        <input type="text" class="form-control {% if form.ctaperdidas.errors %}is-invalid{% endif %}" id="ctaperdidas" name="ctaperdidas" value="{% if form.ctaperdidas.value %}{{ form.ctaperdidas.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctaperdidas.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctaperygan.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="ctaperygan" class="bmd-label-floating">Cta Perdidas y Ganacias</label>
+                                                        <input type="text" class="form-control {% if form.ctaperygan.errors %}is-invalid{% endif %}" id="ctaperygan" name="ctaperygan" value="{% if form.ctaperygan.value %}{{ form.ctaperygan.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctaperygan.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctaivaogtr.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="logo" class="bmd-label-floating">Cuenta de IDP y otros Impuestos</label>
+                                                        <input type="text" class="form-control {% if form.ctaivaogtr.errors %}is-invalid{% endif %}" id="ctaivaogtr" name="ctaivaogtr" value="{% if form.ctaivaogtr.value %}{{ form.ctaivaogtr.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctaivaogtr.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                            
+                                            
+                                        </div>
+                                        <div class="tab-pane" id="link3">
+                                            <div class="row">
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.usafel.errors %}has-danger{% endif %}">
+                                                       
+                                                        <label for="usafel" class="bmd-label-floating">Usa Fel</label>
+                                                        <input type="text" class="form-control {% if form.usafel.errors %}is-invalid{% endif %}" id="usafel" name="usafel" value="{% if form.usafel.value %}{{ form.usafel.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.nombreempresa.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.noestable.errors %}has-danger{% endif %}">
+                                                        <label for="noestable" class="bmd-label-floating"> No Establecimiento</label>
+                                                        <input type="text" class="form-control {% if form.noestable.errors %}is-invalid{% endif %}" id="noestable" name="noestable" value="{% if form.noestable.value %}{{ form.noestable.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.noestable.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.tipodocto.errors %}has-danger{% endif %}">
+                                                        
+                                                        <label for="tipodocto" class="bmd-label-floating">Tipo Documento </label>
+                                                        <input type="text" class="form-control {% if form.tipodocto.errors %}is-invalid{% endif %}" id="tipodocto" name="tipodocto" value="{% if form.tipodocto.value %}{{ form.tipodocto.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.tipodocto.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.regimen.errors %}has-danger{% endif %}">
+                                                        
+                                                        <label for="regimen" class="bmd-label-floating">Regimen</label>
+                                                        <input type="text" class="form-control {% if form.regimen.errors %}is-invalid{% endif %}" id="regimen" name="regimen" value="{% if form.regimen.value %}{{ form.regimen.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.regimen.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.correoemisor.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="correoemisor" class="bmd-label-floating">Correo Emisor</label>
+                                                        <input type="text" class="form-control {% if form.correoemisor.errors %}is-invalid{% endif %}" id="correoemisor" name="correoemisor" value="{% if form.correoemisor.value %}{{ form.correoemisor.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.correoemisor.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>    
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.postal.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="postal" class="bmd-label-floating">Postal</label>
+                                                        <input type="text" class="form-control {% if form.postal.errors %}is-invalid{% endif %}" id="postal" name="postal" value="{% if form.postal.value %}{{ form.postal.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.postal.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.pais.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="pais" class="bmd-label-floating">Pais</label>
+                                                        <input type="text" class="form-control {% if form.pais.errors %}is-invalid{% endif %}" id="pais" name="pais" value="{% if form.pais.value %}{{ form.pais.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.pais.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.departamento.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="departamento" class="bmd-label-floating">Departamento</label>
+                                                        <input type="text" class="form-control {% if form.departamento.errors %}is-invalid{% endif %}" id="departamento" name="departamento" value="{% if form.departamento.value %}{{ form.departamento.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.departamento.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.municipio.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="municipio" class="bmd-label-floating">Municipio</label>
+                                                        <input type="text" class="form-control {% if form.municipio.errors %}is-invalid{% endif %}" id="municipio" name="municipio" value="{% if form.municipio.value %}{{ form.municipio.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.municipio.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctaretiva.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="ctaretiva" class="bmd-label-floating">Cta Ret Iva</label>
+                                                        <input type="text" class="form-control {% if form.ctaretiva.errors %}is-invalid{% endif %}" id="ctaretiva" name="ctaretiva" value="{% if form.ctaretiva.value %}{{ form.ctaretiva.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctaretiva.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.lineafac.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="lineafac" class="bmd-label-floating">Lineas por Factura</label>
+                                                        <input type="text" class="form-control {% if form.lineafac.errors %}is-invalid{% endif %}" id="lineafac" name="lineafac" value="{% if form.lineafac.value %}{{ form.lineafac.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.lineafac.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.descripcion.errors %}has-danger{% endif %}">
+                                                    
+                                                        <label for="descripcion" class="bmd-label-floating">Descripcion Factura</label>
+                                                        <input type="text" class="form-control {% if form.descripcion.errors %}is-invalid{% endif %}" id="descripcion" name="descripcion" value="{% if form.descripcion.value %}{{ form.descripcion.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.descripcion.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="link4">
+                                            <div class="row">
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.replegal.errors %}has-danger{% endif %}">
+                                                       
+                                                        <label for="replegal" class="bmd-label-floating">Representate Legal</label>
+                                                        <input type="text" class="form-control {% if form.replegal.errors %}is-invalid{% endif %}" id="replegal" name="replegal" value="{% if form.replegal.value %}{{ form.replegal.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.replegal.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.contadorgeneral.errors %}has-danger{% endif %}">
+                                                        <label for="contadorgeneral" class="bmd-label-floating"> Contador General</label>
+                                                        <input type="text" class="form-control {% if form.contadorgeneral.errors %}is-invalid{% endif %}" id="contadorgeneral" name="contadorgeneral" value="{% if form.contadorgeneral.value %}{{ form.contadorgeneral.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.contadorgeneral.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.certificacion.errors %}has-danger{% endif %}">
+                                                        
+                                                        <label for="certificacion" class="bmd-label-floating">Certificacion </label>
+                                                        <input type="text" class="form-control {% if form.certificacion.errors %}is-invalid{% endif %}" id="certificacion" name="certificacion" value="{% if form.certificacion.value %}{{ form.certificacion.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.certificacion.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="link5">
+                                            <div class="row">
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctaivapgtr.errors %}has-danger{% endif %}">
+                                                       
+                                                        <label for="ctaivapgtr" class="bmd-label-floating">Cuenta Iva por Pagar Transitoria</label>
+                                                        <input type="text" class="form-control {% if form.ctaivapgtr.errors %}is-invalid{% endif %}" id="ctaivapgtr" name="ctaivapgtr" value="{% if form.ctaivapgtr.value %}{{ form.ctaivapgtr.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctaivapgtr.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctaivagasto.errors %}has-danger{% endif %}">
+                                                        <label for="ctaivagasto" class="bmd-label-floating">Cuenta Iva gasto</label>
+                                                        <input type="text" class="form-control {% if form.ctaivagasto.errors %}is-invalid{% endif %}" id="ctaivagasto" name="ctaivagasto" value="{% if form.ctaivagasto.value %}{{ form.ctaivagasto.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctaivagasto.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                
+                                                <!-- <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.metodoimporta.errors %}has-danger{% endif %}">
+                                                        
+                                                        <label for="metodoimporta" class="bmd-label-floating">Metodo Prorrateo </label>
+                                                        <input type="text" class="form-control {% if form.metodoimporta.errors %}is-invalid{% endif %}" id="metodoimporta" name="metodoimporta" value="{% if form.metodoimporta.value %}{{ form.metodoimporta.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.metodoimporta.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.metodoimporta.errors %}has-danger{% endif %}">
+                                                        
+                                                        <label for="metodoimporta" class="bmd-label-floating">Metodo Prorrateo </label>
+                                                        <input type="text" class="form-control {% if form.metodoimporta.errors %}is-invalid{% endif %}" id="metodoimporta" name="metodoimporta" value="{% if form.metodoimporta.value %}{{ form.metodoimporta.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.metodoimporta.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.idbodega.errors %}has-danger{% endif %}">
+                                                        
+                                                        <label for="idbodega" class="bmd-label-floating">Bodega Transitoria</label>
+                                                        <input type="text" class="form-control {% if form.idbodega.errors %}is-invalid{% endif %}" id="idbodega" name="idbodega" value="{% if form.idbodega.value %}{{ form.idbodega.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.idbodega.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.idbodega2.errors %}has-danger{% endif %}">
+                                                        
+                                                        <label for="idbodega2" class="bmd-label-floating">Bodega Destino</label>
+                                                        <input type="text" class="form-control {% if form.idbodega2.errors %}is-invalid{% endif %}" id="idbodega2" name="idbodega2" value="{% if form.idbodega2.value %}{{ form.idbodega2.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.idbodega2.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="link6">
+                                            <div class="row">
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctaefectivo.errors %}has-danger{% endif %}">
+                                                       
+                                                        <label for="ctaefectivo" class="bmd-label-floating">Cuenta Contable Efectivo</label>
+                                                        <input type="text" class="form-control {% if form.ctaefectivo.errors %}is-invalid{% endif %}" id="ctaefectivo" name="ctaefectivo" value="{% if form.ctaefectivo.value %}{{ form.ctaefectivo.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctaefectivo.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctatransfer.errors %}has-danger{% endif %}">
+                                                        <label for="ctatransfer" class="bmd-label-floating">Cuenta Contable Transferencia  </label>
+                                                        <input type="text" class="form-control {% if form.ctatransfer.errors %}is-invalid{% endif %}" id="ctatransfer" name="ctatransfer" value="{% if form.ctatransfer.value %}{{ form.ctatransfer.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctatransfer.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctabanco1.errors %}has-danger{% endif %}">
+                                                        
+                                                        <label for="ctabanco1" class="bmd-label-floating">Cuenta Contable BAC </label>
+                                                        <input type="text" class="form-control {% if form.ctabanco1.errors %}is-invalid{% endif %}" id="ctabanco1" name="ctabanco1" value="{% if form.ctabanco1.value %}{{ form.ctabanco1.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctabanco1.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group {% if form.ctabanco2.errors %}has-danger{% endif %}">
+                                                        
+                                                        <label for="ctabanco2" class="bmd-label-floating">Cuenta Contable VISA </label>
+                                                        <input type="text" class="form-control {% if form.ctabanco2.errors %}is-invalid{% endif %}" id="ctabanco2" name="ctabanco2" value="{% if form.ctabanco2.value %}{{ form.ctabanco2.value }}{% endif %}">
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.ctabanco2.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <!-- <div class="form-group {% if form.nombre.errors %}has-danger{% endif %}">
+                                        <label for="nombre" class="bmd-label-floating">Nombre</label>
+                                        <input type="text" class="form-control {% if form.nombre.errors %}is-invalid{% endif %}" id="nombre" name="nombre" value="{% if form.nombre.value %}{{ form.nombre.value }}{% endif %}">
+                                        <div class="invalid-feedback">
+                                            {% for error in form.nombre.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-check {% if form.activo.errors %}has-danger{% endif %}">
+                                        <!-- <label class="form-check-label">Activo
+                                            <input class="form-check-input {% if form.activo.errors %}is-invalid{% endif %}" type="checkbox" id="activo" name="activo" {% if form.activo.value %}checked{% endif %}>
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label> -->
+                                        <div class="invalid-feedback">
+                                            {% for error in form.activo.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-sm-12 text-center">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-fill btn-outline-success" id='btnSave'>
+                                            <span class="material-icons">save</span>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+  
+    <script>
+        document.getElementById('btnSave').addEventListener('click', () => {
+            dialogConfirm(simple_submit, 'frm_save')
+        });
+    </script>
+
+{% endblock javascripts %}

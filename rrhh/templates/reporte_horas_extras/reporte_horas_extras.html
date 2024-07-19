@@ -1,0 +1,88 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} REPORTE DE HORAS EXTRAS {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">summarize</i>
+                        </div>
+                        <h4 class="card-title">REPORTE DE HORAS EXTRAS</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" style="margin-top: 50px;">
+                            <div class="col-12">
+                                <table class="table table-hover" id="datatables">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center;">Año</th>
+                                            <th style="text-align: center;">Mes</th>
+                                            <th style="text-align: center;">Quincena</th>
+                                            <th style="text-align: center;">Usuario</th>
+                                            <th style="text-align: center;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for hora in horas %}
+                                            <tr>
+                                                <td style="text-align: center;">{{ hora.year }}</td>
+                                                <td style="text-align: center;">{{ hora.month }}</td>
+                                                <td style="text-align: center;">
+                                                    {% if hora.quincena == 1 %}
+                                                        1A
+                                                    {% elif hora.quincena == 2 %}
+                                                        2A
+                                                    {% endif %}
+                                                </td>
+                                                <td style="text-align: center;">{{ hora.user.name }}</td>
+                                                <td style="text-align: center;">
+                                                    <button type="button" class="btn btn-link btn-success btn-just-icon" rel="tooltip" data-original-title="Ver reporte" onclick="simple_redireccion('{% url 'rrhh-reporte_horas_extras_ver_reporte' hora.id %}')">
+                                                        <span class="material-icons">visibility</span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        $(document).ready(function() {
+            $('#datatables').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                "order": [0, "desc"],
+                iDisplayLength: -1,
+                responsive: false,
+                language: objLenguajeDataTable,
+            });
+        });
+    </script>
+
+{% endblock javascripts %}

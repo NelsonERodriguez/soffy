@@ -1,0 +1,144 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Interfaz {% endblock title %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+
+            <form action="{% url 'core-interfaces_edit' id %}" method="POST" name="frm_interfaz">
+                {% csrf_token %}
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">settings</i>
+                        </div>
+                        <h4 class="card-title">Interfaz</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <div class="row">
+                                <div class="col-12 text-right">
+                                    <button type="button" class="btn btn-outline-danger"
+                                            onclick="simple_redireccion('{% url 'core-interfaces' %}');">
+                                        <span class="material-icons">arrow_back</span> Regresar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <b>Modulo interno:</b> {{ app_label }}
+                                <input type="hidden" name="app_label" value="{{ app_label }}">
+                            </div>
+                            <div class="col-sm-6">
+                                <b>Ventana interna:</b> {{ model }}
+                                <input type="hidden" name="model" value="{{ model }}">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group {% if form.modulo.errors %}has-danger{% endif %}">
+                                    <label for="modulo" class="bmd-label-floating">Nombre modulo</label>
+                                    <input type="text" class="form-control {% if form.modulo.errors %}is-invalid{% endif %}" id="modulo" name="modulo" value="{% if form.modulo.value %}{{ form.modulo.value }}{% else %}{{ modulo }}{% endif %}">
+                                    <div class="invalid-feedback">
+                                        {% for error in form.modulo.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group {% if form.sub_modulo.errors %}has-danger{% endif %}">
+                                    <label for="sub_modulo" class="bmd-label-floating">Nombre sub modulo</label>
+                                    <input type="text" class="form-control {% if form.sub_modulo.errors %}is-invalid{% endif %}" id="sub_modulo" name="sub_modulo" value="{% if form.sub_modulo.value %}{{ form.sub_modulo.value }}{% else %}{{ sub_modulo }}{% endif %}">
+                                    <div class="invalid-feedback">
+                                        {% for error in form.sub_modulo.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group {% if form.ventana.errors %}has-danger{% endif %}">
+                                    <label for="ventana" class="bmd-label-floating">Nombre ventana</label>
+                                    <input type="text" class="form-control {% if form.ventana.errors %}is-invalid{% endif %}" id="ventana" name="ventana" value="{% if form.ventana.value %}{{ form.ventana.value }}{% else %}{{ ventana }}{% endif %}">
+                                    <div class="invalid-feedback">
+                                        {% for error in form.ventana.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group {% if form.link.errors %}has-danger{% endif %}">
+                                    <label for="link" class="bmd-label-floating">Link</label>
+                                    <input type="text" class="form-control {% if form.link.errors %}is-invalid{% endif %}" id="link" name="link" value="{% if form.link.value %}{{ form.link.value }}{% else %}{{ link }}{% endif %}">
+                                    <div class="invalid-feedback">
+                                        {% for error in form.link.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group {% if form.icono.errors %}has-danger{% endif %}">
+                                    <label for="icono" class="bmd-label-floating">Icono</label>
+                                    <input type="text" class="form-control {% if form.icono.errors %}is-invalid{% endif %}" id="icono" name="icono" value="{% if form.icono.value %}{{ form.icono.value }}{% else %}{{ icono }}{% endif %}">
+                                    <div class="invalid-feedback">
+                                        {% for error in form.icono.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-fill btn-outline-success" id="btnSave">
+                                        <span class="material-icons">save</span>
+                                        Actualizar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+  
+  <script>
+    $('#app_label').select2();
+    const btn = document.getElementById('btnSave');
+
+    btn.addEventListener('click', () => {
+        dialogConfirm(saveInterfaz)
+    });
+
+    function saveInterfaz() {
+        document.frm_interfaz.submit();
+    }
+  </script>
+
+{% endblock javascripts %}

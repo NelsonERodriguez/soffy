@@ -1,0 +1,271 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Solicitar vacaciones {% endblock title %}
+
+{% block stylesheets %}
+<style>
+    .divWriteData {
+        border-bottom: 1px solid;
+    }
+    .rowDetailForm {
+        margin: 15px 0;
+    }
+    .contentNotes {
+        border: 1px solid;
+        padding: 15px;
+    }
+    .contentYear {
+        text-align: center;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">playlist_add_check</i>
+                        </div>
+                        <h4 class="card-title">Solicitar vacaciones</h4>
+                    </div>
+                    <div class="card-body">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="comentario" class="bmd-label-floating">Ingresa si tienes algun comentario</label>
+                                    <input type="text" class="form-control" id="comentario" name="comentario">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <h3>
+                                    En el calendario de abajo selecciona los dias que deseas tomar
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-8 offset-md-1">
+                                <div id="fullCalendar"></div>
+                            </div>
+                            <div class="col-12 col-md-2">
+                                <button class="btn btn-outline-primary" type='button' id="btnSolicitar">
+                                    <i class="material-icons">send</i>
+                                    Solicitar Vacaciones
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-md-10 offset-md-1">
+                <h3>SOLICITUD DE VACACIONES</h3>
+            </div>
+        </div>
+        <div class="row rowDetailForm">
+            <div class="col-12 col-md-2 offset-md-1">
+                Nombre:
+            </div>
+            <div class="col-12 col-md-8 divWriteData">
+                
+            </div>
+        </div>
+        <div class="row rowDetailForm">
+            <div class="col-12 col-md-1 offset-md-1">
+                Fecha:
+            </div>
+            <div class="col-12 col-md-4 divWriteData">
+                
+            </div>
+            <div class="col-12 col-md-1">
+                Empresa:
+            </div>
+            <div class="col-12 col-md-4 divWriteData">
+                
+            </div>
+        </div>
+        <div class="row rowDetailForm">
+            <div class="col-12 col-md-2 offset-md-1">
+                Puesto que desempeña:
+            </div>
+            <div class="col-12 col-md-3 divWriteData">
+                
+            </div>
+            <div class="col-12 col-md-1">
+                Periodo:
+            </div>
+            <div class="col-12 col-md-4 divWriteData">
+                
+            </div>
+        </div>
+        <div class="row rowDetailForm">
+            <div class="col-12 col-md-2 offset-md-1">
+                FECHA DE SALIDA:
+            </div>
+            <div class="col-12 col-md-3 divWriteData">
+                
+            </div>
+            <div class="col-12 col-md-2">
+                FECHA DE ENTRADA:
+            </div>
+            <div class="col-12 col-md-3 divWriteData">
+                
+            </div>
+        </div>
+        <div class="row rowDetailForm">
+            <div class="col-12 col-md-10 offset-md-1 contentNotes">
+                <ul>
+                    <li>
+                        Si toma dias alternos, se cuantifican solamente dias habiles,
+                         sin tomar en cuenta sabados y domingos, hasta completar 15 dias de vacaciones
+                    </li>
+                    <li>
+                        Si toma el periodo completo, se toman dias calendario, hasta completar 21 dias
+                         de vacaciones
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row rowDetailForm">
+            <div class="col-12 col-md-10 offset-md-1">
+                En el calendario de abajo deben estar marcados los dias que descansa:
+            </div>
+        </div>
+        <div class="row rowDetailForm">
+            <div class="col-md-10 ml-auto mr-auto">
+                <div class="card card-calendar">
+                    <div class="card-body ">
+                        <div id="fullCalendar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+{% endblock content %}
+
+
+{% block javascripts %}
+    <script src="{% static 'assets/js/plugins/fullcalendar.min.js' %}"></script>
+    <script>
+        let objVacaciones = [];
+        const btnSolicitar = document.getElementById('btnSolicitar'),
+                urlSave = "{% url 'rrhh-solicitud_vacaciones_create'  %}"
+                urlDone = "{% url 'rrhh-solicitud_vacaciones' %}";
+
+
+        if(btnSolicitar) {
+            btnSolicitar.addEventListener('click', () => {
+                if(Object.keys(objVacaciones).length > 0) {
+                    enviarSolicitud();
+                }
+            });
+        }
+
+        drawFullCalendar();
+
+        function drawFullCalendar() {
+            let today = new Date(),
+                y = today.getFullYear(),
+                m = today.getMonth(),
+                d = today.getDate();
+            const calendar = $('#fullCalendar');
+            
+            calendar.fullCalendar({
+                monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+                monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+                dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+                dayNamesShort: ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],
+                viewRender: function(view, element) {
+                    if (view.name != 'month') {
+                        $(element).find('.fc-scroller').perfectScrollbar();
+                    }
+                },
+                header: {
+                    left: 'title',
+                    right: 'prev,next'
+                },
+                defaultDate: today,
+                selectable: true,
+                selectHelper: true,
+                views: {
+                    month: {
+                        titleFormat: 'MMMM YYYY',  
+                    },
+                    week: {
+                        titleFormat: " MMMM D YYYY"
+                    },
+                    day: {
+                        titleFormat: 'D MMM, YYYY'
+                    }
+                },
+                editable: true,
+                eventLimit: true,
+                select: (start, end) => {
+                    const eventData = {
+                        title: 'Vacaciones',
+                        start: start,
+                        end: end
+                    };
+                    console.log(eventData);
+                    if(typeof objVacaciones[start._i] === 'undefined') {
+                        objVacaciones[start._i] = start._d;
+                        calendar.fullCalendar('renderEvent', eventData, true);
+                    }
+                    else {
+                        calendar.fullCalendar( 'removeEvents', function(event) {
+                            if(start._i === event.start._i) { return true; }
+                        });
+                        calendar.fullCalendar('unselect');
+                        delete objVacaciones[start._i];
+                    }
+                    console.log(objVacaciones, 'si lleno');
+                },
+            })
+            
+        }
+
+        function enviarSolicitud() {
+            let strSend = '';
+            for(let key in objVacaciones) {
+                let vacacion = objVacaciones[key];
+                let c = new Date(vacacion);
+
+                let year = c.getFullYear(),
+                    month = String(c.getMonth() + 1).padStart(2, '0'),
+                    day = String(c.getDate()).padStart(2, '0');
+
+                if(strSend) {
+                    strSend += ',';
+                }
+                strSend += `${year}-${month}-${day}`;
+            }
+
+            const form = new FormData();
+            form.append('csrfmiddlewaretoken', document.getElementsByName('csrfmiddlewaretoken')[0].value);
+            form.append('strSend', strSend);
+            form.append('comentarios_usuario', document.getElementById('comentario').value);
+            fetch(urlSave, {
+              method: 'POST',
+              body: form
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'ok') {
+                    window.location.replace(urlDone);
+                }
+            })
+            .catch()
+        }
+    </script>
+  
+{% endblock javascripts %}

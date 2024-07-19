@@ -1,0 +1,56 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Mi Vale {% endblock title %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <form action="{% url 'inventario-traslados' %}" method="POST" name="frm_mantenimiento_claves" id="frm_mantenimiento_claves">
+                    {% csrf_token %}
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">qr_code_2</i>
+                            </div>
+                            <h4 class="card-title">Mi Vale</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h3 style="color: red; font-weight: bold;">¡Felices Fiestas¡</h3>
+                                    <h5 style="color: blue; font-weight: bold;">{{ vales.empleado }}</h5>
+                                    {% if vales.estado == 1 %}
+                                        <h6 style="color: red; font-weight: bold;">Vale canjeado.</h6>
+                                    {% endif %}
+                                    <span style="color: darkgreen; font-weight: bold;">
+{#                                    {% if vales.pavo_pierna == "pavo" %}#}
+{#                                        Vale por un pavo#}
+                                    {% if vales.pavo_pierna == "pierna" %}
+                                        Vale por un lomo
+                                    {% endif %}
+                                    <br>
+                                    Entrega: 05 al 27 dic. de 2023 <br>
+                                    Horario: 7:00 a 16:00 HRS <br>
+                                    Encargado: Manolo Cifuentes
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-lg-6 offset-lg-3 text-center">
+                                    {% if vales.estado == 0 %}
+                                        <img src="{{ image }}" alt="QR" style="width: 100%;">
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end content-->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+

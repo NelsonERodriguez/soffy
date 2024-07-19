@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>Orden {{ orden.no_documento }}</title>
+        <style>
+            @page {
+                size: letter landscape;
+                margin-top: 3cm;
+                margin-left: 1cm;
+                margin-right: 1cm;
+                margin-bottom: 3cm;
+            }
+            html {
+                font-size: 14px;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                border-spacing: 0;;
+            }
+            tr {
+                page-break-inside: avoid;
+            }
+            thead {
+                border: #0087C3 solid 1px;
+            }
+            table thead th {
+                padding: 4px 1px 1px 1px;
+                white-space: nowrap;
+                font-weight: normal;
+                border-top: 1px solid black;
+                border-bottom: 1px solid black;
+                background-color: white;
+                color: black;
+            }
+            table tbody td {
+                padding: 1px;
+                text-align: left;
+            }
+            table tfoot td {
+                padding: 1px;
+                border-top: 1px solid black;
+            }
+            #divFooter {
+                left: 400pt;
+                top: 200pt;
+            }
+        </style>
+        {% load humanize %}
+    </head>
+    <body style="margin:0; padding:0;">
+
+        {% for detalle in movimientos %}
+            {% if forloop.first or forloop.counter|divisibleby:15 %}
+                <table width="100%">
+                    <tr>
+                        <td width="100%">{{ ingreso.orden_compra.empresa.nombre }}</td>
+                    </tr>
+                </table>
+                <table width="100%">
+                    <tr>
+                        <td width="17%">&nbsp;</td>
+                        <td width="10%">&nbsp;</td>
+                        <td width="40%" style="text-align: center;">
+                            <span>INGRESO A BODEGA</span><br>
+                            <span>Ingreso Compras</span>
+                        </td>
+                        <td width="33%" style="text-align: right;">No.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ ingreso.id|stringformat:"06d" }}</td>
+                    </tr>
+                    <tr>
+                        <td width="17%">Fecha:</td>
+                        <td width="10%" style="text-align: right;">{{ ingreso.created_at|date:"d/m/Y" }}</td>
+                        <td width="40%">&nbsp;</td>
+                        <td width="33%">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td width="17%">No. de O/C:</td>
+                        <td width="10%" style="text-align: right;">{{ ingreso.orden_compra.no_documento }}</td>
+                        <td width="40%">&nbsp;</td>
+                        <td width="33%">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td width="17%">No. de Envio:</td>
+                        <td width="10%">&nbsp;</td>
+                        <td width="40%">&nbsp;</td>
+                        <td width="33%">&nbsp;</td>
+                    </tr>
+                </table>
+                <table width="100%">
+                    <thead>
+                        <tr>
+                            <th width="15%" style="border-left: 1px solid black;text-align: left;">Producto</th>
+                            <th width="15%" style="text-align: left;">Unidad</th>
+                            <th width="55%" style="text-align: left;">Descripción del producto</th>
+                            <th width="15%" style="border-right: 1px solid black;text-align: right;">Cantidad</th>
+                        </tr>
+                    </thead>
+                </table>
+            {% endif %}
+
+            <table width="100%">
+                <tr>
+                    <td width="15%">{{ detalle.producto__codigo }}</td>
+                    <td width="15%">{{ detalle.producto__unidad_medida }}</td>
+                    <td width="55%">{{ detalle.producto__producto }}</td>
+                    <td width="15%" style="text-align: right;">{{ detalle.cantidad|floatformat:2|intcomma }}</td>
+                </tr>
+            </table>
+            {% if forloop.counter|divisibleby:14 or forloop.last %}
+                {% if forloop.last %}
+                    {% for vacia in completar %}
+                        <table width="100%">
+                            <tr>
+                                <td width="100%">&nbsp;</td>
+                            </tr>
+                        </table>
+                    {% endfor %}
+                {% endif %}
+                <div id="divFooter" style="">
+                    <div width="100%" style="border-top: 1px solid black;">
+                        Observaciones: {{ ingreso.orden_compra.cotizacion.solicitudes.observacion }}
+                    </div>
+                    <div width="100%">
+                        <table width="100%">
+                            <tr>
+                                <td width="50%">{{ fecha }} - {{ nombre }}</td>
+                                <td width="50%" style="text-align: right;">Página {{ pagina.v }} {{ pagina.bump }}</td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </div>
+                {% if not forloop.last %}
+                    <pdf:nextpage />
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </body>
+</html>

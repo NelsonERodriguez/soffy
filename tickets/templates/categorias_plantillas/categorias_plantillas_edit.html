@@ -1,0 +1,128 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Categorías de Plantillas | {{ texto_titulo }} {% endblock title %}
+
+{% load static %}
+{% load humanize %}
+
+{% block stylesheets %}
+    <style>
+        .required:after {
+            content:" *";
+            color:red;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8 offset-sm-2">
+                <form action="{% url 'tickets-categorias_plantillas_save' id %}" method="POST" name="frm_interfaz">
+                    {% csrf_token %}
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">category</i>
+                            </div>
+                            <h4 class="card-title">Categorías de Plantillas | {{ texto_titulo }}</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="nombre" class="bmd-label-floating required">Nombre</label>
+                                        <input type="text" class="form-control" id="nombre" name="nombre" value="{% if categoria  %}{{ categoria.nombre }}{% endif %}" onkeypress="return validar_caracteres(event, 4);" maxLength="35">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="orden" class="bmd-label-floating required">Orden</label>
+                                        <input type="number" class="form-control" id="orden" name="orden" value="{% if categoria  %}{{ categoria.orden }}{% endif %}" max="99" onkeypress="return validar_caracteres(event, 2);">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class='col-md-6'>
+                                    <label class="required">Habilitada</label>
+                                    <div class="m-checkbox-inline">
+                                        <label class="m-checkbox">
+                                            <input type="radio" name='activo' value='1' required="true" {% if categoria  %} {% if categoria.activo %} checked {% endif %}  {% else %} checked {% endif %}> Si
+                                            <span></span>
+                                        </label>
+                                        <label class="m-checkbox">
+                                            <input type="radio" name='activo' value='0' required="true" {% if categoria  %} {% if not categoria.activo %} checked {% endif %} {% endif %}> No
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 text-center">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-fill btn-outline-success" id="btnSave">
+                                            <span class="material-icons">save</span>
+                                            Guardar
+                                        </button>
+                                        <button type="button" class="btn btn-fill btn-outline-danger" id="btnRegresar">
+                                            <span class="material-icons">arrow_back</span>
+                                            Regresar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        const btn = document.getElementById('btnSave'),
+            btnRegresar = document.getElementById('btnRegresar'),
+            strUrlIndex = "{% url 'tickets-categorias_plantillas' %}",
+            valCSRF = getCookie('csrftoken');
+
+        btn.addEventListener('click', () => {
+            let boolError = false;
+
+            if( $.trim($("#nombre").val()).length == 0 ){
+                alert_nova.showNotification('El campo Nombre es requerido', "warning", "danger");
+                boolError = true;
+            }
+
+            if( $.trim($("#orden").val()).length == 0 ){
+                alert_nova.showNotification('El campo Orden es requerido', "warning", "danger");
+                boolError = true;
+            }
+
+            if( !boolError ){
+                saveInterfaz();
+            }
+        });
+
+        btnRegresar.addEventListener('click', () => {
+            dialogConfirm(redirectIndex, false, '¿Estás seguro?', '¡No se guardaran los datos que has cambiado o has ingresado!')
+        });
+
+        const saveInterfaz = () => {
+            dialogConfirm(submitForm);
+        }
+
+        const submitForm = () => {
+            document.frm_interfaz.submit();
+        }
+
+        const redirectIndex = () => {
+            document.location = strUrlIndex;
+        }
+    </script>
+
+{% endblock javascripts %}

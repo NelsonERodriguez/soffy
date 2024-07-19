@@ -1,0 +1,132 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Reporte Encuestas {% endblock title %}
+
+{% block stylesheets %}
+    <style>
+        @keyframes resaltar {
+            from { transform: none; }
+            50% { transform: scale(.8); }
+            to { transform: none; }
+        }
+
+        .emojis {
+            display: inline-block;
+            font-size: 50px;
+            animation: resaltar 4s infinite;
+            transform-origin: center;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">analytics</i>
+                        </div>
+                        <h4 class="card-title">Reporte Encuestas</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="{% url 'ventas-reporte_encuestas' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="offset-2 col-4">
+                                    <div class="form-group">
+                                        <label for="fecha_inicio">Fecha inicio</label>
+                                        <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" value="{{ fecha_inicio }}">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="fecha_fin">Fecha fin</label>
+                                        <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" value="{{ fecha_fin }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn btn-primary" id="btnReporte">
+                                        <span class="btn-label"><i class="material-icons">search</i></span>Ver reporte
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <table id="datatables" class="table table-hover" style="width:100%; margin-top: 25px;">
+                                        <thead>
+                                            <tr>
+                                                <th>Estado</th>
+                                                <th style="text-align: right;">Cantidad</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            {% for estados in datos %}
+                                                <tr>
+                                                    <td>
+                                                        {% if estados.valor == 1 %}
+                                                            <i class="fas fa-smile emojis" style="color: green;"></i>
+                                                        {% elif estados.valor == 2 %}
+                                                            <i class="fas fa-meh emojis" style="color: yellow;"></i>
+                                                        {% elif estados.valor == 3 %}
+                                                            <i class="fas fa-frown emojis" style="color: red;"></i>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td style="text-align: right;"><b>{{ estados.total }}</b></td>
+                                                </tr>
+                                            {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="card card-chart">
+                    <div class="card-header card-header-icon card-header-danger">
+                        <div class="card-icon">
+                            <i class="material-icons">pie_chart</i>
+                        </div>
+                        <h4 class="card-title">Estadistica</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="chartPreferences" class="ct-chart"></div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-12">
+                                <i class="fa fa-circle text-info"></i> &#128522;  &nbsp;&nbsp;&nbsp;&nbsp;
+                                <i class="fa fa-circle text-danger"></i> &#128528;  &nbsp;&nbsp;&nbsp;&nbsp;
+                                <i class="fa fa-circle text-warning"></i> &#128532;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+     const arrDataValor = [
+        {% for dato in datos %}
+            parseInt({{ dato.total }}),
+        {% endfor %}
+     ]
+    </script>
+    <script src="/static/modules/ventas/reporte_encuestas/reporte_encuestas.js?v=1.0.0" type="text/javascript" async defer></script>
+
+{% endblock javascripts %}

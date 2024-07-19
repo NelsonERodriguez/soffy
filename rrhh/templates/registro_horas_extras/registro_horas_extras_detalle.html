@@ -1,0 +1,99 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} REGISTRO DE HORAS EXTRAS {% endblock title %}
+
+{% load static %}
+{% load humanize %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">summarize</i>
+                        </div>
+                        <h4 class="card-title">REGISTRO DE HORAS EXTRAS</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" style="margin-top: 50px;">
+                            <div class="col-4 text-center">
+                                <h4>Año: {{ horas.year }}</h4>
+                            </div>
+                            <div class="col-4 text-center">
+                                <h4>Mes: {{ horas.month }}</h4>
+                            </div>
+                            <div class="col-4 text-center">
+                                <h4>Quincena: {{ horas.quincena }}A</h4>
+                            </div>
+                        </div>
+                        <form action="{% url 'rrhh-registro_horas_extras_ver_reporte' horas.id %}" method="POST" name="frm_horas_extras" id="frm_horas_extras">
+                            {% csrf_token %}
+                            <div class="row" style="margin-top: 50px;">
+                                <div class="col-12">
+                                    <table class="table table-hover table-bordered" id="datatables">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center;">CÓDIGO</th>
+                                                <th style="text-align: center;">EMPLEADO</th>
+                                                <th style="text-align: center;">PUESTO</th>
+                                                <th style="text-align: center; font-weight: bold;">SUELDO</th>
+                                                <th style="text-align: center; font-weight: bold;">HORA</th>
+                                                <th style="text-align: center; background: #92dbff; font-weight: bold;">HORA SIMPLE</th>
+                                                <th style="text-align: center; background: #d7ffa6; font-weight: bold;">HORA DOBLE</th>
+                                                <th style="text-align: center; background: #92dbff; font-weight: bold;">SUMA DE HORAS SIMPLES</th>
+                                                <th style="text-align: center; background: #d7ffa6; font-weight: bold;">SUMA DE HORAS DOBLES</th>
+                                                <th style="text-align: center; background: #92dbff; font-weight: bold;">VALOR TOTAL DE HORAS SIMPLES</th>
+                                                <th style="text-align: center; background: #d7ffa6; font-weight: bold;">VALOR TOTAL DE HORAS DOBLES</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for detalle in detalles %}
+                                                <tr>
+                                                    <td style="text-align: center;">
+                                                        {{ detalle.CodigoEmpleado }}
+                                                        <input type="hidden" name="CodigoEmpleado[]" value="{{ detalle.CodigoEmpleado }}">
+                                                        <input type="hidden" name="CantidadSimples[]" value="{% if detalle.Suma_Simples %}{{ detalle.Suma_Simples }}{% else %}0{% endif %}">
+                                                        <input type="hidden" name="CantidadDobles[]" value="{% if detalle.Suma_Dobles %}{{ detalle.Suma_Dobles }}{% else %}0{% endif %}">
+                                                        <input type="hidden" name="ValorSimples[]" value="{% if detalle.Valor_Simple %}{{ detalle.Valor_Simple }}{% else %}0{% endif %}">
+                                                        <input type="hidden" name="ValorDobles[]" value="{% if detalle.Valor_Doble %}{{ detalle.Valor_Doble }}{% else %}0{% endif %}">
+                                                    </td>
+                                                    <td style="text-align: center;">{{ detalle.Empleado }}</td>
+                                                    <td style="text-align: center;">{{ detalle.Puesto }}</td>
+                                                    <td style="text-align: center; font-weight: bold;">Q{{ detalle.SueldoTotal|intcomma }}</td>
+                                                    <td style="text-align: center; font-weight: bold;">Q{{ detalle.Horas|intcomma }}</td>
+                                                    <td style="text-align: center; background: #92dbff; font-weight: bold;">Q{{ detalle.HORA_SIMPLE|intcomma }}</td>
+                                                    <td style="text-align: center; background: #d7ffa6; font-weight: bold;">Q{{ detalle.HORA_DOBLE|intcomma }}</td>
+                                                    <td style="text-align: center; background: #92dbff; font-weight: bold;">{% if detalle.Suma_Simples %}{{ detalle.Suma_Simples }}{% endif %}</td>
+                                                    <td style="text-align: center; background: #d7ffa6; font-weight: bold;">{% if detalle.Suma_Dobles %}{{ detalle.Suma_Dobles }}{% endif %}</td>
+                                                    <td style="text-align: center; background: #92dbff; font-weight: bold;">Q{% if detalle.Valor_Simple %}{{ detalle.Valor_Simple }}{% endif %}</td>
+                                                    <td style="text-align: center; background: #d7ffa6; font-weight: bold;">Q{% if detalle.Valor_Doble %}{{ detalle.Valor_Doble }}{% endif %}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 50px;">
+                                <div class="col-12 text-center">
+                                    <button type="button" class="btn btn-outline-success" id="btnSave" onclick="dialogConfirm(simple_submit, 'frm_horas_extras')">
+                                        <span class="material-icons">save</span>Enviar a nomina
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

@@ -1,0 +1,75 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Aprobación de vacaciones {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">early_on</i>
+                        </div>
+                        <h4 class="card-title">Aprobación de vacaciones</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table" id="tableVacaciones">
+                                    <thead>
+                                    <tr>
+                                        <th>Empleado</th>
+                                        <th>Dias solicitados</th>
+                                        <th>Es medio día</th>
+                                        <th>Fecha solicitud</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for vacacion in vacaciones %}
+                                        <tr>
+                                            <td>{{ vacacion.name }}</td>
+                                            <td>{{ vacacion.dias_solicitados }}</td>
+                                            <td>{% if vacacion.medio_dia %}Si{% else %}No{% endif %} </td>
+                                            <td>{{ vacacion.created_at|date:"d/m/Y" }}</td>
+                                            <td style="text-align: center;">
+                                                <a class="btn btn-outline-info"
+                                                   href="{% url 'rrhh-aprobar_vacaciones_vacacion' %}?vacacion={{ vacacion.id }}">
+                                                    <span class="material-icons">Visibility</span> Detalles
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            table = $('#tableVacaciones').DataTable({
+                pagingType: "full_numbers",
+                lengthMenu: [
+                    [10, 25, 50, 100, 1000],
+                    [10, 25, 50, 100, "All"]
+                ],
+                language: objLenguajeDataTable,
+            });
+        });
+    </script>
+{% endblock javascripts %}

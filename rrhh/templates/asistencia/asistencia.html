@@ -1,0 +1,49 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Asistencia {% endblock title %}
+
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">pending_actions</i>
+                        </div>
+                        <h4 class="card-title">Asistencia</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row" style="margin: 35px 0;">
+                            <div class="offset-2 col-4 text-center">
+                                <i class="fas fa-10x fa-user" onclick="simple_redireccion('{% url 'rrhh-asistencia_empleados' %}')" style="cursor:pointer;"></i><br>
+                                <b>Empleados</b>
+                            </div>
+                            <div class="col-4 text-center">
+                                <i class="fas fa-10x fa-users" onclick="simple_redireccion('{% url 'rrhh-asistencia_departamento' %}')" style="cursor:pointer;"></i><br>
+                                <b>Departamentos</b>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        const strUrlGetProductos = "{% url 'ventas-planeacion_demanda_get_productos' %}";
+    </script>
+    <script>
+
+    </script>
+
+{% endblock javascripts %}

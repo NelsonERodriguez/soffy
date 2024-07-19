@@ -1,0 +1,103 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Carga Archivos Pagos {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+    <style>
+        .required:after {
+            content:" *";
+            color:red;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">file_upload</i>
+                        </div>
+                        <h4 class="card-title">Carga Archivos Pagos</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="{% url 'rrhh-carga_archivos_guardar' %}" method="POST" name="frm_carga" id="frm_carga" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row" style="margin-bottom: 35px;">
+                                <div class="col-12 text-center">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-fill btn-success" onclick="simple_redireccion('{% url 'rrhh-carga_archivos_movimientos' %}')">
+                                            <span class="material-icons">search</span>
+                                            Ver Movimientos y Mover a Nómina
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col col-4 text-center">
+                                    <label style="margin-bottom: 0;">Selecciona Archivo a Cargar</label>
+                                    <select name="options" class="form-control" id="optionsUpload">
+                                        <option value="cuotas_csl">Cuotas CSL</option>
+                                        <option value="microcreditos">Cuotas MicroCreditos</option>
+                                        <option value="cuotas_figua">Cuotas Figua</option>
+                                        <option value="cuota_seguro">Cuota de Seguro</option>
+                                        <option value="cuota_jornadas">Cuota de Vacunas, Jornadas y Bazares</option>
+                                        <option value="farmacia">Farmacia</option>
+                                        <option value="cuotas_ahorro">Ahorro Chicken Plus</option>
+                                        <option value="cuotas_upa">UPA</option>
+                                        <option value="cuotas_otros">Otros descuentos</option>
+                                    </select>
+                                </div>
+                                <div class="col col-4 text-center">
+                                    <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                                        <div class="fileinput-new text-danger"><b>Por favor, suba su Archivo Excel en formato xlsx.</b></div>
+                                        <div class="fileinput-preview fileinput-exists"></div>
+                                        <div>
+                                            <span class="btn btn-round btn-rose btn-file">
+                                                <span class="fileinput-new">Subir Archivo Excel</span>
+                                                <span class="fileinput-exists">Cambiar Archivo Excel</span>
+                                                <input type="file" id="excel" name="excel" accept=".xlsx" required/>
+                                            </span>
+                                            <br />
+                                            <a href="#excel" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput">
+                                                <i class="fa fa-times"></i> Quitar el Archivo
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 text-center">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-fill btn-outline-primary">
+                                            <span class="material-icons">file_upload</span>
+                                            Subir
+                                        </button>
+                                        <button class="btn btn-outline-info" type="button" onclick="downloadExample()">
+                                            <span class="material-icons">download</span>
+                                            Descargar Ejemplo
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div id="contentTable"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="{% static 'assets/js/plugins/jasny-bootstrap.min.js' %}"></script>
+    <script src="{% static 'modules/rrhh/carga_archivos_pagos/carga_archivos_pagos.js' %}" async defer></script>
+    <script async defer>
+        const objColumns = {{ columns|safe }};
+    </script>
+{% endblock javascripts %}

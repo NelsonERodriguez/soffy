@@ -1,0 +1,77 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Mi Vale {% endblock title %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">qr_code_scanner</i>
+                        </div>
+                        <h4 class="card-title">QR Scan</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <form action="{% url 'rrhh-vales_qr_validar' 'user' %}" method="POST">
+                                    {% csrf_token %}
+                                    {% if vale.estado == 0 %}
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <h5><b>Empleado:</b> {{ vale.empleado }}</h5>
+                                                {% if vale.pavo_pierna == "pavo" %}
+                                                    <b>Pavo</b>
+                                                    <i class="fas fa-2x fa-turkey"></i>
+                                                {% elif vale.pavo_pierna == "pierna" %}
+                                                    <b>Lomo</b>
+{#                                                    <i class="fas fa-2x fa-drumstick"></i>#}
+                                                    <i class="fas fa-2x fa-duotone fa-piggy-bank"></i>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin: 15px 0;">
+                                            <div class="col-12">
+                                                <input type="hidden" name="canjear" value="1">
+                                                <input type="hidden" name="empleado_id" value="{{ vale.user_id }}">
+                                                <input type="hidden" name="correlativo" value="{{ vale.correlativo }}">
+                                                <input type="hidden" name="year" value="{{ vale.year }}">
+                                                <button type="submit" class="btn btn-outline-success">
+                                                    <i class="material-icons">check_circle_outline</i> Canjear
+                                                </button>
+                                                <button type="button" class="btn btn-outline-danger" onclick="cancelar();">
+                                                    <i class="material-icons">highlight_off</i> Cancelar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% elif vale.estado == 1 %}
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="alert alert-danger text-center" role="alert">
+                                                    {{ vale.empleado }} ya canjeo su cupon.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        function cancelar() {
+            simple_redireccion('{% url 'rrhh-vales_qr_validar' 'user'  %}');
+        }
+    </script>
+{% endblock javascripts %}

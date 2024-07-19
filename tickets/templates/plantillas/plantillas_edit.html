@@ -1,0 +1,196 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Plantillas | {{ texto_titulo }} {% endblock title %}
+
+{% block stylesheets %}
+    <style>
+        .required:after {
+            content:" *";
+            color:red;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <form action="{% url 'tickets-plantillas_save' id %}" method="POST" name="frm_interfaz">
+                    {% csrf_token %}
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">label_important</i>
+                            </div>
+                            <h4 class="card-title">Plantillas | {{ texto_titulo }}</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" style="margin-bottom: 35px;">
+                                <div class="col-md-6">
+                                    <div class="form-group bmd-form-group is-filled">
+                                        <select name="categoria_id" id="categoria_id" class="form-control">
+                                            <option value="">Categoria</option>
+                                            {% for categoria in categorias %}
+                                                <option value="{{ categoria.id }}" {% if plantilla and plantilla.plantilla_categoria_id == categoria.id %}selected{% endif %}>{{ categoria.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group bmd-form-group is-filled">
+                                        <select name="agrupacion_id" id="agrupacion_id" class="form-control">
+                                            <option value="">Agrupación</option>
+                                            {% for agrupacion in agrupaciones %}
+                                                <option value="{{ agrupacion.id }}" {% if plantilla and plantilla.agrupacion_id == agrupacion.id %}selected{% endif %}>{{ agrupacion.departamento.nombre }} - {{ agrupacion.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="titulo" class="bmd-label-floating required">Título</label>
+                                        <input type="text" class="form-control" id="titulo" name="titulo" value="{% if plantilla  %}{{ plantilla.titulo }}{% endif %}" maxLength="35">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="descripcion" class="bmd-label-floating required">Descripción</label>
+                                        <input type="text" class="form-control" id="descripcion" name="descripcion" value="{% if plantilla  %}{{ plantilla.titulo }}{% endif %}" maxLength="200">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="correo_notificacion" class="bmd-label-floating required">Correo notificación</label>
+                                        <input type="text" class="form-control" id="correo_notificacion" name="correo_notificacion" value="{% if plantilla and plantilla.correo_notificacion  %}{{ plantilla.correo_notificacion }}{% endif %}" maxLength="100">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="icono" class="bmd-label-floating required">Ícono</label>
+                                        <input type="text" class="form-control" id="icono" name="icono" value="{% if plantilla  %}{{ plantilla.icono }}{% endif %}" maxLength="30">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="color" class="bmd-label-floating required">Color</label>
+                                        <input type="color" class="form-control" id="color" name="color" value="{% if plantilla  %}{{ plantilla.color }}{% endif %}" maxLength="200">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class='col-md-6'>
+                                    <label class="required">Habilitada</label>
+                                    <div class="m-checkbox-inline">
+                                        <label class="m-checkbox">
+                                            <input type="radio" name='activo' value='1' required="true" {% if plantilla  %} {% if plantilla.activo %} checked {% endif %}  {% else %} checked {% endif %}> Si
+                                            <span></span>
+                                        </label>
+                                        <label class="m-checkbox">
+                                            <input type="radio" name='activo' value='0' required="true" {% if plantilla  %} {% if not plantilla.activo %} checked {% endif %} {% endif %}> No
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="selectpicker" data-style="select-with-transition" multiple name="etiquetas[]" id="etiquetas" title="Seleccione etiquetas">
+                                        {% for etiqueta in etiquetas %}
+                                            <option value="{{ etiqueta.id }}"
+                                                    {% for plantilla_etiqueta in plantilla_etiquetas %}{% if plantilla_etiqueta.etiqueta_id == etiqueta.id %}selected{% endif %}{% endfor %}>
+                                                {{ etiqueta.nombre }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 text-center">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-fill btn-outline-success" id="btnSave">
+                                            <span class="material-icons">save</span>
+                                            Guardar
+                                        </button>
+                                        <button type="button" class="btn btn-fill btn-outline-danger" id="btnRegresar">
+                                            <span class="material-icons">arrow_back</span>
+                                            Regresar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        const btn = document.getElementById('btnSave'),
+            btnRegresar = document.getElementById('btnRegresar'),
+            strUrlIndex = "{% url 'tickets-plantillas' %}",
+            valCSRF = getCookie('csrftoken');
+
+        btn.addEventListener('click', () => {
+            let boolError = false;
+
+            if( document.getElementById('titulo').value.trim() === '' ){
+                boolError = true;
+            }
+
+            if( document.getElementById('descripcion').value.trim() === '' ){
+                boolError = true;
+            }
+
+            if( document.getElementById('categoria_id').value.trim() === '' ){
+                boolError = true;
+            }
+
+            if( document.getElementById('agrupacion_id').value.trim() === '' ){
+                boolError = true;
+            }
+
+            if( document.getElementById('icono').value.trim() === '' ){
+                boolError = true;
+            }
+
+            if( document.getElementById('color').value.trim() === '' ){
+                boolError = true;
+            }
+
+            if( !boolError ){
+                saveInterfaz();
+            }
+            else {
+                alert_nova.showNotification('Debe ingresar todos los datos', "warning", "danger");
+            }
+        });
+
+        btnRegresar.addEventListener('click', () => {
+            dialogConfirm(redirectIndex, false, '¿Estás seguro?', '¡No se guardaran los datos que has cambiado o has ingresado!')
+        });
+
+        const saveInterfaz = () => {
+            dialogConfirm(submitForm);
+        }
+
+        const submitForm = () => {
+            document.frm_interfaz.submit();
+        }
+
+        const redirectIndex = () => {
+            document.location = strUrlIndex;
+        }
+    </script>
+
+{% endblock javascripts %}

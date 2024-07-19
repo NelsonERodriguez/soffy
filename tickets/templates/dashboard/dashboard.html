@@ -1,0 +1,1067 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/daterangepicker.css' %}">
+    <style>
+        .resaltar {
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        }
+
+        nav, footer, .navbar, .footer {
+            display: none;
+        }
+
+        .main-panel > .content {
+            margin-top: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bounceEasing: cubic-bezier(0.51, 0.92, 0.24, 1.15);
+        }
+
+        .details-hijo {
+            padding-left: 50px;
+            padding-bottom: 20px;
+        }
+        .altura-contenidos {
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+        }
+
+        /*.div-hover {
+            background-color: rgba(0, 0, 0, 0.025);
+        }*/
+        .div-hover > .col-sm-7,
+        .div-hover > .col-sm-6{
+            cursor: pointer;
+        }
+        .div-hover > .col-sm-7,
+        .div-hover > .col-sm-6,
+        .div-hover > .col-sm-1,
+        .div-hover > span {
+            border-top: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+        .div-hover:hover > .col-sm-7,
+        .div-hover:hover > .col-sm-6,
+        .div-hover:hover > .col-sm-1,
+        .div-hover:hover > span {
+            /* background-color: rgba(0, 0, 0, 0.075); */
+            background-color: #f5f6f8;
+        }
+
+        .div-hover:hover > .col-sm-7 > .row > .boton-hijos > .efecto-boton,
+        .div-hover:hover > .col-sm-6 > .row > .boton-hijos > .efecto-boton {
+            border-color: lightgrey;
+        }
+
+        .div-hover:hover > .select-estado,
+        .div-hover:hover > .select-prioridad{
+            opacity: 1;
+        }
+
+
+        .row-nuevo {
+            border-top: 1px solid #ddd;
+        }
+        .row-nuevo > .separador {
+            opacity: 0.5;
+        }
+        .row-nuevo > .texto-ticket {
+            width: calc(100% - 6px);
+            padding: unset;
+        }
+        .row-nuevo:focus > .separador ,
+        .row-nuevo:active > .separador,
+        .row-nuevo:focus-within > .separador{
+            opacity: 1;
+        }
+
+        .row-nuevo > .texto-ticket button {
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.5s linear;
+        }
+        .row-nuevo:focus > .texto-ticket button,
+        .row-nuevo:focus-within > .texto-ticket button {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .titulo {
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0;
+            font-size: .75rem;
+            font-weight: 400;
+            padding: 7px 0;
+        }
+
+        .titulo-hijo {
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0;
+            font-size: .75rem;
+            font-weight: 400;
+            padding: 7px 0;
+        }
+
+        .card-header-sin-borde{
+            padding: 0.75rem 0.25rem !important;
+        }
+
+        .card-header{
+            padding: 0.75rem 0.25rem;
+        }
+
+        .fechas {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .separador {
+            position: relative;
+            display: block;
+            width: 6px;
+            height: 100%;
+            padding: 0.4375rem 0;
+        }
+        .texto-ticket {
+            position: relative;
+            display: block;
+            width: calc(calc(100% - 36px) * 0.80);
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            padding: 7px 0;
+            font-weight: initial;
+        }
+        .input-orden {
+            position: relative;
+            display: block;
+            width: calc(calc(100% - 36px) * 0.05);
+            overflow: hidden;
+        }
+        .boton-comentarios {
+            position: relative;
+            display: block;
+            width: calc(calc(100% - 36px) * 0.15);
+            overflow: hidden;
+        }
+        .boton-hijos {
+            position: relative;
+            display: block;
+            height: 100%;
+            width: 30px
+        }
+        .boton-hijos-hidden {
+            opacity: 0;
+        }
+
+        .div-hover:hover > .col-sm-6 > .row > .boton-hijos-hidden,
+        .div-hover:hover > .col-sm-7 > .row > .boton-hijos-hidden {
+            opacity: 0.2 !important;
+        }
+
+        .efecto-boton {
+            border: 1px solid;
+            padding: 1px 6px;
+            border-radius: 4px;
+            position: relative;
+            top: 8px;
+            left: 3px;
+            border-color: transparent;
+        }
+
+        .efecto-boton:hover {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+
+        .fa-stack {
+            cursor: pointer;
+            padding: 7px 0px;
+        }
+        .fa-stack.active > .fa-stack-2x{
+            opacity: 1 !important;
+        }
+        .fa-stack:hover > .fa-stack-2x{
+            opacity: 1 !important;
+        }
+
+        .modal-comentario-visibility {
+            position: fixed; /* Stay in place */
+            z-index: 1031; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            visibility: visible;
+            transform: none;
+            transition-delay: 0.2s;
+            transition: all 0.5s var(--bounceEasing);
+        }
+
+        .modal-comentario-hidden {
+            position: fixed; /* Stay in place */
+            z-index: 1031; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            opacity: 1;
+            transform: translateX(100%);
+            transition: all 0.5s var(--bounceEasing);
+        }
+
+        .modal-content-comentario {
+            background-color: #fefefe;
+            border: 1px solid #888;
+            width: 50%;
+            height: 100%;
+            margin-left: 50%;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: -1px 0 5px grey;
+        }
+
+        /* The Close Button */
+        .close-comentario {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-comentario:hover,
+        .close-comentario:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-files-visibility {
+            position: fixed; /* Stay in place */
+            z-index: 10001; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            visibility: visible;
+            transform: none;
+            transition-delay: 0.2s;
+            transition: all 0.5s var(--bounceEasing);
+        }
+
+        .modal-files-hidden {
+            position: fixed; /* Stay in place */
+            z-index: 10001; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            opacity: 1;
+            transform: translateX(100%);
+            transition: all 0.5s var(--bounceEasing);
+        }
+
+        .modal-content-files {
+            background-color: #fefefe;
+            border: 1px solid #888;
+            width: calc(100vw - 100px);
+            margin-left: 50px;
+            margin-top: 50px;
+            height: calc(100vh - 100px);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        /* The Close Button */
+        .close-files {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;;
+        }
+
+        #div_general, #div_comentarios, #div_actividad {
+            margin-top: 25px;
+            overflow-y: auto;
+            height: calc(100vh - 200px);
+            max-width: 100%;
+            width: 100%;
+        }
+
+        #div_comentarios .row {
+            margin-right: 0 !important;
+            margin-left: 0 !important;
+        }
+
+        .close-files:hover,
+        .close-files:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .img-persona {
+            display: inline-block;
+            height: 2em;
+            line-height: 2em;
+            position: relative;
+            vertical-align: middle;
+            width: 2.5em;
+            padding: 6px 0;
+            cursor: pointer;
+
+            /*width: 27px;
+            height: 27px;
+            margin: 0 auto;
+            display: inline-block;
+            padding: 7px 0px;*/
+        }
+
+        .img-persona > img {
+            width: 86%;
+            border-radius: 50%;
+            text-align: center;
+            height: 100%;
+            position: absolute;
+            left: 2px;
+            /*opacity: 0.5;*/
+        }
+
+        .img-persona > img:hover {
+            opacity: 1;
+        }
+
+        .select2-dropdown {
+            z-index: 1061 !important;
+        }
+
+        #btnRespuesta {
+            width: 100%;
+            padding: 7px 15px;
+            border: 1px solid #d9d3d3;
+            border-radius: 5px;
+            cursor: text;
+            background: white;
+            color: #a1a1a1;
+            text-align: left;
+        }
+
+        #btnRespuesta:hover {
+            width: 100%;
+            padding: 7px 15px;
+            border: 1px solid #0076c6;
+            border-radius: 5px;
+            cursor: text;
+            background: #e8e8e8;
+            color: #a1a1a1;
+            text-align: left;
+        }
+
+        #btnGrabarComentario {
+            display: none;
+            color: #a1a1a1;
+            background: white;
+            padding: 6px 20px;
+            border-radius: 6px;
+            border: #a1a1a1 solid 1px;
+            margin-top: 5px;
+            cursor: pointer;
+        }
+
+        .btnGrabarComentario {
+            color: #a1a1a1;
+            background: white;
+            padding: 6px 20px;
+            border-radius: 6px;
+            border: #a1a1a1 solid 1px;
+            margin-top: 5px;
+            cursor: pointer;
+        }
+
+        .btnAgregarGrupo {
+            color: #a1a1a1;
+            background: white;
+            padding: 6px 20px;
+            border-radius: 6px;
+            border: #a1a1a1 solid 1px;
+            margin-top: 5px;
+            cursor: pointer;
+        }
+
+        .adjunto_comentario_padre {
+            display: none;
+            cursor: pointer;
+            margin-top: 3px;
+        }
+
+        .ticket-columna-data{
+            padding-left: 5px;
+            padding-right: 5px;
+            white-space: nowrap;
+            text-overflow: unset;
+            overflow: hidden;
+            font-weight: initial;
+        }
+
+        .mini-etiqueta{
+            position: relative;
+            float: left;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            padding-top: 10px;
+        }
+
+        .padre-etiquetas {
+            width: calc(100% - 50px);
+            position: relative;
+            float: left;
+        }
+
+        .select-etiquetas{
+            cursor: pointer;
+        }
+
+        .select-estado {
+            color: #ffffff;
+            /*text-shadow: 2px 2px 6px #000000;*/
+            font-weight: bold;
+            cursor: pointer;
+            padding-top: 8px;
+            opacity: 0.8;
+        }
+
+        .select-prioridad {
+            color: #ffffff;
+            /*text-shadow: 2px 2px 6px #000000;*/
+            font-weight: bold;
+            cursor: pointer;
+            padding-top: 8px;
+            opacity: 0.8;
+        }
+
+        .opcion-color {
+            width: 100%;
+            color: white;
+            /*text-shadow: 2px 2px 6px #000000;*/
+            font-weight: bold;
+            padding: 5px 5px;
+            text-align: center;
+        }
+
+        .opcion-seleccion {
+            width: 100%;
+            color: white;
+            /*text-shadow: 2px 2px 6px #000000;*/
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .daterange {
+            width: 100%;
+            height: 20px;
+            font-size: 12px;
+            padding: 2px 4px;
+            background-color: #579bfc;
+            color: white;
+            border-radius: 20px;
+            border: unset;
+            margin-top: 9px;
+            cursor: pointer;
+        }
+
+        .daterange:hover {
+            background-color: #257DFB;
+        }
+
+        .workspace {
+            padding: 5px;
+            cursor: pointer;
+            width: 100%;
+            height: 35px;
+            line-height: 1.5em;
+        }
+
+        .workspace:hover {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+
+        .workspace.active {
+            background-color: #cce5ff;
+        }
+
+        .workspace-hijos {
+            padding-left: 15px;
+        }
+
+        .divFiltros {
+            cursor: pointer;
+            display: flex;
+            padding: 3px 10px;
+            margin: 0 10px;
+            border-radius: 5px;
+        }
+
+        .divFiltros i {
+            margin-right: 3px;
+        }
+
+        .divFiltros:hover {
+            background: #e9e9e9;
+        }
+
+        .filter_options_personas_hidden {
+            display: none !important;
+        }
+
+        .filter_options_personas {
+            display: block;
+            width: 300px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 17px 2px rgb(0 0 0 / 10%);
+            position: absolute;
+            z-index: 99;
+            background: white;
+        }
+
+        .listado_usuarios {
+            display: inline-block;
+            width: 42.85px;
+        }
+
+        #btnFilterPersona {
+            background: white
+        }
+        .workspace-opts.workspace-hover > .workspace-opciones,
+        .workspace-opts:hover > .workspace-opciones {
+            position: relative;
+            width: 27px;
+            height: 21px;
+        }
+
+        .workspace-opciones {
+            display: none;
+        }
+
+        .workspace-opciones.opciones-hover,
+        .workspace-opts.workspace-hover > .workspace-opciones,
+        .workspace-opts:hover > .workspace-opciones {
+            display: block;
+        }
+
+        .workspace-opciones.opciones-hover:before,
+        .workspace-opts.workspace-hover > .workspace-opciones:before,
+        .workspace-opts:hover > .workspace-opciones:before {
+            content: "•••";
+            color: #818181 !important;
+            font-size: 27px;
+            /*right: 24px;*/
+            text-align: center;
+        }
+
+        .workspace-opts.workspace-hover > .workspace-opciones,
+        .workspace-opts:hover > .workspace-opciones {
+            position: relative;
+            float: left;
+            width: 27px;
+        }
+
+        .workspace-texto {
+            position: relative;
+            float: left;
+            width: 100%;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .workspace-opts.workspace-hover > .workspace-texto,
+        .workspace-opts:hover > .workspace-texto {
+            position: relative;
+            float: left;
+            width: calc(100% - 27px);
+        }
+
+        .workspace-summary {
+            width: calc(100% - 15px);
+            position: relative;
+            float: right;
+        }
+
+        .accordion > .card > .card-header {
+            padding: 0 0.25rem;
+        }
+        .accordion > .card > div > .card-body {
+            padding: 0 1.25rem;
+        }
+
+        .fa-stack > .fa-inverse {
+            font-style: normal !important;
+        }
+
+        .sltTipo {
+            padding: 10px;
+            border: #a1a1a1 solid 1px;
+            border-radius: 5px;
+            width: 100%;
+            margin: 10px 0 15px 0;
+            cursor:pointer;
+        }
+
+        .sltTipo:hover {
+            background: #00000013;
+        }
+
+        .spanCount {
+            padding: 2px 4px;
+            margin-left: 3px;
+            background: #ddd;
+            border-radius: 5px;
+        }
+
+        .spanCountHidden {
+            display: none;
+        }
+
+        #divMiembros {
+            height: 300px;
+            overflow-y: auto;
+        }
+
+        .detalleMiembrosWorkspace {
+            padding: 8px 0 0 0;
+            margin: 10px 0;
+            border: #efeded solid 1px;
+            border-radius: 3px;
+        }
+
+        .detalleMiembrosWorkspace .img-persona, .detalleMiembrosWorkspace .fa-stack {
+            padding: 0;
+        }
+
+        .detalleMiembrosWorkspace .img-persona img{
+            opacity: 1;
+        }
+
+        #divMenciones {
+            position: absolute;
+            z-index: 10;
+            background: white;
+            top: 100px;
+            padding: 5px;
+            border-radius: 5px;
+            border: #a1a1a1 solid 1px;
+        }
+
+        #divPersonMention {
+            padding: 5px;
+        }
+
+        #divPersonMention .img-persona {
+            padding: 0;
+        }
+
+        #divPersonMention .img-persona img {
+            opacity: 1;
+        }
+
+        #divPersonMention:hover {
+            background: #0073ea;
+            cursor: pointer;
+            color: white;
+        }
+
+        .porcentajeTickets:hover {
+            transform: scale(1.1);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="card">
+                    <input type="hidden" id="tipo" name="tipo" value="{% if request.GET.tipo %}{{ request.GET.tipo }}{% else %}departamento{% endif %}">
+                    <div class="card-body altura-contenidos" id="divWorkspaces">
+                        {%  if bool_director %}
+                            <select id="departamento" name="departamento" class="sltTipo" onchange="document.getElementById('workspace_id').value = ''; this.options[0].disabled = true; getDataInitial();">
+                                <option value="">Seleccione un departamento</option>
+                                {% for departamento in arr_departamentos %}
+                                    <option value="{{ departamento.id }}">{{ departamento.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-10">
+                <div class="card">
+                    <input type="hidden" name="workspace_id" id="workspace_id">
+                    <div class="card-body" id="divGrupos">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_preview_comentarios" class="modal-comentario-hidden">
+
+        <div class="modal-content-comentario">
+            <span class="close-comentario" id="close-comentario">&times;</span>
+            <div class="row" style="margin-top: 35px;">
+                <div class="col-12">
+                    <ul class="nav nav-pills nav-pills-warning" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#div_general" role="tablist">
+                                General
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#div_adjuntos" role="tablist">
+                                Adjuntos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#div_comentarios" role="tablist" onclick="showHtmlEditor();">
+                                Comentarios
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#div_actividad" role="tablist">
+                                Actividad
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content tab-space">
+                        <div class="tab-pane active" id="div_general">
+
+                        </div>
+                        <div class="tab-pane" id="div_adjuntos">
+                        </div>
+                        <div class="tab-pane" id="div_comentarios">
+                            <div class="row">
+                                <div class="col-12">
+                                    <button type="button" id="btnRespuesta" onclick="showEditor(true);">
+                                        Escribe una respuesta...
+                                    </button>
+                                    <div class="html-editor" style="display: none;"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">
+                                    <a onclick="selectFileComentarioPadre();" class="adjunto_comentario_padre">
+                                        <span class="material-icons">attachment</span>
+                                        <span id="spanAdjunto">Agregar adjunto</span>
+                                    </a>
+                                    <input type="file" name="adjunto_comentario_padre[]" id="adjunto_comentario_padre" style="display: none;" onchange="changeAdjuntoPadre();" accept="image/*, .pdf, .doc, .docx, .csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, text/plain">
+                                </div>
+                                <div class="col-4 text-right">
+                                    <button type="button" id="btnGrabarComentario">
+                                        Responder
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12" id="div_comentarios_contenido">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="div_actividad">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlPersonas" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Asignación de Personas</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardarAsignacion">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlEtiquetas" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Selección de Etiquetas</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardarEtiquetas">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlEstados" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cambio de Estado</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardarEstado">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlPrioridades" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cambio de Prioridad</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardarPrioridad">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlAgrupacion" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agrupación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="nombre_agrupacion" class="bmd-label-floating">Nombre</label>
+                                <input type="text" name="nombre_agrupacion" id="nombre_agrupacion" class="form-control" maxlength="50">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="color_agrupacion" class="bmd-label-floating">Color</label>
+                                <input type="color" name="color_agrupacion" id="color_agrupacion" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardarAgrupacion" onclick="saveAgrupacion();">Grabar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlWorkspace" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tablero/Agrupación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="workspace_padre_id" id="workspace_padre_id">
+                    <input type="hidden" name="modificar_workspace_id" id="modificar_workspace_id">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="nombre_workspace" id="lbl_nombre_workspace" class="bmd-label-floating">Nombre</label>
+                                <input type="text" name="nombre_workspace" id="nombre_workspace" class="form-control" maxlength="50">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="color_workspace" class="bmd-label-floating">Color</label>
+                                <input type="color" name="color_workspace" id="color_workspace" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="rowVistaPrivada">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="vista_privada_workspace" class="bmd-label-floating">Vista privada</label>
+                                <input type="checkbox" name="vista_privada_workspace" id="vista_privada_workspace" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardarWorkspace" onclick="saveWorkspace();">Grabar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlMiembrosWorkspace" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Miembros del tablero</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="usuarios_workspace_id" id="usuarios_workspace_id">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="nombre_usuario" id="lbl_nombre_usuario" class="bmd-label-floating">Nombre</label>
+                                <input type="text" name="nombre_usuario" id="nombre_usuario" class="form-control" maxlength="50"
+                                list="list_autocomplete_usuario" onchange="setAsignarWorkspace();">
+                                <datalist id="list_autocomplete_usuario"></datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divMiembros"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlGrupos" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Administración de grupos</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="divAdminGrupos">
+                        <form id="frmAdminGrupos"></form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link btn-outline-danger" data-dismiss="modal" style="margin-right: 10px;">Cerrar</button>
+                    <button type="button" class="btn btn-link btn-outline-warning" id="btnDuplicarGrupos" onclick="dialogConfirm(saveDuplicateGrupos);" style="margin-right: 10px; display: none;">Duplicar grupos</button>
+                    <button type="button" class="btn btn-link btn-outline-primary" id="btnGuardarGrupos" onclick="dialogConfirm(saveAdminGrupos);">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_preview_files" class="modal-files-hidden">
+
+        <div class="modal-content-files">
+            <span class="close-files" id="close-files">&times;</span>
+            <div id="divContenidoFiles" style="height: 100%; display: none;"></div>
+            <div id="divContenidoImg" style="height: 100%; display: none;">
+                <img src="" alt="adjunto" id="imgAdjunto" style="width: 100%;">
+            </div>
+        </div>
+
+    </div>
+
+    <input type="hidden" name="es_personal" id="es_personal" value="0">
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script src="{% static 'assets/js/dx-quill.min.js' %}"></script>
+    <script src="{% static 'assets/lib/js/dx.all.js' %}"></script>
+    <script src="{% static 'assets/pdfjs/webviewer.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/daterangepicker.js' %}"></script>
+    <script>
+        const strUrlGetDataInitial = "{% url 'tickets-dashboard_get_data_for_dashboard' %}",
+            strUrlGetInfoTicket = "{% url 'tickets-dashboard_get_api_info_ticket' %}",
+            strUrlGetTickets = "{% url 'tickets-dashboard_get_api_tickets' %}",
+            strUrlGetAgrupaciones = "{% url 'tickets-dashboard_get_api_agrupaciones' %}",
+            strUrlGetDataWorkspace = "{% url 'tickets-dashboard_get_data_for_workspace' %}",
+            strUrlCreateTicket = "{% url 'tickets-dashboard_post_create_ticket' %}",
+            strUrlUpdateTicket = "{% url 'tickets-dashboard_post_update_ticket' %}",
+            strUrlDeleteTicket = "{% url 'tickets-dashboard_post_delete_ticket' %}",
+            strUrlSaveComentario = "{% url 'tickets-dashboard_post_create_comentario' %}",
+            strUrlSaveFileTicket = "{% url 'tickets-dashboard_post_insert_adjunto_ticket' %}",
+            strUrlSaveAsignacion = "{% url 'tickets-dashboard_post_save_asignacion' %}",
+            strUrlSaveEtiquetas = "{% url 'tickets-dashboard_post_save_etiquetas' %}",
+            strUrlSaveEstado = "{% url 'tickets-dashboard_post_update_ticket_estado' %}",
+            strUrlSavePrioridad = "{% url 'tickets-dashboard_post_update_ticket_prioridad' %}",
+            strUrlDeleteAdjunto = "{% url 'tickets-dashboard_post_delete_adjunto_ticket' %}",
+            strUrlCreateAgrupacion = "{% url 'tickets-dashboard_post_create_agrupacion' %}",
+            strUrlCreateWorkspace = "{% url 'tickets-dashboard_post_create_workspace' %}",
+            strUrlDeshabilitarWorkspace = "{% url 'tickets-dashboard_post_deshabilitar_workspace' %}",
+            strUrlGrabarMiembrosWorkspace = "{% url 'tickets-dashboard_post_miembros_workspace' %}",
+            strUrlGrabarAdminWorkspace = "{% url 'tickets-dashboard_post_save_admin_workspace' %}",
+            strFotoUserLogin = "{% if request.user.avatar %}{{ request.user.avatar.name }}{% else %}default-avatar.png{% endif %}",
+            strNameUserLogin = "{{ request.user.name }}",
+            strUrlSaveFechas = "{% url 'tickets-dashboard_post_update_ticket_fechas' %}",
+            strUrlSendNotificacion = "{% url 'tickets-dashboard_send_notificaciones_ticket' %}",
+            strUrlUpdateAgrupacionTicket = "{% url 'tickets-dashboard_post_update_agrupacion_ticket' %}",
+            strUrlUpdateGrupos = "{% url 'tickets-dashboard_post_update_grupo' %}",
+            strUrlDuplicateGrupos = "{% url 'tickets-dashboard_post_duplicate_agrupacion' %}",
+            strUserName = "{{ request.user.name }}",
+            intDepartamento = {{ departamento }},
+            intUser = {{ request.user.id }}
+            boolDirector = {%  if bool_director %}true{% else %}false{% endif %};
+
+            let intWorkspacesGet = {% if request.GET.workspaces %}{{ request.GET.workspaces }}{% else %}0{% endif %},
+            intTicketGet = {% if request.GET.ticket_id %}{{ request.GET.ticket_id }}{% else %}0{% endif %};
+
+    </script>
+    <script src="{% static 'modules/tickets/dashboard/dashboard.js' %}" async defer></script>
+
+{% endblock javascripts %}

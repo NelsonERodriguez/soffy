@@ -1,0 +1,127 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Permisos {% endblock title %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">verified_user</i>
+                        </div>
+                        <h4 class="card-title">Permisos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+                        <div class="col-12 text-right">
+                            <button type="button" rel="tooltip" class="btn btn-info" data-original-title="Agregar"
+                                    onclick="simple_redireccion('{% url 'user-permissions_create' %}');">
+                                <i class="material-icons">add</i>
+                            </button>
+                        </div>
+                        <div class="material-datatables table-hover">
+                            <table id="datatables" class="table" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                <tr>
+                                    <th>Modulo</th>
+                                    <th>Modulo nombre</th>
+                                    <th>Permiso</th>
+                                    <th>Ventana</th>
+                                    <th>Modelo</th>
+                                    <th>Descripción</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {#                                    {% for permission in permissions %}#}
+                                {#                                        <tr style="cursor:pointer;" onclick="simple_redireccion('{% url 'user-permissions_edit' permission.id %}');">#}
+                                {#                                            <td>{{ permission.app_label }}</td>#}
+                                {#                                            <td>{{ permission.modulo }}</td>#}
+                                {#                                            <td>{{ permission.codename }}</td>#}
+                                {#                                            <td>{{ permission.ventana }}</td>#}
+                                {#                                            <td>{{ permission.model }}</td>#}
+                                {#                                            <td>{{ permission.descripcion }}</td>#}
+                                {#                                        </tr>#}
+                                {#                                    {% endfor %}#}
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th>Modulo</th>
+                                    <th>Modulo nombre</th>
+                                    <th>Permiso</th>
+                                    <th>Ventana</th>
+                                    <th>Modelo</th>
+                                    <th>Descripción</th>
+                                    <th></th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="{% static 'assets/js/core/jquery-ui.min.js' %}"></script>
+    <script>
+        const strUrlPermisos = "{% url 'user-permissions_edit' 0 %}";
+        $(document).ready(function () {
+            $('#datatables').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                processing: true,
+                ordering: false,
+                serverSide: true,
+                responsive: true,
+                language: objLenguajeDataTable,
+                ajax: {
+                    url: "{% url 'user-permissions_get_permisos' %}",
+                    type: "POST",
+                    headers: {
+                        "X-CSRFToken": getCookie('csrftoken'),
+                    },
+                },
+                order: [[0, 'asc']],
+                columns: [
+                    {"data": "name",},
+                    {"data": "codename",},
+                    {"data": "app_label",},
+                    {"data": "model",},
+                    {"data": "modulo",},
+                    {"data": "ventana",},
+                    {"defaultContent": ""},
+                ],
+                columnDefs: [
+                    {
+                        targets: 6,
+                        render: function (data, type, row, meta) {
+                            return `
+                            <span class="material-icons" rel="tooltip" data-original-title="Ver solicitud" style="cursor:pointer;" onclick="window.location.href = '${strUrlPermisos.replace('0', row.id)}';">edit</span>&nbsp;&nbsp;&nbsp;
+                        `;
+                        }
+                    }
+                ]
+            });
+
+        });
+    </script>
+
+{% endblock javascripts %}

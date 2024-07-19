@@ -1,0 +1,125 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block title %} Clientes SV {% endblock title %}
+
+{% block stylesheets %} {% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-md-1 col-md-10">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">person_play</i>
+                        </div>
+                        <h4 class="card-title">
+                            Clientes SV
+                            <button class="btn btn-fill btn-outline-primary float-sm-right" onclick='fntAgregar();'>
+                                <span class="material-icons">add</span> Agregar Cliente Nuevo
+                            </button>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped table-hover" id="tblClientes">
+                            <thead>
+                                <tr>
+                                    <th class="col-2">Código</th>
+                                    <th class="col-4">Nombre</th>
+                                    <th class="col-2">Teléfono</th>
+                                    <th class="col-2">Activo</th>
+                                    <th class="col-2">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlCliente" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Cliente</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="txtCodigo">Código del Cliente</label>
+                                <input type="text" class="form-control" name="txtCodigo" id="txtCodigo" value="" maxlength="20">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="txtCliente">Nombre del Cliente</label>
+                                <input type="text" class="form-control" name="txtCliente" id="txtCliente" value="" maxlength="150">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="txtTelefono">Teléfono del Cliente</label>
+                                <input type="text" class="form-control" name="txtTelefono" id="txtTelefono" value="" maxlength="20">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="txtEmail">Email del Cliente</label>
+                                <input type="text" class="form-control" name="txtEmail" id="txtEmail" value="" maxlength="150">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="txtDireccionFiscal">Dirección Fiscal del Cliente</label>
+                                <input type="text" class="form-control" name="txtDireccionFiscal" id="txtDireccionFiscal" value="" maxlength="300">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="chkActivo" class="bmd-label-floating">Activo</label>
+                                <input type="checkbox" class="form-control" name="chkActivo" id="chkActivo" value="1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="fntGuardar();">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const strUrlGetListado = "{% url 'ventas-clientes_sv_listado' %}",
+            strUrlGetData = "{% url 'ventas-clientes_sv_get_data' %}",
+            strUrlGuardar = "{% url 'ventas-clientes_sv_guardar' %}",
+            strUrlEliminar = "{% url 'ventas-clientes_sv_eliminar' %}",
+            strUrlGetCodigoNuevo = "{% url 'ventas-clientes_sv_get_codigo_nuevo' %}";
+        let objDataTable = null;
+    </script>
+
+    <script src="{% static 'modules/ventas/ventas_sv/clientes_sv.js' %}" async defer></script>
+{% endblock javascripts %}

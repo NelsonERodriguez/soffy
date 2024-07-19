@@ -1,0 +1,86 @@
+{% extends "layouts/base-auth.html" %}
+
+{% block title %} Inicio Sesión {% endblock title %}
+
+{% block content %}
+    <div class="page-header login-page header-filter" filter-color="black"
+    style="background-image: url('/static/assets/img/login.jpg');">
+        <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-8 ml-auto mr-auto">
+            <form role="form" method="post" action="{{ app_path }}">
+                {% csrf_token %}
+                <div class="card card-login card-hidden">
+                    <div class="card-body ">
+                        <div class="col-12 col-md-10 offset-md-1">
+                            {% if msg %}
+                                {{ msg | safe }}
+                            {% else %}
+                                <h4 class="text-dark text-center mt-2 mb-3" style="margin-bottom: 1rem!important; margin-top: 1rem!important; font-weight: 600;">
+                                    Inicio de Sesión
+                                </h4>
+                            {% endif %}
+                            <br />
+                            <br />
+                            
+                            <p class="card-description text-center" style="margin-bottom: 0;">
+                                <span>
+                                    Ingresa tu correo y contraseña
+                                </span>
+                            </p>
+                            <span class="bmd-form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend" style='width: 100%'>
+                                        <input type="email" name='username' class="form-control" placeholder='Correo' autocomplete="new-password">
+                                    </div>
+                                    {{ form.username }}
+                                </div>
+                            </span>
+                
+                            <span class="bmd-form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend" style='width: 100%'>
+                                        <input type="password" name='password' class="form-control" placeholder='Contraseña' autocomplete="new-password">
+                                    </div>
+                                    {{ form.password }}
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-footer justify-content-center">
+                        <button type="submit" name="login" class="btn" style="background-image: linear-gradient(310deg, #2dce89, #2dcecc);" id="btnLogin">Ingresar</button>
+                    </div>
+        
+                    <br />
+        
+                </div>
+            </form>
+
+            </div>
+        </div>
+        </div>
+
+        {% include 'includes/footer-auth.html' %}
+
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input').forEach( node => node.addEventListener('keypress', e => {
+                if (e.keyCode == 13) {
+                    e.preventDefault();
+                }
+            }))
+        });
+
+        $(document).ready(function() {
+            md.checkFullPageBackgroundImage();
+            setTimeout(function() {
+                $('.card').removeClass('card-hidden');
+            }, 700);
+        });
+    </script>
+{% endblock javascripts %}

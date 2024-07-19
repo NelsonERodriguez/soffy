@@ -1,0 +1,53 @@
+{% load static %}
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Carta de Vacaciones</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        strong {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div style="display: flex; flex-wrap: wrap;padding: 20px 0;">
+        <div style="position: relative;display: block;margin: 20px auto; width: 100%;text-align: justify;">
+            <p style="text-align: right;"><strong>Guatemala, {{ fecha|date:"d" }} de {{ fecha|date:"F" }} de {{ fecha|date:"Y" }}</strong></p>
+
+            <p>Estimado Departamento de Recursos Humanos:</p>
+
+            <p>Por medio de la presente, quiero informar que he disfrutado de mis vacaciones correspondientes al año en curso, las cuales fueron autorizadas por mi jefe inmediato. Mi nombre es {{ empleado.nombre }} {{ empleado.apellido }}, mi código de empleado es {{ empleado_base.no_empleado }} y pertenezco a la empresa {{ empresa.razon_social }}.</p>
+
+            <p>Las vacaciones se llevaron a cabo en las siguientes fechas:</p>
+        </div>
+        <div style="position: relative;display: block; width: 100%;margin-top: 0;">
+
+            <ul>
+                {% for detalle in detalle %}
+                    <li>{{ detalle.fecha|date:"d/m/Y" }}</li>
+                {% endfor %}
+            </ul>
+
+            <br>
+
+            <p>Agradezco la oportunidad de haber podido disfrutar de este tiempo de descanso y quedo a disposición para reincorporarme al trabajo y retomar mis responsabilidades habituales.</p>
+
+            <p>Sin otro particular, firmo la constancia,</p>
+        </div>
+
+
+        <div style="position: relative;display: block;text-align: center; width: 100%;margin-top: 20px;">
+            <p>{{ empleado.nombre }} {{ empleado.apellido }}</p>
+            <br>
+            <p>_______________________________</p>
+        </div>
+    </div>
+
+</body>
+</html>

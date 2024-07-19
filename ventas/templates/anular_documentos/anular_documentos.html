@@ -1,0 +1,62 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+    Anular Documentos
+{% endblock %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <style>
+    #apiSelector {
+        margin-bottom: 15px;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">contract_delete</i>
+                        </div>
+                        <h4 class="card-title">Anular Documentos</h4>
+                    </div>
+                    <div class="card-body">
+                        {% csrf_token %}
+                        <div id="app">
+                            <select id="apiSelector" @change="fetchData($event.target.value)" class="form-control" v-model="tipoDocumentos">
+                                <option value="" disabled>Tipo de documento</option>
+                                <option value="factura">Facturas</option>
+                                <option value="envio">Envios</option>
+                                <option value="nota">Notas de crédito</option>
+                            </select>
+                            <div id="dataGridContainer" v-if="tipoDocumentos"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {% if DEBUG %}
+        <script src="{% static 'assets/js/@3_vue.global.js' %}"></script>
+    {% else %}
+        <script src="{% static 'assets/js/@3_vue.global.prod.js' %}"></script>
+    {% endif %}
+    <script src="{% static 'assets/lib/js/dx.all.js' %}"></script>
+    <script src="{% static 'modules/ventas/anular_documentos/anular_documentos.js' %}"></script>
+    <script async defer>
+        const strUrlGetFacturas = "{% url 'ventas-anular_documentos_get_facturas_anular' %}";
+        const strUrlGetNotas = "{% url 'ventas-anular_documentos_get_notas_anular' %}";
+        const strUrlPostAnularFactura = "{% url 'ventas-anular_documentos_post_anular_factura' %}";
+        const strUrlPostAnularEnvio = "{% url 'ventas-anular_documentos_post_anular_envio' %}";
+        const strUrlPostAnularNota = "{% url 'ventas-anular_documentos_post_anular_nota' %}";
+        const boolAnularEnvio = {% if request.user.id == 53 or request.user.id == 103 or request.user.id == 1 or request.user.id == 853 %}true{% else %}false{% endif %}
+    </script>
+{% endblock %}

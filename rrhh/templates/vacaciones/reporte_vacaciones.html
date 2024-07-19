@@ -1,0 +1,84 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block title %} Reporte de Vacaciones {% endblock title %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">playlist_add_check</i>
+                        </div>
+                        <h4 class="card-title">Reporte de Vacaciones</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" style="margin: 25px 0;">
+                            <div class="col-12">
+                                <div id="divCalendar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="{% static 'assets/js/plugins/fullcalendar-6.1.11/dist/index.global.js' %}"></script>
+
+    <script>
+        let objVacaciones = [];
+        let objEventos = JSON.parse('{{ eventos|escapejs }}');
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('divCalendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                locale: 'es',
+                initialView: 'multiMonthYear',
+                selectable: false,
+                buttonText: {
+                    today: 'Hoy',
+                    month: 'Mes',
+                    week: 'Semana',
+                    day: 'Día',
+                    list: 'Listado',
+                    prev: 'Anterior',
+                    next: 'Siguiente',
+                    nextYear: 'Siguiente Año',
+                    prevYear: 'Año Anterior'
+                },
+                eventDidMount: function(info) {
+                    $(info.el).popover({
+                        title: 'Información',
+                        content: info.event.title,
+                        html: true,
+                        trigger: 'hover'
+                    });
+                },
+                events: objEventos
+            });
+            calendar.render();
+
+            $('body').on('click', function (e) {
+
+                if ($(e.target).data('toggle') !== 'popover'
+                    && $(e.target).parents('[data-toggle="popover"]').length === 0
+                    && $(e.target).parents('.popover.in').length === 0) {
+                    console.log("Entro al if");
+                    //$('[data-toggle="popover"]').popover('hide');
+                }
+                else{
+                    console.log("no entro");
+                }
+            });
+        });
+
+
+    </script>
+{% endblock javascripts %}

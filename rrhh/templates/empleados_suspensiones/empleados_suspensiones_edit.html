@@ -1,0 +1,131 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Solicitar vacaciones {% endblock title %}
+
+{% block stylesheets %}
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">playlist_add_check</i>
+                        </div>
+                        <h4 class="card-title">Solicitar vacaciones</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" style="margin-bottom: 30px;">
+                            <div class="col-12">
+                                <a href="{% url 'rrhh-empleados_suspensiones' %}" class="btn btn-outline-danger" type="button" style="float:right;">
+                                    <i class='material-icons'>history</i>
+                                    Regresar
+                                </a>
+                            </div>
+                        </div>
+                        <form action="" method="post" id="formSuspensiones">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="nombre" class="bmd-label-floating">Empleado</label>
+                                        <input type="text" id="nombre" class="form-control" disabled value="{{nombre_empleado}}"/>
+                                        <input type="hidden" class="form-control" name="empleado" id="empleado" value="{{codigo_empleado}}">
+                                        <input type="hidden" class="form-control" name="existente" value="{{suspension.existente}}">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="form-group bmd-form-group is-filled">
+                                        <label for="motivo" class="bmd-label-floating">Selecciona el Motivo</label>
+                                        <select class="form-control" id="motivo" name="motivo">
+                                            <option value="0">Selecciona Motivo</option>
+                                            <option value="suspension_SGS" {% if suspension.estado == 'suspension_sgs' %} selected {% endif %}>Suspension SGS</option>
+                                            <option value="vacaciones" {% if suspension.estado == 'vacaciones' %} selected {% endif %}>Vacaciones</option>
+                                            <option value="medico_particular" {% if suspension.estado == 'medico_particular' %} selected {% endif %}>Medico Particular</option>
+                                            <option value="igss" {% if suspension.estado == 'igss' %} selected {% endif %}>Suspension IGSS</option>
+                                            <option value="paternidad" {% if suspension.estado == 'paternidad' %} selected {% endif %}>Paternidad</option>
+                                            <option value="matrimonio" {% if suspension.estado == 'matrimonio' %} selected {% endif %}>Matrimonio</option>
+                                            <option value="luto" {% if suspension.estado == 'luto' %} selected {% endif %}>Luto</option>
+                                            <option value="fallecimiento" {% if suspension.estado == 'fallecimiento' %} selected {% endif %}>Fallecimiento</option>
+                                            <option value="renuncia" {% if suspension.estado == 'renuncia' %} selected {% endif %}>Renuncia</option>
+                                            <option value="despido" {% if suspension.estado == 'despido' %} selected {% endif %}>Despido</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="form-group bmd-form-group is-filled">
+                                        <label for="inicio" class="bmd-label-floating">Fecha Inicio</label>
+                                        <input type="date" id="inicio" name="inicio" class="form-control" value="{{suspension.fecha_inicio}}">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="form-group bmd-form-group is-filled">
+                                        <label for="fin" class="bmd-label-floating">Fecha Regreso</label>
+                                        <input type="date" id="fin" name="fin" class="form-control" value="{{suspension.fecha_regreso}}">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <div class="form-group bmd-form-group is-filled">
+                                        <label for="ready">¡Ya esta laborando!</label>
+                                        <input type="checkbox" class="form-control" name="ready" id="ready" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle; margin-left: 30px;">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {% if bool_estado %}
+                                <div class="row">
+                                    <div class="col text-center">
+                                        <button type="button" class="btn btn-outline-success" id="btnSave">
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+
+{% block javascripts %}
+    <script>
+        const btn = document.getElementById('btnSave'),
+              urlSave = "{% url 'rrhh-empleados_suspensiones_create'%}";
+        if(btn) {
+            btn.addEventListener('click', sendFormSuspension);
+        }
+
+        function sendFormSuspension() {
+            const form = document.getElementById('formSuspensiones');
+            const formData = new FormData(form)
+
+            let empleado = document.getElementById('empleado').value,
+                motivo = document.getElementById('motivo').value,
+                inicio = document.getElementById('inicio').value;
+
+            if (empleado == '' || motivo == '0' || inicio == '') {
+                alert_nova.showNotification("Tiene informacion pendiente de llenar.", "warning", "danger");
+            }
+            else {
+                fetch(`${urlSave}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.error) {
+                        if(data.status){
+                            window.location.reload();
+                        }
+                    }
+                })
+                .catch(error => console.error(error));
+            }
+        }
+    </script>
+{% endblock javascripts %}

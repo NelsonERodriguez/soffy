@@ -1,0 +1,95 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Empleados Puestos {% endblock title %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">badge</i>
+                        </div>
+                        <h4 class="card-title">Empleados Puestos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-12 text-right">
+                            <a type="button" rel="tooltip" class="btn btn-info" data-original-title="Agregar" href="{% url 'rrhh-empleados_puestos_create' %}">
+                                <i class="material-icons">add</i>
+                                <div class="ripple-container"></div>
+                            </a>
+                        </div>
+                        <div class="material-datatables">
+                            <table id="dtDefault" class="table table-hover" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Departamento</th>
+                                        <th>Puesto</th>
+                                        <th>Jefe Inmediato</th>
+                                        <th class="disabled-sorting"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for empleado in empleados %}
+                                        <tr >
+                                            <td>{{ empleado.user.name }}</td>
+                                            <td>{{ empleado.departamento.nombre }}</td>
+                                            <td>{{ empleado.puesto.nombre }}</td>
+                                            <td>{{ empleado.user_jefe.name }}</td>
+                                            <td class="td-actions text-right">
+                                                {% if perms.rrhh.change_empleados_puestos %}
+                                                    <a type="button" rel="tooltip" class="btn btn-link btn-success" data-original-title="Editar" href="{% url 'rrhh-empleados_puestos_edit' empleado.id %}">
+                                                        <i class="material-icons">edit</i>
+                                                    </a>
+                                                {% endif %}
+                                                {% if perms.rrhh.delete_empleados_puestos %}
+                                                    <button type="button" rel="tooltip" class="btn btn-link btn-danger" data-original-title="Eliminar" onclick="dialogConfirm(confirm_delete, '{% url 'rrhh-empleados_puestos_delete' empleado.id %}');">
+                                                        <i class="material-icons">delete_outline</i>
+                                                    </button>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Departamento</th>
+                                        <th>Puesto</th>
+                                        <th>Jefe Inmediato</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        makeDataTableDefault();
+        $(document).ready(function() {
+            $('#datatables').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                responsive: true,
+                language: objLenguajeDataTable,
+            });
+        });
+
+        function confirm_delete(strUrl) {
+            window.location.href = strUrl;
+        }
+    </script>
+{% endblock javascripts %}

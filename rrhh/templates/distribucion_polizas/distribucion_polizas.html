@@ -1,0 +1,42 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block title %} Distribución Pólizas {% endblock title %}
+
+{% block stylesheets %}
+    <style></style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">analytics</i>
+                        </div>
+                        <h4 class="card-title">Distribución Pólizas</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12" id="cntTable"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script async defer>
+        const strUrlGetData = "{% url 'rrhh-distribucion_polizas_get_data' %}",
+            valCSRF = getCookie('csrftoken');
+        let urlEditPolizaEmpleado = "{% url 'rrhh-distribucion_polizas_edit_poliza_empleado' 0 %}";
+    </script>
+    <script src="{% static 'modules/rrhh/distribucion_polizas/distribucion_polizas.js' %}" async></script>
+{% endblock javascripts %}

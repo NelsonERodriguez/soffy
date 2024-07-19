@@ -1,0 +1,271 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Pedidos {% endblock title %}
+
+{% load static %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">article</i>
+                        </div>
+                        <h4 class="card-title">Pedidos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" style="margin-top: 50px;">
+                            <div class="col-md-10">
+                                <button type="button" class="btn btn-outline-info" id="btnSearch" onclick="$('#modal_cotizacion').modal('show');">
+                                    <i class='material-icons'>search</i> Despachos
+                                </button>
+                                <button type="button" class="btn btn-outline-info" id="btnSearch" onclick="$('#modal_impresion').modal('show');">
+                                    <i class='material-icons'>print</i> Impresión
+                                </button>
+                                <button type="button" class="btn btn-outline-success" id="btnActualizar" onclick="getPedidos();">
+                                    <i class='material-icons'>update</i> Actualizar
+                                </button>
+                                {% if perms.ventas.anular_cotizaciones %}
+                                    <button type="button" class="btn btn-outline-danger" onclick="simple_redireccion('{% url 'ventas-anular_cotizaciones' %}?setOption=cotizaciones');">
+                                        <i class='material-icons'>computer</i> Anular cotización
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger" onclick="simple_redireccion('{% url 'ventas-anular_cotizaciones' %}?setOption=pedidos');">
+                                        <i class='material-icons'>phone_iphone</i> Anular pedido
+                                    </button>
+                                {% endif %}
+                            </div>
+                            {% if perms.ventas.agregar_cotizacion %}
+                                <div class="col-md-2 text-right">
+                                    <a href="{% url 'ventas-pedido_cotizacion_pedido_detalle' 0 %}" class="btn btn-outline-info" type="button">
+                                        <i class='material-icons'>add</i> Crear pedido
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="row" style="margin-top: 50px;">
+                            <div class="col-12">
+                                <div id="divPedidos"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_cotizacion" tabindex="-1" role="dialog" aria-labelledby="modal_cotizacionLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Despacho</h4>
+                    <button type="button" class="close" id="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal_body_cotizacion">
+                    <form method="POST" name="frm_cotizacion" id="frm_cotizacion">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <button type="button" class="btn btn-outline-primary" style="margin: 10px;" onclick="searchCotizacion();">
+                                    <i class='material-icons'>search</i> BUSCAR
+                                </button>
+                                <button type="button" class="btn btn-outline-info" style="margin: 10px; display: none;" id="btnDespacho">
+                                    <i class='material-icons'>print</i> DESPACHO PARCIAL
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 25px;">
+                            <div class="col-6">
+                                <div class="form-group is-filled bmd-form-group">
+                                    <label for="empresa" class="bmd-label-floating">Empresa</label>
+                                    <select name="empresa" id="empresa" class="form-control">
+                                        <option value=""></option>
+                                        {% for empresa in empresas %}
+                                            <option value="{{ empresa.NoEmpresa }}">{{ empresa.NombreComercial }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-4 offset-2">
+                                <div class="form-group is-filled bmd-form-group">
+                                    <label for="despacho" class="bmd-label-floating">Despacho</label>
+                                    <select name="despacho" id="despacho" class="form-control">
+                                        <option value="H">Hoy</option>
+                                        <option value="M">Mañana</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 35px;">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="documento" class="bmd-label-floating">No. Documento</label>
+                                    <input type="text" name="documento" id="documento" class="form-control" onkeypress="return validar_caracteres(event, 2);">
+                                    <input type="hidden" name="nocotizacion" id="nocotizacion">
+                                    <input type="hidden" name="nocotizacionsf" id="nocotizacionsf">
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group is-filled bmd-form-group">
+                                    <label for="cliente" class="bmd-label-floating"></label>
+                                    <input type="text" name="cliente" id="cliente" class="form-control" disabled placeholder="Cliente">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 15px;">
+                            <div class="col-12">
+                                <div class="form-group is-filled bmd-form-group">
+                                    <label for="sucursal" class="bmd-label-floating">Sucursal</label>
+                                    <select name="sucursal" id="sucursal" class="form-control">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 25px;">
+                            <div class="col-12">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Linea</th>
+                                            <th>Código</th>
+                                            <th>Descripción</th>
+                                            <th>Cantidad</th>
+                                            <th>Cajas</th>
+                                            <th>Saldo</th>
+                                            <th>Saldo Cajas</th>
+                                            <th>Despacho</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyDetalle"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 15px;">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="observaciones" class="bmd-label-floating">Observaciones</label>
+                                    <textarea name="observaciones" id="observaciones" class="form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 15px;">
+                            <div class="col-12 text-center">
+                                <button type="button" class="btn btn-outline-success" style="margin: 10px; display: none;" id="btnGuardar" onclick="dialogConfirm(saveDespacho);">
+                                    <i class='material-icons'>save</i> GUARDAR
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_impresion" tabindex="-1" role="dialog" aria-labelledby="modal_impresionLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Impresiones</h4>
+                    <button type="button" class="close" id="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal_body_impresion">
+                    <form method="POST" name="frm_impresion" id="frm_impresion">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <button type="button" class="btn btn-outline-primary" style="margin: 10px;" onclick="searchCotizacionImpresion();">
+                                    <i class='material-icons'>search</i> BUSCAR
+                                </button>
+                                <button type="button" class="btn btn-outline-info" style="margin: 10px; display: none;" id="btnCotizacionImpresion">
+                                    <i class='material-icons'>print</i> COTIZACIÓN
+                                </button>
+                                <button type="button" class="btn btn-outline-info" style="margin: 10px; display: none;" id="btnFacturaImpresion">
+                                    <i class='material-icons'>print</i> FACTURA
+                                </button>
+                                <button type="button" class="btn btn-outline-info" style="margin: 10px; display: none;" id="btnOrdenImpresion">
+                                    <i class='material-icons'>print</i> ORDEN COMPRA
+                                </button>
+                                {% if perms.ventas.anular_pedidos %}
+                                <button type="button" class="btn btn-outline-danger" style="margin: 10px; display: none;" id="btnAnular" onclick="dialogConfirm(setAnulado);">
+                                    <i class='material-icons'>subtitles_off</i> ANULAR
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 25px;">
+                            <div class="col-6">
+                                <div class="form-group is-filled bmd-form-group">
+                                    <label for="empresa_impresion" class="bmd-label-floating">Empresa</label>
+                                    <select name="empresa_impresion" id="empresa_impresion" class="form-control">
+                                        <option value=""></option>
+                                        {% for empresa in empresas %}
+                                            <option value="{{ empresa.NoEmpresa }}">{{ empresa.NombreComercial }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 35px;">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="documento_impresion" class="bmd-label-floating">No. Documento</label>
+                                    <input type="text" name="documento_impresion" id="documento_impresion" class="form-control" onkeypress="return validar_caracteres(event, 2);">
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group is-filled bmd-form-group">
+                                    <label for="cliente_impresion" class="bmd-label-floating"></label>
+                                    <input type="text" name="cliente_impresion" id="cliente_impresion" class="form-control" disabled placeholder="Cliente">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 25px;">
+                            <div class="col-12">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>No Cotizacion</th>
+                                            <th>Sucursal</th>
+                                            <th>Fecha Despacho</th>
+                                            <th>Observaciones</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyDetalleImpresion"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        const strUrlGetPedidos = '{% url 'ventas-pedido_cotizacion_get_pedidos' %}',
+            strUrlGetCotizaciones = '{% url 'ventas-pedido_cotizacion_get_cotizacion' %}',
+            strUrlPedidos = '{% url 'ventas-pedido_cotizacion' %}',
+            strUrlGetDocumentosImpresion = '{% url 'ventas-pedido_cotizacion_get_documentos_impresion' %}',
+            strUrlSaveDespacho = '{% url 'ventas-pedido_cotizacion_save_despacho' %}',
+            strUrlImpresion = '{% url 'ventas-pedido_cotizacion_impresion' 0 'cotizacion' %}',
+            strUrlPedidoDetalle = '{% url 'ventas-pedido_cotizacion_pedido_detalle' 0 %}',
+            strUrlSetAnulado = '{% url 'ventas-pedido_cotizacion_set_anulado' %}';
+    </script>
+    <script src="{% static 'modules/ventas/pedido_cotizacion/pedido_cotizacion.js' %}" async defer></script>
+
+{% endblock javascripts %}

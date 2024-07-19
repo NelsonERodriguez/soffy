@@ -1,0 +1,129 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Solicitud de vacación de {{ vacacion_detalle.name }} {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">early_on</i>
+                        </div>
+                        <h4 class="card-title">Solicitud de vacación de <b>{{ vacacion_detalle.name }}</b></h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" style="margin-top: 35px;">
+                            <div class="col-12 text-right">
+                                <a href="{% url 'rrhh-aprobar_vacaciones' %}" class="btn btn-outline-danger">
+                                    <span class="material-icons">arrow_back</span> Regresar
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 35px;">
+                            <div class="col-sm-6" style="margin-bottom: 35px;">
+                                <div style="text-align: center; font-weight: bold;"><h4>Detalle de solicitud</h4></div>
+                                <input type="hidden" name="vacacion_id" id="vacacion_id"
+                                       value="{{ vacacion_detalle.id }}">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Inicia</th>
+                                        <th>Finaliza</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for vacacion in historico_vacaciones %}
+                                        <tr>
+                                            <td>{{ vacacion.fecha_inicio }}</td>
+                                            <td>{{ vacacion.fecha_fin }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <div style="text-align: center; font-weight: bold;">
+                                    <button class="btn btn-outline-success" type="button" id="btnAprobar">
+                                        <span class="material-icons">done</span> Autorizar
+                                    </button>
+                                    <button class="btn btn-outline-danger" type="button" id="btnRechazar">
+                                        <span class="material-icons">cancel</span> Rechazar
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-sm-6" style="margin-bottom: 35px;">
+                                <div style="text-align: center; font-weight: bold;"><h4>Periodos de vacaciones del
+                                    empleado</h4></div>
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Periodo</th>
+                                        <th>Disponible</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for periodos_disponible in periodos_disponibles %}
+                                        <tr>
+                                            <td>{{ periodos_disponible.Periodo }}</td>
+                                            <td>{{ periodos_disponible.DiasPendientes }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 35px;">
+                            <div class="col-12">
+                                <h4>Visualización de solicitud</h4>
+                                <div id="divCalendar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalVacacion" tabindex="-1" role="dialog" aria-labelledby="modalVacacion"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content modalContainerVacacion">
+                <div class="modal-header" style='height: 80px;'>
+                    <button type="button" class="close" id="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body" id="cntBodyVacacion">
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="observacion">Motivo rechazo</label>
+                            <textarea name="observacion" id="observacion" cols="30" rows="3" style="height: auto"
+                                      class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-success" type="button" id="btnRechazado">
+                        <span class="material-icons">save</span> Enviar rechazo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const strUrlVacaciones = '{% url 'rrhh-aprobar_vacaciones' %}'
+        const strUrlAprobado = '{% url 'rrhh-aprobar_vacaciones_aprobar_vacacion' %}'
+        const strUrlRechazo = '{% url 'rrhh-aprobar_vacaciones_rechazar_vacacion' %}'
+        const arrHistoricoVacaciones = {{ historico_vacaciones|safe }};
+    </script>
+    <script src="{% static 'assets/js/plugins/fullcalendar-6.1.11/dist/index.global.js' %}"></script>
+    <script src="{% static 'modules/rrhh/aprobar_vacaciones/vacacion.js' %}"></script>
+{% endblock javascripts %}

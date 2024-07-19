@@ -1,0 +1,3 @@
+EMAILS = [
+    'nrodriguez@grupobuena.com',
+]

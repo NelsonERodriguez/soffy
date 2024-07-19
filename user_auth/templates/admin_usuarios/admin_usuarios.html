@@ -1,0 +1,546 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block title %} Administración de Usuarios {% endblock title %}
+
+{% block stylesheets %}
+    <style>
+        .required:after {
+            content:" *";
+            color:red;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <ul class="nav nav-pills nav-pills-primary" role="tablist" id="tabsEstados">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#lnkActivos" role="tablist" onclick="fntShowActivo();">
+                                    Usuarios Activos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#lnkInactivos" role="tablist" onclick="fntGetDataInactivo();">
+                                    Usuarios Inactivos
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content tab-space">
+                            <div class="tab-pane active" id="lnkActivos">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <ul class="nav nav-pills nav-pills-info" role="tablist" id="tabsInformacion">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active" data-toggle="tab" href="#lnkIncompletos" role="tablist" onclick="fntGetDataIncompleta();">
+                                                            Usuarios con información incompleta
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" data-toggle="tab" href="#lnkCompletos" role="tablist" onclick="fntGetDataCompleta();">
+                                                            Usuarios con información completa
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <div class="tab-content tab-space">
+                                                    <div class="tab-pane active" id="lnkIncompletos">
+                                                        <div class="table-responsive">
+                                                            <table id="tblIncompleta" class="table table-hover table-striped">
+                                                                <thead class="thead-light">
+                                                                    <tr>
+                                                                        <th>ID</th>
+                                                                        <th>Nombre</th>
+                                                                        <th>Email</th>
+                                                                        <th>Empleado ID</th>
+                                                                        <th>Empresa</th>
+                                                                        <th>Departamento</th>
+                                                                        <th>Acciones</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane" id="lnkCompletos">
+                                                        <div class="table-responsive">
+                                                            <table id="tblCompleta" class="table table-hover table-striped">
+                                                                <thead class="thead-light">
+                                                                    <tr>
+                                                                        <th>ID</th>
+                                                                        <th>Nombre</th>
+                                                                        <th>Email</th>
+                                                                        <th>Empleado ID</th>
+                                                                        <th>Empresa</th>
+                                                                        <th>Departamento</th>
+                                                                        <th>Acciones</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="lnkInactivos">
+                                <div class="table-responsive">
+                                    <table id="tblInactivos" class="table table-hover table-striped">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Nombre</th>
+                                                <th>Email</th>
+                                                <th>Empleado ID</th>
+                                                <th>Empresa</th>
+                                                <th>Departamento</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlDatosUsuario" aria-hidden="true" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Datos del Usuario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="sltEmpleado" id="lblEmpleado" class="bmd-label-floating required">Empleado</label>
+                                <select class="form-control select2" id="sltEmpleado" name="sltEmpleado">
+                                    <option value="">Seleccione un empleado...</option>
+                                    {% for empleado in empleados %}
+                                        <option value="{{ empleado.id }}">{{ empleado.full_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="sltEmpresa" id="lblEmpresa" class="bmd-label-floating required">Empresa</label>
+                                <select class="form-control select2" id="sltEmpresa" name="sltEmpresa">
+                                    <option value="">Seleccione una empresa...</option>
+                                    {% for empresa in empresas %}
+                                        <option value="{{ empresa.id }}">{{ empresa.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="sltDepartamento" id="lblDepartamento" class="bmd-label-floating required">Departamento</label>
+                                <select class="form-control select2" id="sltDepartamento" name="sltDepartamento">
+                                    <option value="">Seleccione un departamento...</option>
+                                    {% for depto in deptos %}
+                                        <option value="{{ depto.id }}">{{ depto.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="//fntCancelarGuardado();">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="fntUpdateDataUsuario();">Grabar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+  
+<script>
+    const strUrlGetDataIncompleta = "{% url 'user-admin_usuarios_get_data_incompleta' %}",
+        strUrlGetDataCompleta = "{% url 'user-admin_usuarios_get_data_completa' %}",
+        strUrlGetDataInactivo = "{% url 'user-admin_usuarios_get_data_inactivo' %}",
+        strUrlGetInfoUser = "{% url 'user-admin_usuarios_get_data_user' %}",
+        strUrlUpdateUser = "{% url 'user-admin_usuarios_update_data_user' %}",
+        strUrlDesactivarUser = "{% url 'user-admin_usuarios_desactivar_user' %}",
+        strUrlActivarUser = "{% url 'user-admin_usuarios_activar_user' %}";
+    let arrObjDataTables = new Array();
+
+    const addUser = (intUser) => {
+        document.getElementById('user_id').value = intUser;
+        simple_submit('frm_users');
+    };
+
+    const fntEdit = (objButton, intId) => {
+        console.log(intId, "id seleccionado")
+    };
+
+    const fntDataTable = async (strTable, strContent) => {
+        if( typeof(arrObjDataTables[strTable]) !== "undefined" ) arrObjDataTables[strTable].destroy();
+        $(`#${strTable} > tbody`).html(strContent);
+        arrObjDataTables[strTable] = $(`#${strTable}`).DataTable({
+            "pagingType": "full_numbers",
+            "lengthMenu": [
+                [10, 25, 50],
+                [10, 25, 50]
+            ],
+            responsive: false,
+            language: objLenguajeDataTable,
+            autoPrint: false
+        });
+        $('[rel="tooltip"]').tooltip();
+    };
+
+    const fntShowActivo = () => {
+        $('#tabsInformacion a[href="#lnkIncompletos"]').tab('show')
+        fntGetDataIncompleta();
+    }
+
+    const fntGetDataIncompleta = async () => {
+        let formData = new FormData();
+        formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+        open_loading();
+        fetch(`${strUrlGetDataIncompleta}`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            method: 'POST',
+        })
+        .then(response => response.json())
+        .then(data => {
+            let strHtml = "";
+
+            data.data.forEach((value)=>{
+                let strEmpleado = (value.empleado_id > 0 || value.empleado_id !== null) ? value.empleado_id : "--";
+                let strEmpresa = (value.nombre_empresa !== null) ? value.nombre_empresa : "--";
+                let strDepartamento = (value.nombre_departamento !== null) ? value.nombre_departamento : "--";
+
+                strHtml += `
+                    <tr>
+                        <td class="text-right">${value.id}</td>
+                        <td class="text-left">${value.name}</td>
+                        <td class="text-left">${value.email}</td>
+                        <td class="text-right">${strEmpleado}</td>
+                        <td class="text-left">${strEmpresa}</td>
+                        <td class="text-center">${strDepartamento}</td>
+                        <td class="text-center td-actions">
+                            <button class="btn btn-sm btn-outline-info" onclick="fntGetDataUsuario(${value.id}, 'tblIncompleta');" rel="tooltip" title="Actualizar" position="left">
+                                <i class="fas fa-sync"></i>
+                            </button>
+                            &nbsp;
+                            <button class="btn btn-sm btn-outline-danger" onclick="fntPreguntaDesactivar(${value.id}, 'tblIncompleta');" rel="tooltip" title="Inactivar" position="left">
+                                <i class="fas fa-user-times"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                /* */
+            });
+
+            fntDataTable("tblIncompleta" ,strHtml);
+            close_loading();
+        })
+        .catch(error => {
+            close_loading();
+            alert_nova.showNotification('Ocurrió un error, contacte con IT', 'warning', 'danger');
+            console.error(error)
+        });
+    };
+
+    const fntGetDataCompleta = async () => {
+        let formData = new FormData();
+        formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+        open_loading();
+        fetch(`${strUrlGetDataCompleta}`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            method: 'POST',
+        })
+        .then(response => response.json())
+        .then(data => {
+            let strHtml = "";
+
+            data.data.forEach((value)=>{
+                let strEmpleado = (value.empleado_id > 0 || value.empleado_id !== null) ? value.empleado_id : "--";
+                let strEmpresa = (value.nombre_empresa !== null) ? value.nombre_empresa : "--";
+                let strDepartamento = (value.nombre_departamento !== null) ? value.nombre_departamento : "--";
+
+                strHtml += `
+                    <tr>
+                        <td class="text-right">${value.id}</td>
+                        <td class="text-left">${value.name}</td>
+                        <td class="text-left">${value.email}</td>
+                        <td class="text-right">${strEmpleado}</td>
+                        <td class="text-left">${strEmpresa}</td>
+                        <td class="text-center">${strDepartamento}</td>
+                        <td class="text-center td-actions">
+                            <button class="btn btn-sm btn-outline-info" onclick="fntGetDataUsuario(${value.id}, 'tblCompleta');" rel="tooltip" title="Actualizar" position="left">
+                                <i class="fas fa-sync"></i>
+                            </button>
+                            &nbsp;
+                            <button class="btn btn-sm btn-outline-danger" onclick="fntPreguntaDesactivar(${value.id}, 'tblCompleta');" rel="tooltip" title="Inactivar" position="left">
+                                <i class="fas fa-user-times"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            fntDataTable("tblCompleta" ,strHtml);
+            close_loading();
+            //window.location.reload();
+        })
+        .catch(error => {
+            close_loading();
+            alert_nova.showNotification('Ocurrió un error, contacte con IT', 'warning', 'danger');
+            console.error(error)
+        });
+    };
+
+    const fntGetDataInactivo = async () => {
+        let formData = new FormData();
+        formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+        open_loading();
+        fetch(`${strUrlGetDataInactivo}`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            method: 'POST',
+        })
+        .then(response => response.json())
+        .then(data => {
+            let strHtml = "";
+
+            data.data.forEach((value)=>{
+                let strEmpleado = (value.empleado_id > 0 || value.empleado_id !== null) ? value.empleado_id : "--";
+                let strEmpresa = (value.nombre_empresa !== null) ? value.nombre_empresa : "--";
+                let strDepartamento = (value.nombre_departamento !== null) ? value.nombre_departamento : "--";
+
+                strHtml += `
+                    <tr>
+                        <td class="text-right">${value.id}</td>
+                        <td class="text-left">${value.name}</td>
+                        <td class="text-left">${value.email}</td>
+                        <td class="text-right">${strEmpleado}</td>
+                        <td class="text-left">${strEmpresa}</td>
+                        <td class="text-center">${strDepartamento}</td>
+                        <td class="text-center td-actions">
+                            <button class="btn btn-sm btn-outline-success" onclick="fntPreguntaActivar(${value.id}, 'tblInactivos');" rel="tooltip" title="Activar" position="left">
+                                <i class="fas fa-user-check"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            fntDataTable("tblInactivos" ,strHtml);
+            close_loading();
+        })
+        .catch(error => {
+            close_loading();
+            alert_nova.showNotification('Ocurrió un error, contacte con IT', 'warning', 'danger');
+            console.error(error)
+        });
+    };
+
+    const fntGetDataUsuario = async (intId, strTableId) => {
+        let formData = new FormData();
+        formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+        formData.append('user_id', intId);
+        window.user_id = intId;
+        window.table_id = strTableId;
+
+        open_loading();
+        fetch(`${strUrlGetInfoUser}`, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            let strHtml = "";
+
+            let strEmpleadoId = (data.data_user.empleado_id !== null && data.data_user.empleado_id > 0) ? data.data_user.empleado_id : "";
+            let strEmpresaId = (data.data_user.empresa_id !== null && data.data_user.empresa_id > 0) ? data.data_user.empresa_id : "";
+            let strDeptoId = (data.data_user.departamento_id !== null && data.data_user.departamento_id > 0) ? data.data_user.departamento_id : "";
+
+            $("#sltEmpleado").val(strEmpleadoId);
+            $('#sltEmpleado').trigger('change.select2');
+            $("#sltEmpresa").val(strEmpresaId);
+            $('#sltEmpresa').trigger('change.select2');
+            $("#sltDepartamento").val(strDeptoId);
+            $('#sltDepartamento').trigger('change.select2');
+
+            $("#mdlDatosUsuario").modal("show")
+            close_loading();
+        })
+        .catch(error => {
+            close_loading();
+            alert_nova.showNotification('Ocurrió un error, contacte con IT', 'warning', 'danger');
+            console.error(error)
+        });
+    };
+
+    const fntUpdateDataUsuario = async () => {
+        let formData = new FormData();
+        let intId = window.user_id;
+        let strTableId = window.table_id;
+        let intEmpleado = document.getElementById("sltEmpleado").value;
+        let intEmpresa = document.getElementById("sltEmpresa").value;
+        let intDepartamento = document.getElementById("sltDepartamento").value;
+
+        if( intEmpleado === "" || intEmpresa === "" || intDepartamento === "" ){
+            alert_nova.showNotification('Todos los campos son requeridos.', 'warning', 'danger');
+            return false;
+        }
+
+        formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+        formData.append('user_id', intId);
+        formData.append('empleado_id', document.getElementById("sltEmpleado").value);
+        formData.append('empresa_id', document.getElementById("sltEmpresa").value);
+        formData.append('departamento_id', document.getElementById("sltDepartamento").value);
+
+
+        open_loading();
+        fetch(`${strUrlUpdateUser}`, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            let strHtml = "";
+
+            alert_nova.showNotification(`${data.msj}`, "add_alert", "success");
+            $("#mdlDatosUsuario").modal("hide");
+            close_loading();
+
+            if( strTableId === "tblIncompleta" ){
+                fntGetDataIncompleta();
+            }
+            else if( strTableId === "tblCompleta" ){
+                fntGetDataCompleta();
+            }
+        })
+        .catch(error => {
+            close_loading();
+            alert_nova.showNotification('Ocurrió un error, contacte con IT', 'warning', 'danger');
+            console.error(error)
+        });
+    };
+
+    const fntPreguntaDesactivar = async (intId, strTableId) => {
+        window.user_id = intId;
+        window.table_id = strTableId;
+        dialogConfirm(fntDesactivarUsuario, false, `¿Esta seguro de desactivar a este usuario?`, '¡Este usuario ya no podrá usar el sistema NOVA!', 'error');
+    };
+
+    const fntPreguntaActivar = async (intId, strTableId) => {
+        window.user_id = intId;
+        window.table_id = strTableId;
+        dialogConfirm(fntActivarUsuario, false, `¿Esta seguro de activar a este usuario?`, '¡Este usuario podrá usar el sistema NOVA!', 'success');
+    };
+
+    const fntDesactivarUsuario = async () => {
+        let formData = new FormData();
+        let intId = window.user_id;
+        let strTableId = window.table_id;
+
+        formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+        formData.append('user_id', intId);
+
+        open_loading();
+        fetch(`${strUrlDesactivarUser}`, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert_nova.showNotification(`${data.msj}`, "add_alert", "success");
+            close_loading();
+
+            if( strTableId === "tblIncompleta" ){
+                fntGetDataIncompleta();
+            }
+            else if( strTableId === "tblCompleta" ){
+                fntGetDataCompleta();
+            }
+        })
+        .catch(error => {
+            close_loading();
+            alert_nova.showNotification('Ocurrió un error, contacte con IT', 'warning', 'danger');
+            console.error(error)
+        });
+    };
+
+    const fntActivarUsuario = async () => {
+        let formData = new FormData();
+        let intId = window.user_id;
+        let strTableId = window.table_id;
+
+        formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+        formData.append('user_id', intId);
+
+        open_loading();
+        fetch(`${strUrlActivarUser}`, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert_nova.showNotification(`${data.msj}`, "add_alert", "success");
+            $("#mdlDatosUsuario").modal("hide");
+            close_loading();
+
+            fntGetDataInactivo();
+        })
+        .catch(error => {
+            close_loading();
+            alert_nova.showNotification('Ocurrió un error, contacte con IT', 'warning', 'danger');
+            console.error(error)
+        });
+    };
+
+    $(function(){
+        fntGetDataIncompleta();
+
+        $(".select2").select2({
+            dropdownParent: $("#mdlDatosUsuario")
+        });
+    });
+
+</script>
+
+{% endblock javascripts %}

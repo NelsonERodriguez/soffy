@@ -1,0 +1,177 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Actualizar Datos {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+    <style>
+        .required:after {
+            content:" *";
+            color:red;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8 offset-sm-2">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">update</i>
+                        </div>
+                        <h4 class="card-title">Actualizar Datos Personales</h4>
+                    </div>
+                    <div class="card-body">
+                        <form name="frmDatos" id="frmDatos">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="" class="form-contor">
+                                        Nombres
+                                    </label>
+                                    <input type="text" class="form-control" id="txtNombres" name="txtNombres" value="{{ datos.nombres }}" maxlength="100">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="" class="form-contor">
+                                        Apellidos
+                                    </label>
+                                    <input type="text" class="form-control" id="txtApellidos" name="txtApellidos" value="{{ datos.apellidos }}" maxlength="100">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="" class="form-contor">
+                                        DPI
+                                    </label>
+                                    <input type="text" class="form-control" id="txtDpi" name="txtDpi" value="{{ datos.dpi }}" maxlength="25">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header card-header-primary card-header-icon">
+                                            <h4 class="card-title">Lugar en el que se extendio el DPI</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label for="" class="form-contor">
+                                                        Departamento
+                                                    </label>
+                                                    <input type="text" class="form-control" id="txtDepartamento" name="txtDepartamento" value="{{ datos.departamento_dpi }}" maxlength="70">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="" class="form-contor">
+                                                        Municipio
+                                                    </label>
+                                                    <input type="text" class="form-control" id="txtMunicipio" name="txtMunicipio" value="{{ datos.municipio_dpi }}" maxlength="70">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label for="" class="form-contor">
+                                        Dirección
+                                    </label>
+                                    <input type="text" class="form-control" id="txtDireccion" name="txtDireccion" value="{{ datos.direccion }}" maxlength="150">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="" class="form-contor">
+                                        Estado Civil
+                                    </label>
+                                    <select name="sltEstadoCivil" id="sltEstadoCivil" class="form-control">
+                                        <option value="-1">Seleccione su Estado Civil...</option>
+                                        {% for estado in estados %}
+                                            {% if estado.id == estado_civil %}
+                                                <option value="{{ estado.id }}" selected>{{ estado.EstadoCivil }}</option>
+                                            {% else %}
+                                                <option value="{{ estado.id }}">{{ estado.EstadoCivil }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button class="btn btn-success" type="button" id="btnGuardar">
+                                        Guardar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const urlGuardar = "{% url 'rrhh-actualizacion_datos_guardar' %}";
+        const fntGuardar = () => {
+            let objForm = document.getElementById("frmDatos");
+            let formData = new FormData(objForm);
+            formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+            var boolError = false;
+
+            if( document.getElementById("txtNombres").value.length == 0 ){
+                boolError = true;
+                alert_nova.showNotification("El campo de Nombres es obligatorio", "warning", "danger");
+            }
+            if( document.getElementById("txtApellidos").value.length == 0 ){
+                boolError = true;
+                alert_nova.showNotification("El campo de Apellidos es obligatorio", "warning", "danger");
+            }
+            if( document.getElementById("txtDpi").value.length == 0 ){
+                boolError = true;
+                alert_nova.showNotification("El campo de DPI es obligatorio", "warning", "danger");
+            }
+            if( document.getElementById("txtDepartamento").value.length == 0 ){
+                boolError = true;
+                alert_nova.showNotification("El campo de Departamento es obligatorio", "warning", "danger");
+            }
+            if( document.getElementById("txtMunicipio").value.length == 0 ){
+                boolError = true;
+                alert_nova.showNotification("El campo de Departamento es obligatorio", "warning", "danger");
+            }
+            if( document.getElementById("txtDireccion").value.length == 0 ){
+                boolError = true;
+                alert_nova.showNotification("El campo de Dirección es obligatorio", "warning", "danger");
+            }
+            if( document.getElementById("sltEstadoCivil").value.length == 0 ){
+                boolError = true;
+                alert_nova.showNotification("El campo de Estado Civil es obligatorio", "warning", "danger");
+            }
+
+            if( boolError ){
+                return false;
+            }
+
+            open_loading();
+            fetch(`${urlGuardar}`, {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status){
+                    alert_nova.showNotification(data.msj, "add_alert", "success");
+                }
+                close_loading();
+            })
+            .catch(error => console.error(error))
+        }
+
+        $(document).ready(function(){
+            $("#btnGuardar").on("click", function(){
+                fntGuardar();
+            });
+        });
+    </script>
+{% endblock javascripts %}

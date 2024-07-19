@@ -1,0 +1,111 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+    Anular Cotizaciones
+{% endblock %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <style>
+        .container-header-detail {
+            border-radius: 1.5em;
+            border: 1px solid #d9d9d9;
+            box-shadow: 3px 5px #e9e9e9;
+        }
+
+        #container-quotation {
+            margin-top: 25px;
+        }
+
+        .btn-options {
+            padding: 25px 40px;
+        }
+
+        #gridRpt {
+            overflow-x: scroll;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">signal_cellular_no_sim</i>
+                        </div>
+                        <h4 class="card-title">Anular Cotizaciones</h4>
+                    </div>
+                    <div class="card-body">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-options btn-fill btn-primary"
+                                            id="btnNullQuotations" onclick="setOptionToNull('cotizaciones')"
+                                            style="{% if request.GET.setOption == "pedidos" %}display: none{% endif %}">
+                                        <i class="fas fa-desktop-alt fa-3x"></i>
+                                        <br/> Pedido Cotización
+                                    </button>
+                                    <button type="button" class="btn btn-options btn-fill btn-outline-primary"
+                                            id="btnNullMobiles" onclick="setOptionToNull('pedidos')"
+                                            style="{% if request.GET.setOption == "cotizaciones" %}display: none{% endif %}">
+                                        <i class="fas fa-mobile fa-3x"></i>
+                                        <br/> Pedidos Moviles
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-4 offset-md-4" id="container-company">
+                                <label for="empresa">Empresa</label>
+                                <select name="empresa" id="empresa" class="form-control">
+                                    <option value="">Seleccione una empresa</option>
+                                    {% for empresa in empresas %}
+                                        <option value="{{ empresa.NoEmpresa }}">{{ empresa.RazonSocial }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-4 offset-md-4" id="container-quotation">
+                                <label for="cotizacion" id="str-container-quotation">No. Cotización</label>
+                                <input type="text" name="cotizacion" id="cotizacion" class="form-control" value=""/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-fill btn-outline-info" id="btnBuscar">
+                                        <span class="material-icons">search</span>
+                                        Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-8 offset-md-2" id="container-info"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{% static 'assets/lib/js/dx.all.js' %}"></script>
+    <script async defer>
+        const strUrlShow = "{% url 'ventas-anular_cotizaciones_show' %}",
+            strUrlNull = "{% url 'ventas-anular_cotizaciones_anular' %}",
+            strUrlGetDocuments = "{% url 'ventas-anular_cotizaciones_get_documentos' %}",
+            btnSearch = document.getElementById('btnBuscar'),
+            valCSRF = document.getElementsByName('csrfmiddlewaretoken')[0].value
+        const strOptionGet = '{{ request.GET.setOption }}'
+        let strOptionSelected = strOptionGet !== '' ? strOptionGet : 'cotizaciones'
+    </script>
+    <script src="{% static 'modules/ventas/anular_cotizaciones/anular_cotizaciones.js' %}"></script>
+{% endblock %}

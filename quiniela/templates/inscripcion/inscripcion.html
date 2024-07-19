@@ -1,0 +1,218 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Inscripción Quiniela {% endblock title %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/static/assets/css/jquery-ui.min.css">
+    <style>
+        @media screen and (min-width: 576px) {
+            table.table-responsive {
+                display: inline-table;
+            }
+        }
+        .ui-front {
+            z-index: 1060;
+        }
+        .required:after {
+            content:" *";
+            color:red;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <form class="form-horizontal" method="post" action="{% url 'quiniela-inscripcion' %}">
+                    {% csrf_token %}
+
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">sports_soccer</i>
+                            </div>
+                            <h4 class="card-title">Inscripción Quiniela</h4>
+                        </div>
+                        <div class="card-body">
+                            {% if hay_evento %}
+                                {% if inscrito %}
+                                    <div class="row">
+                                        <div class="col-md-8 offset-md-2 text-center">
+                                            <h3>¡Ya se encuentra inscrito a la quiniela!</h3>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 text-center">
+                                            <button type="button" onclick="document.location='{% url 'quiniela-quiniela' %}';" class="btn btn-outline-primary btn-lg">Ir a la Quiniela</button>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <input type="hidden" name="hdnEmpleadoId" value="{{ empleado_id }}">
+                                    <div class="row">
+                                        <div class="col-md-8 offset-md-2">
+                                            <h3>Términos y Condiciones</h3>
+                                            <p>Al inscribirse, acepta los siguientes términos y condiciones para participar en la quiniela.</p>
+                                            <ul>
+                                                <li>Los resultados que usted ingrese debe de hacerlos hasta diez minutos antes del inicio del partido.</li>
+                                                <li>Si desea realizar un cambio sobre algún resultado que ya guardo previamente, puede realizarlo sin ningún límite hasta diez minutos antes del inicio del partido.</li>
+                                                <li>Los resultados serán ingresados por parte del departamento RRHH con apoyo por parte de TI para garantizar la mayor transparencia posible en el proceso.</li>
+                                                <li>Cuando el resultado del partido sea igual al ingresado por el empleado, se sumarán 5 puntos al total de puntos acumulados por el empleado.</li>
+                                                <li>
+                                                    <div class="table-responsive">
+                                                        <table>
+                                                            <tr>
+                                                                <td colspan="3" style="font-weight: bold;border: 1px solid black;width: 170px;text-align: center;">Resultado del Partido</td>
+                                                                <td colspan="3" style="font-weight: bold;border: 1px solid black;width: 170px;text-align: center;">Resultado Ingresado</td>
+                                                                <td style="font-weight: bold;border: 1px solid black;">Puntos Ganados</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="text-align: right;border-left: 1px solid black;">Argentina</td>
+                                                                <td style="text-align: center;">vs</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;">Brasil</td>
+                                                                <td style="text-align: right;">Argentina</td>
+                                                                <td style="text-align: center;">vs</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;">Brasil</td>
+                                                                <td style="border-right: 1px solid black;">&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="text-align: right;border-left: 1px solid black;border-bottom: 1px solid black;">2</td>
+                                                                <td style="border-bottom: 1px solid black;">&nbsp;</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;border-bottom: 1px solid black;">1</td>
+                                                                <td style="text-align: right;border-left: 1px solid black;border-bottom: 1px solid black;"><span style="background-color: #12ff12;">2</span></td>
+                                                                <td style="border-bottom: 1px solid black;">&nbsp;</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;border-bottom: 1px solid black;"><span style="background-color: #12ff12;">1</span></td>
+                                                                <td style="font-weight: bold;text-align: center;border-right: 1px solid black;border-bottom: 1px solid black;">5</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </li>
+                                                <li>Cuando el resultado del partido sea empate y se haya pronosticado un empate, pero no se acertó a la cantidad de goles exactos, se sumarán 3 puntos al total de puntos acumulados por el empleado.</li>
+                                                <li>
+                                                    <div class="table-responsive">
+                                                        <table>
+                                                            <tr>
+                                                                <td colspan="3" style="font-weight: bold;border: 1px solid black;width: 170px;text-align: center;">Resultado del Partido</td>
+                                                                <td colspan="3" style="font-weight: bold;border: 1px solid black;width: 170px;text-align: center;">Resultado Ingresado</td>
+                                                                <td style="font-weight: bold;border: 1px solid black;">Puntos Ganados</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="text-align: right;border-left: 1px solid black;">Argentina</td>
+                                                                <td style="text-align: center;">vs</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;">Brasil</td>
+                                                                <td style="text-align: right;">Argentina</td>
+                                                                <td style="text-align: center;">vs</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;">Brasil</td>
+                                                                <td style="border-right: 1px solid black;">&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="text-align: right;border-left: 1px solid black;border-bottom: 1px solid black;">2</td>
+                                                                <td style="border-bottom: 1px solid black;">&nbsp;</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;border-bottom: 1px solid black;">2</td>
+                                                                <td style="text-align: right;border-left: 1px solid black;border-bottom: 1px solid black;"><span style="background-color: yellow;">1</span></td>
+                                                                <td style="border-bottom: 1px solid black;">&nbsp;</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;border-bottom: 1px solid black;"><span style="background-color: yellow;">1</span></td>
+                                                                <td style="font-weight: bold;text-align: center;border-right: 1px solid black;border-bottom: 1px solid black;">3</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </li>
+                                                <li>Cuando el resultado del partido no sea igual, pero se ha acertado quien gana el partido, se sumarán 3 puntos al total de puntos acumulados por el empleado.</li>
+                                                <li>
+                                                    <div class="table-responsive">
+                                                        <table>
+                                                            <tr>
+                                                                <td colspan="3" style="font-weight: bold;border: 1px solid black;width: 170px;text-align: center;">Resultado del Partido</td>
+                                                                <td colspan="3" style="font-weight: bold;border: 1px solid black;width: 170px;text-align: center;">Resultado Ingresado</td>
+                                                                <td style="font-weight: bold;border: 1px solid black;">Puntos Ganados</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="text-align: right;border-left: 1px solid black;">Argentina</td>
+                                                                <td style="text-align: center;">vs</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;">Brasil</td>
+                                                                <td style="text-align: right;">Argentina</td>
+                                                                <td style="text-align: center;">vs</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;">Brasil</td>
+                                                                <td style="border-right: 1px solid black;">&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="text-align: right;border-left: 1px solid black;border-bottom: 1px solid black;"><span style="background-color: yellow;">3</span></td>
+                                                                <td style="border-bottom: 1px solid black;">&nbsp;</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;border-bottom: 1px solid black;">1</td>
+                                                                <td style="text-align: right;border-left: 1px solid black;border-bottom: 1px solid black;"><span style="background-color: yellow;">1</span></td>
+                                                                <td style="border-bottom: 1px solid black;">&nbsp;</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;border-bottom: 1px solid black;">0</td>
+                                                                <td style="font-weight: bold;text-align: center;border-right: 1px solid black;border-bottom: 1px solid black;">3</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </li>
+                                                <li>Cuando el resultado del partido no sea igual y no se acierta quien gana el partido no se sumarán ningún punto al total de puntos acumulados por el empleado.</li>
+                                                <li>
+                                                    <div class="table-responsive">
+                                                        <table>
+                                                            <tr>
+                                                                <td colspan="3" style="font-weight: bold;border: 1px solid black;width: 170px;text-align: center;">Resultado del Partido</td>
+                                                                <td colspan="3" style="font-weight: bold;border: 1px solid black;width: 170px;text-align: center;">Resultado Ingresado</td>
+                                                                <td style="font-weight: bold;border: 1px solid black;">Puntos Ganados</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="text-align: right;border-left: 1px solid black;">Argentina</td>
+                                                                <td style="text-align: center;">vs</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;">Brasil</td>
+                                                                <td style="text-align: right;">Argentina</td>
+                                                                <td style="text-align: center;">vs</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;">Brasil</td>
+                                                                <td style="border-right: 1px solid black;">&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="text-align: right;border-left: 1px solid black;border-bottom: 1px solid black;">3</td>
+                                                                <td style="border-bottom: 1px solid black;">&nbsp;</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;border-bottom: 1px solid black;">1</td>
+                                                                <td style="text-align: right;border-left: 1px solid black;border-bottom: 1px solid black;"><span style="background-color: #ff9d9d;">1</span></td>
+                                                                <td style="border-bottom: 1px solid black;">&nbsp;</td>
+                                                                <td style="text-align: left;border-right: 1px solid black;border-bottom: 1px solid black;"><span style="background-color: #ff9d9d;">2</span></td>
+                                                                <td style="font-weight: bold;text-align: center;border-right: 1px solid black;border-bottom: 1px solid black;">0</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 text-center">
+                                            <button type="submit" id="btnEnviarEncuesta" class="btn btn-outline-primary btn-lg">Aceptar y participar</button>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="row">
+                                    <div class="col-md-8 offset-md-2 text-center">
+                                        <h3>No hay ningún evento transcurriendo al cual inscribirse.</h3>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="/static/assets/js/core/jquery-ui.min.js"></script>
+
+    <script>
+        const valCSRF = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+        let strUrlCliente = "{% url 'auditoria-ubicacion_cliente_search' 'search' %}";
+
+        $(document).ready(function() {
+            
+        });
+    </script>
+    <!-- <script src="/static/modules/ventas/encuestas/encuestas.js?v=1.1.0" type="text/javascript" async defer></script> -->
+
+{% endblock javascripts %}

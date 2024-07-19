@@ -1,0 +1,369 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/mundo.png">
+        <link rel="icon" type="image/png" href="/static/assets/img/mundo.png">
+        <title>Factura</title>
+        <style>
+            .mainTable {
+                font-size: 10px;
+                width: 100%;
+                padding: 1px;
+            }
+
+            body {
+                font-size: 9px;
+            }
+            div.logoText {
+                width: 18cm;
+                text-align: center;
+                font-family: var(--main-font-family);
+                font-size: 14px;
+            }
+
+        </style>
+    </head>
+    <body style="margin: 0; padding: 0;">
+        <table style="width: 100%;">
+            <tbody>
+                <tr>
+                    <td style="width: 45%">
+                        {% if factura.empresa_id == 1 %}
+                            <div style="text-align: center;">
+                                <img src="static/modules/ventas/facturacion/fusionesFelLogo.png" alt="Logo" style="width: 200px;"/>
+                            </div>
+                            <p style="text-align: center;">
+                                Fusiones Alimenticias, Sociedad Anónima. <br>
+                                17 Calle "A" 18-86, Zona 10 <br>
+                                Guatemala, Guatemala <br>
+                                <b>NIT.: 7671027-0</b>
+                            </p>
+                        {% elif factura.empresa_id == 4 %}
+                            <div style="text-align: center;">
+                                <img src="https://nova.ffinter.com/{% static 'modules/ventas/facturacion/logoGosnell.png' %}" alt="Logo" style="width: 200px;"/>
+                            </div>
+                            <p style="text-align: center;">
+                                Alimentos Gosnell {% if establecimiento != 1 %}{{ establecimiento }}{% endif %} , Sociedad Anónima.<br>
+                                {% if establecimiento == 1 %}
+                                    17 Calle "A" 18-86, Zona 10
+                                {% elif establecimiento == 2 %}
+                                    19 Avenida 17-87, Zona 10
+                                {% endif %}
+                                 <br>
+                                Guatemala, Guatemala <br>
+                                <b>NIT.: 9741278-3</b>
+                            </p>
+                        {% endif %}
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <b>CREDITO:</b> {% if factura.EsCredito == 1 %}X{% endif %}
+                                    </td>
+                                    <td>
+                                        <b>CONTADO:</b> {% if factura.EsCredito == 0 %}X{% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <b>FECHA DE EMISIÓN:</b> {{ factura.Fecha|date:"d/m/Y" }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <b>NOMBRE:</b> {{ factura.Nombre }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <b>DIRECCIÓN:</b> {{ factura.Direccion }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <b>NIT:</b> {{ factura.NoNit }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td style="width: 55%;">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td style="width: 30%;">&nbsp;</td>
+                                    <td style="width: 70%;">
+                                        <p style="font-weight: bold; text-align: center; border: black 1px solid; padding-top: 10px; padding-bottom: 5px;">
+                                            FACTURA CAMBIARIA ELECTRÓNICA <br>
+                                            LIBRE DE PROTESTO <br>
+                                            SERIE: <span style="color: red;">{{ factura.Serie }}</span> <br>
+                                            NÚMERO: <span style="color: red;">{{ factura.FelNoDocumento }}</span>
+                                        </p>
+                                        <p style="color: red; text-align: center;">fecha de certificación: {{ factura.fecha_autorizacion|date:"Y-m-d h:m:s" }}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <p>
+                                            En Guatemala a <b>{% if factura.EsCredito == 1 %}{{ factura.DiasCredito }}{% else %}0{% endif %}</b> días vista se servirá(n) usted(es) pagara por esta única
+                                            Factura Cambiaria girada libre de protesto a la orden o endoso de {% if factura.empresa_id == 1 %}FUSIONES ALIMENTICIAS, S.A,{% elif factura.empresa_id == 4 %}Alimentos Gosnell, S.A{% endif %} el valor total por lo que está extendida o por el último saldo insoluto que aparezca.
+                                            <br>
+                                            EL PRINCIPAL DE ESTA FACTURA CAMBIARIA DEVENGA INTERESES A RAZON DEL 2% mensuales en pago total o parcial que exceda el tiempo estipulado en esta factura.<br><br>
+                                            Esta factura no se considera cancelada si no la ampara el recibo de caja correspondiente.
+                                            <br>
+                                            (f) Aceptado ______________________________________________
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <br>
+                        <table class="mainTable">
+                            <thead>
+                                <tr>
+                                    <th style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 10%;">CÓDIGO</th>
+                                    <th style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 10%;">CANTIDAD</th>
+                                    <th style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 60%;">DESCRIPCIÓN</th>
+                                    <th style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 10%;">P/UNITARIO</th>
+                                    <th style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; border-right: #4f229d 1px solid; width: 10%;">VALOR</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for detalle in detalles %}
+                                    <tr>
+                                        <td style="border-left: #4f229d 1px solid; width: 10%;">{{ detalle.CodigoProducto }}</td>
+                                        <td style="border-left: #4f229d 1px solid; width: 10%; text-align: right;">{{ detalle.Cantidad }} {{ detalle.abreviatura }}</td>
+                                        <td style="border-left: #4f229d 1px solid; width: 60%;">{{ detalle.Descripcion }} {% if detalle.ImprimirCajas %}{{ detalle.Cajas }} Cajas{% endif %}</td>
+                                        <td style="border-left: #4f229d 1px solid; width: 10%; text-align: right;">Q{{ detalle.VUnitario|intcomma }}</td>
+                                        <td style="border-left: #4f229d 1px solid; border-right: #4f229d 1px solid; width: 10%; text-align: right;">Q{{ detalle.Total|intcomma }}</td>
+                                    </tr>
+                                {% endfor %}
+                                {% for i in completar %}
+                                    <tr>
+                                        <td style="border-left: #4f229d 1px solid; width: 10%;">&nbsp;</td>
+                                        <td style="border-left: #4f229d 1px solid; width: 10%; text-align: right;">&nbsp;</td>
+                                        <td style="border-left: #4f229d 1px solid; width: 60%;">&nbsp;</td>
+                                        <td style="border-left: #4f229d 1px solid; width: 10%; text-align: right;">&nbsp;</td>
+                                        <td style="border-left: #4f229d 1px solid; border-right: #4f229d 1px solid; width: 10%; text-align: right;">&nbsp;</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 10%;">&nbsp;</td>
+                                    <td style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 10%;">&nbsp;</td>
+                                    <td style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 60%;">{{ total_en_letras }}</td>
+                                    <td style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 10%;">&nbsp;</td>
+                                    <td style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; border-right: #4f229d 1px solid; width: 10%; text-align: right;">Q{{ factura.Total|intcomma }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2" style="padding-top: 2px;"><span style="font-size: 8px; margin: 0">SUJETO A PAGOS TRIMESTRALES{% if factura.empresa_id == 1 %} | Agente de Retención del IVA {% endif %}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <b>
+                            NO.AUTORIZACIÓN: {{ factura.numero_autorizacion }} <br>
+                            CERTIFICADOR: MEGAPRINT, S.A. <br>
+                            NIT: 50510231
+                        </b>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        CV: {{ factura.NoVendedor }} CC: {{ factura.CodigoCliente }} NP: {{ factura.NoDocumento }} {% if factura.empresa_id == 4 %} {% if factura.movimiento_no_empresa %} S: {% if factura.movimiento_no_empresa == 1 %} Bodega {% elif factura.movimiento_no_empresa == 2 %} Sala {% endif %} {% endif %} {% endif %}
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+        {% if total_detalles < 10 %}
+            <hr>
+        {% endif %}
+        <table style="width: 100%; {% if total_detalles > 9 %}page-break-before: always;{% endif %}">
+            <tbody>
+                <tr>
+                    <td style="width: 45%">
+                        {% if factura.empresa_id == 1 %}
+                            <div style="text-align: center;">
+                                <img src="static/modules/ventas/facturacion/fusionesFelLogo.png" alt="Logo" style="width: 200px;"/>
+                            </div>
+                            <p style="text-align: center;">
+                                Fusiones Alimenticias, Sociedad Anónima. <br>
+                                17 Calle "A" 18-86, Zona 10 <br>
+                                Guatemala, Guatemala <br>
+                                <b>NIT.: 7671027-0</b>
+                            </p>
+                        {% elif factura.empresa_id == 4 %}
+                            <div style="text-align: center;">
+                            <div class="logoText">
+                                <h2 style="margin: 0">NOTA DE ENTREGA</h2>
+                            </div>
+{#                                <img src="https://nova.ffinter.com/{% static 'modules/ventas/facturacion/logoGosnell.png' %}" alt="Logo" style="width: 200px;"/>#}
+                            </div>
+                            <p style="text-align: center;">
+                                Alimentos Gosnell {% if establecimiento != 1 %}{{ establecimiento }}{% endif %} , Sociedad Anónima.<br>
+                                {% if establecimiento == 1 %}
+                                    17 Calle "A" 18-86, Zona 10
+                                {% elif establecimiento == 2 %}
+                                    19 Avenida 17-87, Zona 10
+                                {% endif %}
+                                 <br>
+                                Guatemala, Guatemala <br>
+                                <b>NIT.: 9741278-3</b>
+                            </p>
+                        {% elif factura.empresa_id == 4 %}
+                            <img src="static/modules/ventas/facturacion/logoPreasa.png" alt="Logo"/>
+                            <p style="text-align: center;">
+                                Preparación Conmutativa de Alimentos, S.A. <br>
+                                10 avenida 16-30, Zona 10 <br>
+                                Guatemala, Guatemala <br>
+                                <b>NIT.: 7838619-5</b>
+                            </p>
+                        {% endif %}
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <b>CREDITO:</b> {% if factura.EsCredito == 1 %}X{% endif %}
+                                    </td>
+                                    <td>
+                                        <b>CONTADO:</b> {% if factura.EsCredito == 0 %}X{% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <b>FECHA DE EMISIÓN:</b> {{ factura.Fecha|date:"d/m/Y" }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <b>NOMBRE:</b> {{ factura.Nombre }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <b>DIRECCIÓN:</b> {{ factura.Direccion }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <b>NIT:</b> {{ factura.NoNit }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td style="width: 55%;">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td style="width: 30%;">&nbsp;</td>
+                                    <td style="width: 70%;">
+                                        <p style="font-weight: bold; text-align: center; border: black 1px solid; padding: 15px 0;">
+                                            FACTURA CAMBIARIA ELECTRÓNICA <br>
+                                            LIBRE DE PROTESTO <br>
+                                            SERIE: <span style="color: red;">{{ factura.Serie }}</span> <br>
+                                            NÚMERO: <span style="color: red;">{{ factura.FelNoDocumento }}</span>
+                                        </p>
+                                        <p style="color: red; text-align: center;">fecha de certificación: {{ factura.fecha_autorizacion|date:"Y-m-d h:m:s" }}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <p>
+                                            En Guatemala a <b>{% if factura.EsCredito == 1 %}{{ factura.DiasCredito }}{% else %}0{% endif %}</b> días vista se servirá(n) usted(es) pagara por esta única
+                                            Factura Cambiaria girada libre de protesto a la orden o endoso de FUSIONES ALIMENTICIAS, S.A, el valor total por lo que está extendida o por el último saldo insoluto que aparezca.
+                                            <br>
+                                            EL PRINCIPAL DE ESTA FACTURA CAMBIARIA DEVENGA INTERESES A RAZON DEL 2% mensuales en pago total o parcial que exceda el tiempo estipulado en esta factura.<br><br>
+                                            Esta factura no se considera cancelada si no la ampara el recibo de caja correspondiente.
+                                            <br>
+                                            (f) Aceptado ______________________________________________
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <br>
+                        <table class="mainTable">
+                            <thead>
+                                <tr>
+                                    <th style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 10%;">CÓDIGO</th>
+                                    <th style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 10%;">CANTIDAD</th>
+                                    <th style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 60%;">DESCRIPCIÓN</th>
+                                    <th style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 10%;">P/UNITARIO</th>
+                                    <th style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; border-right: #4f229d 1px solid; width: 10%;">VALOR</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for detalle in detalles %}
+                                    <tr>
+                                        <td style="border-left: #4f229d 1px solid; width: 10%;">{{ detalle.CodigoProducto }}</td>
+                                        <td style="border-left: #4f229d 1px solid; width: 10%; text-align: right;">{{ detalle.Cantidad }} {{ detalle.abreviatura }}</td>
+                                        <td style="border-left: #4f229d 1px solid; width: 60%;">{{ detalle.Descripcion }} {% if detalle.ImprimirCajas %}{{ detalle.Cajas }} Cajas{% endif %}</td>
+                                        <td style="border-left: #4f229d 1px solid; width: 10%; text-align: right;">Q{{ detalle.VUnitario|intcomma }}</td>
+                                        <td style="border-left: #4f229d 1px solid; border-right: #4f229d 1px solid; width: 10%; text-align: right;">Q{{ detalle.Total|intcomma }}</td>
+                                    </tr>
+                                {% endfor %}
+                                {% for i in completar %}
+                                    <tr>
+                                        <td style="border-left: #4f229d 1px solid; width: 10%;">&nbsp;</td>
+                                        <td style="border-left: #4f229d 1px solid; width: 10%; text-align: right;">&nbsp;</td>
+                                        <td style="border-left: #4f229d 1px solid; width: 60%;">&nbsp;</td>
+                                        <td style="border-left: #4f229d 1px solid; width: 10%; text-align: right;">&nbsp;</td>
+                                        <td style="border-left: #4f229d 1px solid; border-right: #4f229d 1px solid; width: 10%; text-align: right;">&nbsp;</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 10%;">&nbsp;</td>
+                                    <td style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 10%;">&nbsp;</td>
+                                    <td style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 60%;">{{ total_en_letras }}</td>
+                                    <td style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; width: 10%;">&nbsp;</td>
+                                    <td style="border-left: #4f229d 1px solid; border-top: #4f229d 1px solid; border-bottom: #4f229d 1px solid; border-right: #4f229d 1px solid; width: 10%; text-align: right;">Q{{ factura.Total|intcomma }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2" style="padding-top: 2px;"><span style="font-size: 8px; margin: 0">SUJETO A PAGOS TRIMESTRALES{% if factura.empresa_id == 1 %} | Agente de Retención del IVA {% endif %}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <b>
+                            NO.AUTORIZACIÓN: {{ factura.numero_autorizacion }} <br>
+                            CERTIFICADOR: MEGAPRINT, S.A. <br>
+                            NIT: 50510231
+                        </b>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <span>Recibí conforme.______________________________________________&nbsp;&nbsp;&nbsp;No. Pedido: {{ factura.NoDocumento }}&nbsp;No. Ruta: {{ factura.NoRuta }}&nbsp;&nbsp;&nbsp;C.: {{ factura.CodigoCliente }}&nbsp;S.: {{ factura.Salida }}</span>
+                        <br>
+                        <span>Observaciones: {{ factura.Observaciones }}</span>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </body>
+</html>

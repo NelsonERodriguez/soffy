@@ -1,0 +1,106 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Empleados Puestos {% endblock title %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">badge</i>
+                        </div>
+                        <h4 class="card-title">Empleados Puestos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="chart_div"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Name');
+            data.addColumn('string', 'Parent');
+            // data.addColumn('string', 'ToolTip');
+
+
+
+        
+            data.addRows([
+                [
+                    {
+                        v: 'parent_node',
+                        f: 'Parent Node'
+                    },
+                    ''
+                ],
+                [
+                    {
+                        v: 'child_node_1',
+                        f: '<b>Child Node</b> <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXB8yl4rPVH1oFWcIa8-qY_sWqUYgRovUuOg&usqp=CAU" height="42" width="50" style="border-radius: 50%"> </img>'
+                    },
+                    'parent_node'
+                ],
+                [
+                    'Child Node',
+                    'parent_node'
+                ],
+                [
+                    'f',
+                    'parent_node'
+                ],
+                [
+                    'Child Nodef',
+                    'parent_node'
+                ],
+                [
+                    'Child Node ff',
+                    'parent_node'
+                ],
+                [
+                    'Child Node f f',
+                    'parent_node'
+                ],
+                [
+                    'Child f f',
+                    'f'
+                ],
+                [
+                    'FAKIU',
+                    'f'
+                ],
+                [
+                    'LOL',
+                    'FAKIU',
+                ],
+                [
+                    'LAL',
+                    'FAKIU',
+                ],
+                [
+                    'LEL',
+                    'FAKIU',
+                ],
+            ]);
+
+            var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+            chart.draw(data, {'allowHtml':true});
+        }
+        google.charts.load('current', {packages:["orgchart"]});
+        google.charts.setOnLoadCallback(drawChart);
+        // google.load('visualization', '1', {
+        //     packages: ['orgchart'],
+        //     callback: drawChart
+        // });
+    </script>
+{% endblock javascripts %}

@@ -1,0 +1,266 @@
+{% load static %}
+{% load humanize %}
+<div class="row">
+    <div class="col-sm-8 offset-sm-2">
+
+    <form enctype="multipart/form-data" method="POST" name="frm_interfaz" id="frm_interfaz">
+        <div class="card">
+            <div class="card-header card-header-primary card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons material-symbols-outlined">add_business</i>
+                </div>
+                <h4 class="card-title">
+                    {% if class == "cliente" %}
+                        Comisiones por Cliente
+                    {% elif class == "producto" %}
+                        Comisiones por Producto
+                    {% elif class == "clase" %}
+                        Comisiones Generales
+                    {% elif class == "vendedor" %}
+                        Comisiones por Vendedor
+                    {% elif class == "clienteProducto" %}
+                        Comisiones por Cliente y Producto
+                    {% elif class == "clienteVendedor" %}
+                        Comisiones por Cliente y Vendedor
+                    {% elif class == "vendedorProducto" %}
+                        Comisiones por Vendedor y Producto
+                    {% elif class == "parametro" %}
+                        Comisiones Parametrizables
+                    {% endif %}
+                    | {{ texto_titulo }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6 {% if not bool_show_cliente %} d-none {% endif %}">
+                        <div class="form-group">
+                            <label for="cliente" class="bmd-label-floating required">Cliente</label>
+                            <input type="text" class="form-control" id="cliente" name="cliente" value="{{ cliente }}" {% if bool_show_cliente %} required {% endif %}>
+                            <input type="hidden" id="nocliente" name="nocliente" value="{{ no_cliente }}">
+                            <!--small class="form-text text-muted">*Si deja este campo vacio se aplicará para todos los clientes</small-->
+                        </div>
+                    </div>
+                    <div class="col-sm-6 {% if not bool_show_vendedor %} d-none {% endif %}">
+                        <div class="form-group">
+                            <label for="vendedor" class="bmd-label-floating required">Vendedor</label>
+                            <input type="text" class="form-control" id="vendedor" name="vendedor" value="{{ vendedor }}" {% if bool_show_vendedor %} required {% endif %}>
+                            <input type="hidden" id="novendedor" name="novendedor" value="{{ no_vendedor }}">
+                            <!--small class="form-text text-muted">*Si deja este campo vacio se aplicará para todos los vendedores</small-->
+                        </div>
+                    </div>
+                    <div class="col-sm-6 {% if not bool_tipo_producto %} d-none {% endif %}">
+                        <div class="form-group bmd-form-group is-filled" style="min-height: 60px;">
+                            <label for="tipoProducto" class="bmd-label-floating required">Tipo de Producto</label>
+                            <select class="form-control" id="tipoProducto" name="tipoProducto" onchange="fntChangeTipoProducto();">
+                                <option value="">Seleccine un Tipo...</option>
+                                <option value="C" {{ sel_cuadril }}>Cuadril</option>
+                                <option value="M" {{ sel_mixto }} >Mixto</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 {% if not bool_producto %} d-none {% endif %}">
+                        <div class="form-group">
+                            <label for="producto" class="bmd-label-floating required">Producto</label>
+                            <input type="text" class="form-control" id="producto" name="producto" value="{{ producto }}" {% if bool_producto %} required {% endif %}>
+                            <input type="hidden" id="noproducto" name="noproducto" value="{{ no_producto }}">
+                            <!--small class="form-text text-muted">*Si deja este campo vacio se aplicará para todos los productos</small-->
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="comision_base" class="bmd-label-floating required">Comisión Base</label>
+                            <input type="number" class="form-control" id="comision_base" name="comision_base" value="{{ comision_base }}" onkeypress="return validar_caracteres(event, 7);" onchange="fntCalcularComisiones();">
+                            <small class="form-text text-muted">*Esta es la comisión que se tomará como referencia para los rangos</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="comision_fuera_rango" class="bmd-label-floating required">Comisión Fuera de Rango</label>
+                            <input type="number" class="form-control" id="comision_fuera_rango" name="comision_fuera_rango" value="{{ comision_fuera_rango }}" onkeypress="return validar_caracteres(event, 7);">
+                            <small class="form-text text-muted">*Esta es la comisión que se tomará como referencia para los días no especificados </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='col-md-6'>
+                        <label class="required">Formato de los montos de las comisiones</label>
+                        <div class="m-checkbox-inline">
+                            <label class="m-checkbox">
+                                <input type="radio" name='es_porcentaje' value='1' {{ es_porcentaje_si }}> Valor Porcentual
+                                <span></span>
+                            </label>
+                            <label class="m-checkbox">
+                                <input type="radio" name='es_porcentaje' value='0' {{ es_porcentaje_no }}> Valor Neto
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class='col-md-6'>
+                        <label class="required">Regla Habilitada</label>
+                        <div class="m-checkbox-inline">
+                            <label class="m-checkbox">
+                                <input type="radio" name='activo' value='1' required="true" {{ activo_si }}> Si
+                                <span></span>
+                            </label>
+                            <label class="m-checkbox">
+                                <input type="radio" name='activo' value='0' required="true" {{ activo_no }}> No
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-6 is-filled">
+                        <label for="fecha_inicio" class="bmd-label-floating" style="margin-bottom: 0px;">Fecha Inicio</label>
+                        <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" value="{{ fecha_inicio|default_if_none:"" }}">
+                    </div>
+                    <div class="col-sm-6 is-filled">
+                        <label for="fecha_fin" class="bmd-label-floating" style="margin-bottom: 0px;">Fecha Fin</label>
+                        <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" value="{{ fecha_fin|default_if_none:"" }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="descuento_precio" class="bmd-label-floating">Descuento por Unidad</label>
+                            <input type="number" class="form-control" id="descuento_precio" name="descuento_precio" value="{{ descuento_precio }}" onkeypress="return validar_caracteres(event, 7);">
+                            <small class="form-text text-muted">*Este es el descuento que se le hace al precio por unidad para calcular la comisión</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="filInputFile" class="bmd-label-floating {% if bool_adjuntos_requeridos %} required {% endif %}">Archivo de Respaldo</label>
+                            {% if archivo_respaldo %}
+                                <a href="/{{ archivo_respaldo }}" target="_blank"><i class="fas fa-eye"></i>&nbsp;Ver archivo actual</a>
+                            {% endif %}
+                        </div>
+                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                            <span class="btn btn-outline-info btn-file">
+                                <span class="fileinput-new">Subir Archivo de Respaldo de la Modificación</span>
+                                <span class="fileinput-exists">Cambiar Archivo de Respaldo de la Modificación</span>
+                                <input type="file" name="filInputFile" id="filInputFile">
+                            </span>
+                            <br>
+                            <span class="fileinput-filename"></span>
+                            <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-right">
+                        <button type="button" class="btn btn-info" rel="tooltip" data-original-title="Agregar" onclick="addRow();">
+                            <i class="material-icons material-symbols-outlined">add</i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Día Inicio</th>
+                                    <th>Día Fin</th>
+                                    <th>Comision</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyDetalle">
+                                {% for rango in rangos %}
+                                    <tr>
+                                        <td>
+                                            <input type="hidden" name="hdn_eliminar_{{ forloop.counter }}" id="hdn_eliminar_{{ forloop.counter }}" value="0">
+                                            <input type="hidden" name="id_rango_detalle_{{ forloop.counter }}" id="id_rango_detalle_{{ forloop.counter }}" value="{{ rango.id }}">
+                                            <input type="number" class="form-control" id="inicio_rango_dias_{{ forloop.counter }}" name="inicio_rango_dias_{{ forloop.counter }}" value="{{ rango.inicio_rango_dias }}" onkeypress="return validar_caracteres(event, 2);">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control" id="fin_rango_dias_{{ forloop.counter }}" name="fin_rango_dias_{{ forloop.counter }}" value="{{ rango.fin_rango_dias }}" onkeypress="return validar_caracteres(event, 7);">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control" id="comision_rango_{{ forloop.counter }}" name="comision_rango_{{ forloop.counter }}" value="{{ rango.comision }}" onkeypress="return validar_caracteres(event, 7);">
+                                        </td>
+                                        <td>
+                                            <a href="#" onclick="removeRow(this);"><i class="far fa-trash-alt"></i></a>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td>
+                                            <input type="hidden" name="id_rango_detalle_1" id="id_rango_detalle_1" value="0">
+                                            <input type="number" class="form-control" id="inicio_rango_dias_1" name="inicio_rango_dias_1" value="0" onkeypress="return validar_caracteres(event, 2);">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control" id="fin_rango_dias_1" name="fin_rango_dias_1" value="5" onkeypress="return validar_caracteres(event, 7);">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control" id="comision_rango_1" name="comision_rango_1" value="" onkeypress="return validar_caracteres(event, 7);">
+                                        </td>
+                                        <td>
+                                            <a href="#" onclick="$(this).parent().parent().remove();"><i class="far fa-trash-alt"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="hidden" name="id_rango_detalle_2" id="id_rango_detalle_2" value="0">
+                                            <input type="number" class="form-control" id="inicio_rango_dias_2" name="inicio_rango_dias_2" value="6" onkeypress="return validar_caracteres(event, 2);">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control" id="fin_rango_dias_2" name="fin_rango_dias_2" value="10" onkeypress="return validar_caracteres(event, 7);">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control" id="comision_rango_2" name="comision_rango_2" value="" onkeypress="return validar_caracteres(event, 7);">
+                                        </td>
+                                        <td>
+                                            <a href="#" onclick="$(this).parent().parent().remove();"><i class="far fa-trash-alt"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="hidden" name="id_rango_detalle_3" id="id_rango_detalle_3" value="0">
+                                            <input type="number" class="form-control" id="inicio_rango_dias_3" name="inicio_rango_dias_3" value="11" onkeypress="return validar_caracteres(event, 2);">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control" id="fin_rango_dias_3" name="fin_rango_dias_3" value="15" onkeypress="return validar_caracteres(event, 7);">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control" id="comision_rango_3" name="comision_rango_3" value="" onkeypress="return validar_caracteres(event, 7);">
+                                        </td>
+                                        <td>
+                                            <a href="#" onclick="$(this).parent().parent().remove();"><i class="far fa-trash-alt"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                            </tbody>
+                            <tfoot style="display: none;" id="tfootDetalle"></tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-fill btn-outline-success" id="btnSave" onclick="fntSave();">
+                                <span class="material-icons material-symbols-outlined">save</span>
+                                Guardar
+                            </button>
+                            <button type="button" class="btn btn-fill btn-outline-danger" onclick="fntPreguntaRegresarEdit();">
+                                <span class="material-icons material-symbols-outlined">arrow_back</span>
+                                Regresar
+                            </button>
+                            {% if id == "0" %}
+                                <button type="button" class="btn btn-fill btn-outline-info" onclick="fntShowClass();">
+                                    <span class="material-icons material-symbols-outlined">list</span>
+                                    Listado
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+    </div>
+</div>

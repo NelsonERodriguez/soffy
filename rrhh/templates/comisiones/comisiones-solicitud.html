@@ -1,0 +1,616 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Solicitudes</title>
+    <style>
+        html {
+            font-family: Arial, Helvetica, sans-serif;
+            /*font-size: 14px;*/
+        }
+        body{
+            margin:0;
+            padding:0;
+        }
+        .col-1{
+            width: 20%;
+        }
+
+        .col-2{
+            width: 40%;
+        }
+
+        .col-5{
+            width: 5%;
+        }
+
+        .col-10{
+            width: 10%;
+        }
+
+        .col-11{
+            width: 11%;
+        }
+
+        .col-9{
+            width: 9%;
+        }
+
+        .text-center{
+            text-align: center;
+        }
+
+        .text-right{
+            text-align: right;
+        }
+
+        .border-top {
+            border-top: 1px solid black;
+        }
+
+        .border-bottom {
+            border-bottom: 1px solid black;
+        }
+
+        .border-left {
+            border-left: 1px solid black;
+        }
+
+        .border-right {
+            border-right: 1px solid black;
+        }
+
+        .page-break{
+            page-break-after: always;
+        }
+
+        .titulo {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .padding-l {
+            padding-left: 20px;
+        }
+
+        .padding-r {
+            padding-right: 20px;
+        }
+
+        .table-detalle {
+            font-size: 14px;
+        }
+
+        .table-solicitud {
+            font-size: 10px;
+        }
+
+        .detalle-departamento {
+            font-size: 8px;
+        }
+    </style>
+</head>
+<body>
+    {% load humanize %}
+    {% for total in totales %}
+        <div style="display: flex; justify-content: center;align-content: center;margin-left: 15%;">
+            <table class="table-detalle" style="width: 70%;" cellpadding="1" cellspacing="0" width="100%">
+                <tbody>
+                    <tr>
+                        <td colspan="4" class="text-center border-top border-left border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="border-left border-right text-center titulo">
+                            DETALLE DE COMISIONES
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-1 border-left border-top">
+                            &nbsp;
+                        </td>
+                        <td class="col-2 border-top">
+                            &nbsp;
+                        </td>
+                        <td class="col-1 border-top">
+                            &nbsp;
+                        </td>
+                        <td class="col-1 border-right border-top">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="border-left border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-1 border-left padding-l">
+                            Vendedor:
+                        </td>
+                        <td class="col-2">
+                            {{ total.GiradoA }}
+                        </td>
+                        <td class="col-1">
+                            &nbsp;
+                        </td>
+                        <td class="col-1 border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-center border-left border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="border-left padding-l">
+                            Comisiones del mes de {{ mes }}-{{ anio }}
+                        </td>
+                        <td>
+                            &nbsp;
+                        </td>
+                        <td class="border-right text-right padding-r">
+                             {{ total.comision|floatformat:2|intcomma }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="border-left padding-l">
+                            Calculo de ISR
+                        </td>
+                        <td>
+                            &nbsp;
+                        </td>
+                        <td class="border-right text-right padding-r">
+                            ({{ total.isr|floatformat:2|intcomma }})
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="border-left padding-l">
+                            Calculo de IVA
+                        </td>
+                        <td>
+                            &nbsp;
+                        </td>
+                        <td class="border-right text-right padding-r">
+                            {{ total.iva|floatformat:2|intcomma }}&nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="border-left border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="border-left border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="border-left border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left">
+                            &nbsp;
+                        </td>
+                        <td class="">
+                            Liquido a Recibir
+                        </td>
+                        <td>
+                            &nbsp;
+                        </td>
+                        <td class="border-right text-right padding-r">
+                             {{ total.total|floatformat:2|intcomma }}&nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="border-left border-right border-bottom">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            &nbsp;
+                        </td>
+                        <td colspan="2" class="border-top text-center">
+                             Vo.Bo. Sr. Olivio Diaz
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="" style="display: flex; justify-content: center;align-content: center;margin-left: 15%;">
+            <table class="table-solicitud" style="width: 100%;" cellpadding="1" cellspacing="0" width="100%">
+                <tbody>
+                    <tr>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                        <td class="col-5">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="20" class="text-center border-top border-left border-right titulo">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="20" class="text-center border-left border-right titulo">
+                            SOLICITUD DE CHEQUE
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-5 border-left">
+                            &nbsp;
+                        </td>
+                        <td colspan="10">
+                            &nbsp;
+                        </td>
+                        <td class="text-right" colspan="3">
+                            No. SOLICITUD
+                        </td>
+                        <td class="border-bottom text-center" colspan="5" style="font-size: 18px; padding-bottom: 0px;line-height: 18px;">
+                            {{ total.NumSolicitud }}
+                        </td>
+                        <td class="col-5 border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="20" class="border-left border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    {% for banco in bancos %}
+                        {% if banco.id_empresa == total.codigoempresa %}
+                            {% for cuenta in banco.cuentas %}
+                                {% if forloop.first or cuenta.bool_inicio %}
+                                    <tr>
+                                        <td class="col-5 border-left">
+                                            &nbsp;
+                                        </td>
+                                {% endif %}
+                                        <td colspan="6">
+                                            {{ cuenta.NumCuentaEnBanco }} {{ cuenta.Descripcion }}
+                                        </td>
+                                {% if forloop.last or cuenta.bool_fin %}
+                                        <td class="col-5 border-right">
+                                            &nbsp;
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                    <tr>
+                        <td class="border-left border-right" colspan="20">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left">
+                            &nbsp;
+                        </td>
+                        <td colspan="3">
+                            A NOMBRE DE:
+                        </td>
+                        <td class="border-bottom" colspan="15">
+                            {{ total.GiradoA }}
+                        </td>
+                        <td class="border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left border-right" colspan="20">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left">
+                            &nbsp;
+                        </td>
+                        <td colspan="5">
+                            POR LO CANTIDAD DE:
+                        </td>
+                        <td class="border-bottom border-right border-left border-top" colspan="10" rowspan="2" style="font-size: 16px;padding-top: 6px; line-height: 18px;">
+                            {{ total.valorCheque|intcomma }}
+                        </td>
+                        <td class="" colspan="3">
+                            &nbsp;
+                        </td>
+                        <td class="border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left">
+                            &nbsp;
+                        </td>
+                        <td colspan="4">
+                            (En Números)
+                        </td>
+                        <td class="text-right">
+                            Q.
+                        </td>
+                        <td class="" colspan="3">
+                            &nbsp;
+                        </td>
+                        <td class="border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left border-right" colspan="20">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left">
+                            &nbsp;
+                        </td>
+                        <td colspan="2">
+                            CONCEPTO:
+                        </td>
+                        <td class="border-bottom" colspan="16">
+                            {{ total.Descripcion }}
+                        </td>
+                        <td class="border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left">
+                            &nbsp;
+                        </td>
+                        <td class="border-bottom" colspan="18">
+                            &nbsp;
+                        </td>
+                        <td class="border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left">
+                            &nbsp;
+                        </td>
+                        <td class="border-bottom" colspan="18">
+                            &nbsp;
+                        </td>
+                        <td class="border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left border-right" colspan="20">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left">
+                            &nbsp;
+                        </td>
+                        <td colspan="2">
+                            FECHA:
+                        </td>
+                        <td class="border-bottom" colspan="6">
+                            {{ total.Fecha }}
+                        </td>
+                        <td colspan="3" class="text-right">
+                            AUTORIZADO:
+                        </td>
+                        <td class="border-bottom" colspan="7">
+                            &nbsp;
+                        </td>
+                        <td class="border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left border-right" colspan="20">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left">
+                            &nbsp;
+                        </td>
+                        <td colspan="4">
+                            NOMBRE DE SOLICITANTE:
+                        </td>
+                        <td class="border-bottom" colspan="14">
+                            {{ total.UsuarioGrabo }}
+                        </td>
+                        <td class="border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left border-right" colspan="20">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left border-top detalle-departamento" colspan="6">
+                            ESPACIO EXCLUSIVO DEPARTAMENTO DE CONTABILIDAD
+                        </td>
+                        <td class="border-left border-top text-center" colspan="2">
+                            CUENTA CONTABLE
+                        </td>
+                        <td class="border-left border-top text-center" colspan="3">
+                            CUENTA PRESUPUESTO
+                        </td>
+                        <td class="border-left border-top text-center" colspan="2">
+                            AREA
+                        </td>
+                        <td class="border-left border-top text-center" colspan="3">
+                            DEBE
+                        </td>
+                        <td class="border-left border-top text-center" colspan="3">
+                            HABER
+                        </td>
+                        <td class="border-left border-right border-top">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    {% for detalle in total.Detalle %}
+                        <tr>
+                            {% if detalle.CorrelativoLinea == 5 %}
+                                <td class="border-left">
+                                    &nbsp;
+                                </td>
+                                <td colspan="4" class="border-top text-center">
+                                    Vo. Bo. CONTABILIDAD
+                                </td>
+                                <td>
+                                    &nbsp;
+                                </td>
+                            {% else %}
+                                <td class="border-left" colspan="6">
+                                    &nbsp;
+                                </td>
+                            {% endif %}
+                            <td class="border-left border-top text-center" colspan="2">
+                                {% if detalle.cuenta != "Bancos" %}{{ detalle.cuenta }}{% endif %}
+                            </td>
+                            <td class="border-left border-top text-center" colspan="3">
+                                {{ detalle.CuentaPresupuesto }}
+                            </td>
+                            <td class="border-left border-top text-center" colspan="2">
+                                {{ detalle.codigoArea }}
+                            </td>
+                            <td class="border-left border-top text-center" colspan="3">
+                                {% if detalle.debitoCredito == "D" %}{{ detalle.valor|floatformat:2|intcomma }}{% endif %}
+                            </td>
+                            <td class="border-left border-top text-center" colspan="3">
+                                {% if detalle.debitoCredito == "H" %}{{ detalle.valor|floatformat:2|intcomma }}{% endif %}
+                            </td>
+                            <td class="border-left border-right">
+                                &nbsp;
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td class="border-left" colspan="6">
+                            &nbsp;
+                        </td>
+                        <td class="border-left border-top text-center" colspan="2">
+                            &nbsp;
+                        </td>
+                        <td class="border-left border-top text-center" colspan="3">
+                            &nbsp;
+                        </td>
+                        <td class="border-left border-top text-center" colspan="2">
+                            TOTAL
+                        </td>
+                        <td class="border-left border-top text-center" colspan="3">
+                            {{ total.suma_d|floatformat:2|intcomma }}
+                        </td>
+                        <td class="border-left border-top text-center" colspan="3">
+                            {{ total.suma_h|floatformat:2|intcomma }}
+                        </td>
+                        <td class="border-left border-right">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-left border-bottom" colspan="6">
+                            &nbsp;
+                        </td>
+                        <td class="border-top border-bottom text-center" colspan="2">
+                            &nbsp;
+                        </td>
+                        <td class="border-top border-bottom text-center" colspan="3">
+                            &nbsp;
+                        </td>
+                        <td class="border-top border-bottom text-center" colspan="2">
+                            &nbsp;
+                        </td>
+                        <td class="border-top border-bottom text-center" colspan="3">
+                            &nbsp;
+                        </td>
+                        <td class="border-top border-bottom text-center" colspan="3">
+                            &nbsp;
+                        </td>
+                        <td class="border-right border-bottom">
+                            &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% if not forloop.last %}
+            <div class="page-break"></div>
+        {% endif %}
+    {% endfor %}
+</body>
+</html>

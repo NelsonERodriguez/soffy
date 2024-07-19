@@ -1,0 +1,103 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Ingreso ticket {% endblock title %}
+
+{% load static %}
+{% load humanize %}
+
+{% block stylesheets %}
+    <style>
+
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">sms_failed</i>
+                        </div>
+                        <h4 class="card-title">Ingreso ticket</h4>
+                    </div>
+                    <div class="card-body">
+{#                        <div class="row" style="margin-top: 35px;">#}
+{#                            <div class="col-12">#}
+{#                                <div class="form-group">#}
+{#                                    <label for="buscador">Buscar</label>#}
+{#                                    <input type="text" class="form-control" name="buscador" id="buscador">#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+                        <div class="row" style="margin-top: 35px;">
+                            <div class="col-md-4">
+                                <ul class="nav nav-pills nav-pills-rose flex-column" role="tablist">
+                                    {% for key, categoria in plantillas.items %}
+                                        <li class="nav-item">
+                                            <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab" href="#link_{{ forloop.counter }}" role="tablist">
+                                                {{ categoria.categoria }}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="tab-content">
+                                    {% for key, categoria in plantillas.items %}
+                                        <div class="tab-pane {% if forloop.first %}active{% endif %}" id="link_{{ forloop.counter }}">
+                                            <div class="row">
+
+                                                {% for plantilla in categoria.plantillas %}
+
+                                                    <div class="col-lg-4 col-md-6 col-12">
+                                                        <div class="card card-stats" style="background: {% cycle '#e1e1e1' 'white' %}; cursor: pointer;" onclick="redirFormCreate({{ plantilla.id }});">
+                                                            <div class="card-header card-header-rose card-header-icon" style="height: 150px;">
+                                                                <div class="card-icon" style="background: {{ plantilla.color }};">
+                                                                    <i class="material-icons">{{ plantilla.icono }}</i>
+                                                                </div>
+                                                                <br><br><br>
+{#                                                                <p class="card-category">{{ categoria.categoria }}</p>#}
+                                                                <h4 class="card-title" style="color: black;">{{ plantilla.titulo }}</h4>
+                                                            </div>
+{#                                                            <div class="card-body" style="max-height: 78px; height: 78px; overflow: hidden; min-height: 78px;">#}
+{#                                                                <div class="stats">#}
+{#                                                                    {{ plantilla.descripcion }}#}
+{#                                                                </div>#}
+{#                                                            </div>#}
+                                                        </div>
+                                                    </div>
+
+                                                {% endfor %}
+
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        const strUrlCreate = "{% url 'tickets-ingreso_ticket_create' 0 %}";
+    </script>
+{#    <script src="{% static 'modules/rrhh/ingreso_horas_extras/ingreso_horas_extras.js' %}" async defer></script>#}
+    <script>
+        const redirFormCreate = (intPlantilla) => {
+            strUrl = strUrlCreate.replace('0', intPlantilla);
+            window.location.href = strUrl;
+        };
+    </script>
+
+{% endblock javascripts %}

@@ -1,0 +1,68 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block title %} Impresión de Vacaciones {% endblock title %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">print_connect</i>
+                        </div>
+                        <h4 class="card-title">Impresión de Vacaciones</h4>
+                    </div>
+                    <div class="card-body">
+                        {% if departamentos %}
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="sltDepartamento">Departamento</label>
+                                    <select class="form-control" name="sltDepartamento" id="sltDepartamento"
+                                            onchange="fntChangeDepto();">
+                                        <option value="0">Todos</option>
+                                        {% for departamento in departamentos %}
+                                            <option value="{{ departamento.departamento_id }}">{{ departamento.departamento__nombre }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row" style="margin: 25px 0;">
+                            <div class="col-sm-12 table-responsive">
+                                <table id="tblConceptos" class="table table-striped">
+                                    <thead class="bg-black">
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Departamento</th>
+                                        <th>Estatus</th>
+                                        <th>Fecha Inicio</th>
+                                        <th>Fecha Fin</th>
+                                        <th>Cantidad Días</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="{% static 'assets/js/plugins/fullcalendar-6.1.11/dist/index.global.js' %}"></script>
+    <script>
+        const strUrlGetListado = "{% url 'rrhh-impresion_vacaciones_listado_solicitudes_impresion' %}",
+            strUrlGetEmpleados = "{% url 'rrhh-vacaciones_autorizacion_rrhh_get_empleados' %}",
+            strUrlImprimir = "{% url 'rrhh-vacaciones_autorizacion_rrhh_imprimir' 0 %}",
+            strUrlFinalizar = "{% url 'rrhh-vacaciones_autorizacion_rrhh_finalizar' %}";
+    </script>
+    <script src="{% static 'modules/rrhh/imprimir_vacaciones/imprimir_vacaciones.js' %}" async defer></script>
+{% endblock javascripts %}

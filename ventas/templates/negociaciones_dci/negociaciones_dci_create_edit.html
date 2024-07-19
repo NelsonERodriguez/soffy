@@ -1,0 +1,121 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Negociaciones DCI {% endblock title %}
+{% load static %}
+{% load humanize %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">event</i>
+                        </div>
+                        <h4 class="card-title">Negociaciones DCI</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" name="frm_negociaciones_dci" id="frm_negociaciones_dci">
+                            {% csrf_token %}
+                            <div class="toolbar text-right">
+                                {% if not negociaciones_dci.cerrado %}
+                                    <button type="button" rel="tooltip" class="btn btn-info" data-original-title="Agregar" id="btnAgregar">
+                                        <i class="material-icons">add</i>
+                                    </button>
+                                {% endif %}
+                            </div>
+                            <div class="row" style="margin-top: 35px;">
+                                <div class="offset-8 col-4">
+                                    <input type="week" name="week" id="week" {% if negociaciones_dci.id %} value="{{ negociaciones_dci.year }}-W{% if len == 2 %}{{ negociaciones_dci.semana }}{% else %}0{{ negociaciones_dci.semana }}{% endif %}"{% endif %} {% if negociaciones_dci.cerrado %} readonly style="cursor: not-allowed;"{% endif %} class="form-control">
+                                    <input type="hidden" name="id" id="id" value="{{ negociaciones_dci.id }}">
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 35px;">
+                                <div class="col-12">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center;">Producto</th>
+                                                <th style="text-align: center;">Libras Negociados</th>
+                                                <th style="text-align: center;">Fecha de Emisión</th>
+                                                <th style="text-align: center;">Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodyNegociaciones">
+                                            {% for detalle in detalles %}
+                                                {% if negociaciones_dci.cerrado %}
+                                                    <tr>
+                                                        <td>{{ detalle.codigo_producto }} - {{ detalle.producto }}</td>
+                                                        <td>{{ detalle.contenedores_negociados }}</td>
+                                                        <td>{{ detalle.fecha_entrega|date:"d/m/Y" }}</td>
+                                                        <td>{{ detalle.estado }}</td>
+                                                    </tr>
+                                                {% else %}
+                                                    <tr>
+                                                        <td>
+                                                            <input type="text" value="{{ detalle.codigo_producto }} - {{ detalle.producto }}" id="producto_{{ forloop.counter }}" class="form-control" data-row="{{ forloop.counter }}">
+                                                            <input type="hidden" name="detalle_id[]" id="detalle_id_{{ forloop.counter }}" value="{{ detalle.detalle_id }}">
+                                                            <input type="hidden" name="producto_id[]" id="producto_id_{{ forloop.counter }}" value="{{ detalle.producto_id }}">
+                                                            <input type="hidden" name="row[]" id="row_{{ forloop.counter }}" value="{{ forloop.counter }}">
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" value="{{ detalle.contenedores_negociados }}" name="contenedores_negociados[]" id="contenedores_negociados_{{ forloop.counter }}" class="form-control" style="text-align: right;">
+                                                        </td>
+                                                        <td>
+                                                            <input type="date" value="{{ detalle.fecha_entrega|date:"Y-m-d" }}" name="fecha_entrega[]" id="fecha_entrega_{{ forloop.counter }}" class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <select name="estados[]" id="estados[]" class="form-control">
+                                                                <option value="negociado" {% if detalle.estado == "negociado" %}selected{% endif %}>Negociado</option>
+                                                                <option value="cotizado" {% if detalle.estado == "cotizado" %}selected{% endif %}>Cotizado</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {% if not negociaciones_dci.cerrado %}
+                                <div class="row" style="margin-top: 35px;">
+                                    <div class="col-12 text-center">
+                                        <button type="button" class="btn btn-fill btn-outline-success" id="btnSave">
+                                            <span class="material-icons">save</span>
+                                            Grabar
+                                        </button>
+                                        <button type="button" rel="tooltip" class="btn btn-outline-danger" id="btnCerrar">
+                                            <i class="material-icons">delete_outline</i>
+                                            Cerrar
+                                        </button>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </form>
+                    </div>
+                    <!-- end content-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script src="{% static 'assets/js/core/jquery-ui.min.js' %}"></script>
+    <script>
+        const strUrlGetProductos = "{% url 'ventas-negociaciones_dci_get_productos' %}",
+            strUrlSave = "{% url 'ventas-negociaciones_dci_create_edit' negociaciones_dci.id %}",
+            totalPorcentaje = {% if totales %}parseFloat(({{ totales.porcentaje }}).toFixed(2)){% else %}0{% endif %},
+            intSemana = {% if negociaciones_dci.id %}parseInt({{ negociaciones_dci.semana }}){% else %}0{% endif %};
+    </script>
+    <script src="{% static 'modules/ventas/negociaciones_dci/negociaciones_dci.js' %}" type="text/javascript" async defer></script>
+
+{% endblock javascripts %}

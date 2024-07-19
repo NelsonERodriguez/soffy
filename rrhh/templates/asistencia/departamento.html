@@ -1,0 +1,97 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %} Asistencia {% endblock title %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/buttons.dataTables.min.css' %}">
+    <style>
+    .btn.btn-secondary {
+        color: #fff;
+        background-color: green;
+        border-color: #999999;
+    }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">pending_actions</i>
+                        </div>
+                        <h4 class="card-title">Asistencia</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-12 text-right" style="margin-bottom: 35px;">
+                                <button type="button" class="btn btn-outline-info" onclick="simple_redireccion('{% url 'rrhh-asistencia' %}');">
+                                    <span class="material-icons">arrow_back</span> Regresar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-bottom: 35px;">
+
+                            <div class="col-4">
+                                <div class="form-group bmd-form-group">
+                                    <label for="departamento">Departamento</label> <br>
+                                    <select name="departamento" id="departamento" class="form-control">
+                                        {% for departamento in departamentos %}
+                                            <option value="{{ departamento.No_Depto }}">{{ departamento.Descripcion }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-3">
+                                <div class="form-group bmd-form-group">
+                                    <label for="fecha_inicio">Fecha inicial</label> <br>
+                                    <input type="date" class="form-control" name="fecha_inicio" id="fecha_inicio">
+                                </div>
+                            </div>
+
+                            <div class="col-3">
+                                <div class="form-group bmd-form-group">
+                                    <label for="fecha_fin">Fecha final</label> <br>
+                                    <input type="date" class="form-control" name="fecha_fin" id="fecha_fin">
+                                </div>
+                            </div>
+
+                            <div class="col-2">
+                                <button type="button" class="btn btn-outline-success" id="btnGenerar">
+                                    <span class="material-icons">done</span> Generar
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <div class="row" style="margin-bottom: 35px;">
+
+                            <div class="col-12" id="divAsistencia">
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script src="{% static 'assets/js/buttons.html5.min.js' %}"></script>
+    <script>
+        const strUrlDepartamento = "{% url 'rrhh-asistencia_horas_departamento' %}";
+    </script>
+    <script src="{% static 'modules/rrhh/asistencia/departamento.js' %}" async defer></script>
+
+{% endblock javascripts %}

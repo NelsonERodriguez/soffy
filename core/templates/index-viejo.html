@@ -1,0 +1,801 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock title %}
+
+{% block stylesheets %}
+    <style>
+        .ct-chart .ct-label.ct-horizontal.ct-end {
+            font-size: 10px;
+            /* position: relative;
+            justify-content: flex-end;
+            text-align: right;
+            transform-origin: 100% 0;
+            transform: translate(-100%) rotate(-45deg);
+            white-space:nowrap; */
+        }
+
+        .separador {
+            float: left;
+            display: block;
+            width: 6px;
+            height: 100%;
+            padding: 0.4375rem 0;
+        }
+
+        .drp-buttons {
+            display: none !important;
+        }
+
+        .daterange {
+            width: 100%;
+            height: 20px;
+            font-size: 12px;
+            padding: 2px 4px;
+            background-color: #579bfc;
+            color: white;
+            border-radius: 20px;
+            border: unset;
+            cursor: pointer;
+        }
+
+        .countGroup {
+            color: #a7a7a7;
+        }
+
+        .accordion {
+            margin-bottom: 35px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% load humanize %}
+    {% load static %}
+    {% csrf_token %}
+    <link rel="stylesheet" href="{% static 'assets/css/daterangepicker.css' %}">
+    <div>
+        <h2>MI DASHBOARD</h2>
+    </div>
+    <div class='row'>
+
+        {% if perms.rrhh.dashboard_asistencias and request.user.id != 904 %}
+
+            <div class="col-md-12" id="div_asistencias">
+                <div class='row'>
+                    <div class="col-lg-12 align-self-start">
+                        <div class="card card-chart">
+                            <div class="card-header card-header-icon card-header-warning">
+                                <div class="card-icon">
+                                    <i class="material-icons">pending_actions</i>
+                                </div>
+                                <h4 class="card-title">Asistencia de {% now 'd/m/Y' %}</h4>
+                            </div>
+
+                            <div class="card-body">
+                                <div id="app"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if DEBUG %}
+                    <script src="{% static 'assets/js/@3_vue.global.js' %}"></script>
+                {% else %}
+                    <script src="{% static 'assets/js/@3_vue.global.prod.js' %}"></script>
+                {% endif %}
+                <!-- <script>const strUrlAsistencias = '{% url 'core-get_asistencias' %}';</script>
+                <script src="{% static 'modules/core/dashboard/asistencias/asistencias.js' %}" async defer></script> -->
+            </div>
+
+        {% endif %}
+
+        {% if perms.rrhh.rrhh_vacaciones_autorizacion_rrhh and request.user.id != 904 %}
+            <div class="col-md-12" id="div_autorizacion_jefes">
+                <div class='row'>
+                    <div class="col-lg-12 align-self-start">
+                        <div class="card card-chart">
+                            <div class="card-header card-header-icon card-header-warning">
+                                <div class="card-icon">
+                                    <i class="material-icons">calendar_month</i>
+                                </div>
+                                <h4 class="card-title">Vacaciones autorizadas por jefes</h4>
+                            </div>
+
+                            <div class="card-body">
+                                <table id="tblVacaciones" class="table table-striped" cellspacing="0"
+                                       width="100%">
+                                    <thead class="bg-black">
+                                    <tr>
+                                        <th>No. Empleado</th>
+                                        <th>Nombre</th>
+                                        <th>Departamento</th>
+                                        <th>Estatus</th>
+                                        <th>Fecha Inicio</th>
+                                        <th>Fecha Fin</th>
+                                        <th>Cantidad Días</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                // const strUrlVacacionesRrhh = "url 'rrhh-vacaciones_autorizacion_rrhh'";
+                // const strUrlGetListado = "url 'rrhh-vacaciones_autorizacion_rrhh_listado_solicitudes'";
+            </script>
+            <!-- <script src="{% static 'modules/core/dashboard/vacaciones/vacaciones.js' %}" async defer></script> -->
+        {% endif %}
+
+        {% if myday %}
+            <div class="col-12" id="div_tickets">
+                <div class='row'>
+                    <div class="col-lg-12 align-self-start">
+
+                        <div class="card card-chart">
+                            <div class="card-header card-header-icon card-header-warning">
+                                <div class="card-icon">
+                                    <i class="material-icons">checklist</i>
+                                </div>
+                                <h4 class="card-title">My Day</h4>
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="accordion" id="accordion_solicitudes">
+                                    <div>
+                                        <div id="heading_solicitudes">
+                                            <h4>
+                                                <span class="collapsed" type="button" data-toggle="collapse"
+                                                      data-target="#collapse_solicitudes" aria-expanded="true"
+                                                      onclick="changeIcon(this);" style="cursor:pointer;">
+                                                    <i class="fas fa-chevron-down"></i>
+                                                </span>
+                                                Mis solicitudes / <span id="countSolicitudes" class="countGroup"> 0 elementos</span>
+                                            </h4>
+                                        </div>
+                                        <div class="collapse show" id="collapse_solicitudes"
+                                             aria-labelledby="heading_solicitudes" data-parent="#accordion_solicitudes"
+                                             style="">
+                                            <div class="card-body" id="collapseBody_solicitudes">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accordion" id="accordion_vencido">
+                                    <div>
+                                        <div id="headingvencido">
+                                            <h4>
+                                                <span class="collapsed" type="button" data-toggle="collapse"
+                                                      data-target="#collapsevencido" aria-expanded="true"
+                                                      onclick="changeIcon(this);" style="cursor:pointer;">
+                                                    <i class="fas fa-chevron-down"></i>
+                                                </span>
+                                                Vencido / <span id="countVencidos"
+                                                                class="countGroup"> 0 elementos</span>
+                                            </h4>
+                                        </div>
+                                        <div class="collapse show" id="collapsevencido" aria-labelledby="headingvencido"
+                                             data-parent="#accordion_vencido" style="">
+                                            <div class="card-body" id="collapseBody_vencido">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accordion" id="accordion_hoy">
+                                    <div>
+                                        <div id="headinghoy">
+                                            <h4>
+                                                <span class="collapsed" type="button" data-toggle="collapse"
+                                                      data-target="#collapsehoy" aria-expanded="false"
+                                                      onclick="changeIcon(this);" style="cursor:pointer;">
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </span>
+                                                Hoy / <span id="countHoy" class="countGroup"> 0 elementos</span>
+                                            </h4>
+                                        </div>
+                                        <div class="collapse" id="collapsehoy" aria-labelledby="headinghoy"
+                                             data-parent="#accordion_hoy" style="">
+                                            <div class="card-body" id="collapseBody_hoy">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="accordion" id="accordion_sin_fecha">
+                                    <div>
+                                        <div id="heading60">
+                                            <h4>
+                                                <span class="collapsed" type="button" data-toggle="collapse"
+                                                      data-target="#collapsesin_fecha" aria-expanded="false"
+                                                      onclick="changeIcon(this);" style="cursor:pointer;">
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </span>
+                                                Sin fecha / <span id="countSinFechas"
+                                                                  class="countGroup"> 0 elementos</span>
+                                            </h4>
+                                        </div>
+                                        <div class="collapse" id="collapsesin_fecha" aria-labelledby="headingsin_fecha"
+                                             data-parent="#accordion_sin_fecha" style="">
+                                            <div class="card-body" id="collapseBody_sin_fecha">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+<!-- {#            <script src="{% static 'assets/js/plugins/locales/locale-all.js' %}"></script>#}
+            <script src="{% static 'assets/js/plugins/daterangepicker.js' %}"></script> -->
+        {% endif %}
+
+        <div class='col-md-6'>
+            <div class='row'>
+                <div class="col-lg-12 align-self-start">
+                    <div class="card card-chart">
+                        <div class="card-header card-header-icon card-header-info">
+                            <div class="card-icon">
+                                <i class="material-icons">kitesurfing</i>
+                            </div>
+                            <h4 class="card-title">Mis vacaciones</h4>
+                        </div>
+                        <div class="card-body">
+
+
+                            <div class="row">
+                                <div class="col-md-10 ml-auto mr-auto">
+                                    <div class="material-datatables">
+                                        <table id="datatables" class="table table-striped table-no-bordered table-hover"
+                                               cellspacing="0" width="100%" style="width:100%">
+                                            <thead class="text-primary">
+                                            <tr>
+                                                <th>Fecha Inicial</th>
+                                                <th>Fecha Final</th>
+                                                <th>Días</th>
+                                                <th>Periodo</th>
+                                                <th>Pagadas</th>
+                                                <th>Empresa</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class='col-md-6'>
+            <div class='row'>
+                <div class="col-lg-12 align-self-start">
+                    <div class="card">
+                        <div class="card-header card-header-icon card-header-rose">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <h4 class="card-title ">Detalle de tus facturas pendientes</h4>
+                        </div>
+                        <div class="card-body" style="max-height: 330px; overflow: auto;">
+                            <div class="table-responsive">
+                                <table id="tblFacturas" class="table table-striped table-no-bordered table-hover"
+                                       cellspacing="0" width="100%" style="width:100%">
+                                    <thead class=" text-primary">
+                                    <tr>
+                                        <th>Factura No.</th>
+                                        <th>Fecha de compra</th>
+                                        <th>Fecha estimada de cobro</th>
+                                        <th>Saldo Pendiente</th>
+                                        <th>Total</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        // const strUrlGetTickets = "url 'core-get_data_tickets' %}",
+        //     strUrlDashboard = "url 'tickets-dashboard' %}",
+        //     strUrlGetInfoTicket = "'tickets-dashboard_get_api_info_ticket' %}",
+        //     intUser = {{ request.user.id }},
+        //     intDepartamento = {% if myday %}{{ myday.departamento_id }}{% else %}0{% endif %};
+    </script>
+    <script async>
+        let intLimite = parseInt('{{ intLimite }}');
+        let intValuePercentage = intLimite / 100;
+        let intSaldo = parseInt('{{ intSaldo }}');
+        let intPercentage = intSaldo / intValuePercentage;
+        let intDisponible = parseInt(100 - intPercentage);
+        let strPercentage = `${intPercentage} %`;
+        let strDisponible = `${intDisponible} %`;
+        const arrSueldo = `{{ arrSueldo|safe }}`;
+
+        let dataPreferences = {
+            labels: [strDisponible, strPercentage],
+            series: [intDisponible, intPercentage]
+        };
+
+        let optionsPreferences = {
+            height: '230px'
+        };
+
+        if (intPercentage) {
+            Chartist.Pie('#chartCredit', dataPreferences, optionsPreferences);
+        }
+
+        let arrLabels = [];
+        let arrSeries = [];
+        const objGraphSueldos = makeObjSueldos();
+
+        async function makeObjSueldos() {
+            let objSueldo = (arrSueldo) ? JSON.parse(arrSueldo) : [];
+            for (let key in objSueldo) {
+                const data = objSueldo[key];
+                data.mes = (data.mes - 1);
+                if (typeof arrLabels[data.mes] === 'undefined') {
+                    arrLabels[data.mes] = data.nombre_mes;
+                }
+                if (typeof arrSeries[data.mes] === 'undefined') {
+                    arrSeries[data.mes] = 0;
+                }
+                if (data.tipo === 'Ingreso') {
+                    arrSeries[data.mes] += parseInt(data.valor);
+                } else if (data.tipo === 'Descuento') {
+                    arrSeries[data.mes] -= parseInt(data.valor);
+                }
+            }
+
+            for (let key in arrSeries) {
+                arrLabels[key] = `${arrLabels[key]} Q ${arrSeries[key]}`;
+            }
+        }
+
+        dataColouredRoundedLineChart = {
+            labels: arrLabels,
+            series: [
+                arrSeries
+            ]
+        };
+
+        optionsColouredRoundedLineChart = {
+            lineSmooth: Chartist.Interpolation.cardinal({
+                tension: 10
+            }),
+            axisY: {
+                showGrid: true,
+                offset: 40
+            },
+            axisX: {
+                showGrid: false,
+            },
+            low: 0,
+            showPoint: true,
+            height: '300px'
+        };
+
+        if (arrSeries.length && arrLabels.length) {
+            let colouredRoundedLineChart = new Chartist.Line('#colouredRoundedLineChart', dataColouredRoundedLineChart, optionsColouredRoundedLineChart);
+            md.startAnimationForLineChart(colouredRoundedLineChart);
+        }
+
+        $(document).ready(function () {
+            $.fn.dataTable.ext.errMode = 'throw';
+
+            $('#datatables').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "Todos"]
+                ],
+                "order": [[0, "desc"]],
+                responsive: true,
+                language: objLenguajeDataTable,
+                "ajax": {
+                    "url": "{% url 'core-get_data_vacaciones' %}",
+                    "type": "POST",
+                    "dataSrc": "data",
+                    "data": function (d) {
+                        d.csrfmiddlewaretoken = $("input[name='csrfmiddlewaretoken']").val()
+                    }
+                },
+                columns: [
+                    {
+                        data: 'Fecha1', "className": "text-right",
+                        "render": function (data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                let date = new Date(data + " 00:00:00");
+                                return dateGTFormat.format(date);
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        data: 'Fecha2', "className": "text-right",
+                        "render": function (data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                let date = new Date(data + " 00:00:00");
+                                return dateGTFormat.format(date);
+                            }
+                            return data;
+                        }
+                    },
+                    {data: 'Dias', "className": "text-right"},
+                    {data: 'Periodo'},
+                    {
+                        data: 'Calculo',
+                        "render": function (data, type, row) {
+                            let strReturn = 'No';
+                            if (parseFloat(data) > 0) {
+                                strReturn = 'Si';
+                            }
+                            return strReturn;
+                        }
+                    },
+                    {data: 'Empresa'}
+                ]
+            });
+
+
+            $('#tblFacturas').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "Todos"]
+                ],
+                "order": [[0, "desc"]],
+                responsive: true,
+                language: objLenguajeDataTable,
+                "ajax": {
+                    "url": "{% url 'core-get_data_facturas' %}",
+                    "type": "POST",
+                    "dataSrc": "data",
+                    "data": function (d) {
+                        d.csrfmiddlewaretoken = $("input[name='csrfmiddlewaretoken']").val()
+                    }
+                },
+                columns: [
+                    {data: 'NoDocumento', "className": "text-right"},
+                    {
+                        data: 'FechaFormat', "className": "text-right",
+                        "render": function (data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                return data;
+                            }
+                            return row.FechaOrder;
+                        }
+                    },
+                    {
+                        data: 'FechaPagoFormat', "className": "text-right",
+                        "render": function (data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                return data;
+                            }
+                            return row.FechaPagoOrder;
+                        }
+                    },
+                    {
+                        data: 'Saldo', "className": "text-right",
+                        "render": function (data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                return currencyFormat.format(data);
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        data: 'Total', "className": "text-right",
+                        "render": function (data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                return currencyFormat.format(data);
+                            }
+                            return data;
+                        }
+                    }
+                ]
+            });
+        });
+
+        const changeIcon = async (objElement) => {
+            if (objElement.children[0].classList.contains('fa-chevron-down')) {
+                objElement.children[0].classList.remove('fa-chevron-down');
+                objElement.children[0].classList.add('fa-chevron-right');
+            } else {
+                objElement.children[0].classList.remove('fa-chevron-right');
+                objElement.children[0].classList.add('fa-chevron-down');
+            }
+        };
+
+        const getTickets = async () => {
+            const csrftoken = getCookie('csrftoken'),
+                objForm = new FormData();
+
+            //open_loading();
+            await fetch(strUrlGetTickets, {
+                method: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                body: objForm
+            })
+                .then(response => response.json())
+                .then(async (data) => {
+
+                    if (data.status) {
+
+                        let strEncabezado = `
+                        <div class="row">
+                            <div class="col-4" style="border-bottom: 1px solid #ddd; text-align: center;">Ticket</div>
+                            <div class="col-2" style="border-bottom: 1px solid #ddd; text-align: center;">Tablero</div>
+                            <div class="col-2" style="border-bottom: 1px solid #ddd; text-align: center;">Grupo</div>
+                            <div class="col-2" style="border-bottom: 1px solid #ddd; text-align: center;">Fecha</div>
+                            <div class="col-2" style="border-bottom: 1px solid #ddd; text-align: center;">Estado</div>
+                        </div>
+                    `;
+
+                        const objSolicitudes = document.getElementById('collapseBody_solicitudes');
+                        const intCountSolicitudes = Object.keys(data.solicitudes).length;
+                        if (intCountSolicitudes) {
+                            objSolicitudes.innerHTML = strEncabezado + await drawBody(data.solicitudes, 'drawModalSolicitud(this)');
+                            document.getElementById('countSolicitudes').innerHTML = `${intCountSolicitudes} elementos`;
+                        } else {
+                            objSolicitudes.innerHTML = '';
+                        }
+
+                        const objVencido = document.getElementById('collapseBody_vencido');
+                        const intCountVencidos = Object.keys(data.vencidos).length;
+                        if (intCountVencidos) {
+                            objVencido.innerHTML = strEncabezado + await drawBody(data.vencidos);
+                            document.getElementById('countVencidos').innerHTML = `${intCountVencidos} elementos`;
+                        } else {
+                            objVencido.innerHTML = '';
+                        }
+
+                        const objHoy = document.getElementById('collapseBody_hoy');
+                        const intCountHoy = Object.keys(data.hoy).length;
+                        if (intCountHoy) {
+                            objHoy.innerHTML = strEncabezado + await drawBody(data.hoy);
+                            document.getElementById('countHoy').innerHTML = `${intCountHoy} elementos`;
+                        } else {
+                            objHoy.innerHTML = '';
+                        }
+
+                        const objSinFecha = document.getElementById('collapseBody_sin_fecha');
+                        const intCountSinFechas = Object.keys(data.sin_fecha).length;
+                        if (intCountSinFechas) {
+                            objSinFecha.innerHTML = strEncabezado + await drawBody(data.sin_fecha);
+                            document.getElementById('countSinFechas').innerHTML = `${intCountSinFechas} elementos`;
+                        } else {
+                            objSinFecha.innerHTML = '';
+                        }
+
+                    }
+
+                    //close_loading();
+                })
+                .catch((error) => {
+                    console.error(error);
+                    alert_nova.showNotification('Error de conexión, comuníquese con IT.', "warning", "danger");
+                    //close_loading();
+                });
+
+        };
+
+        const drawModalSolicitud = (objElement) => {
+
+            const intSolicitud = objElement.dataset.solicitud;
+            $(`#mdlSolicitud`).modal('hide');
+            const objModal = document.getElementById(`mdlSolicitud`);
+            if (objModal) objModal.remove();
+
+            const csrftoken = getCookie('csrftoken'),
+                objForm = new FormData();
+            objForm.append('ticket', intSolicitud);
+
+            open_loading();
+            fetch(strUrlGetInfoTicket, {
+                method: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                body: objForm,
+            })
+                .then(response => response.json())
+                .then(async (data) => {
+
+                    if (data.status) {
+
+                        const strFechaInicio = (data.general.fecha_inicio) ? data.general.fecha_inicio : '';
+                        const strFechaFin = (data.general.fecha_fin) ? data.general.fecha_fin : '';
+                        const strModal = `
+                            <div class="modal fade" tabindex="-1" id="mdlSolicitud" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Solicitud</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row" style="margin-bottom: 35px;">
+                                                <div class="col-8 text-center">
+                                                    <b>Titulo</b><hr>
+                                                    #${data.general.id} ${data.general.titulo}
+                                                </div>
+                                                <div class="col-4">
+                                                    <b>Creación</b><hr>
+                                                    ${data.general.fecha_creacion}
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-bottom: 35px;">
+                                                <div class="col-12">
+                                                    <b>Descripción</b><hr>
+                                                    ${data.general.descripcion}
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-bottom: 35px;">
+                                                <div class="col-6">
+                                                    <b>Causa</b><hr>
+                                                    ${data.general.causa}
+                                                </div>
+                                                <div class="col-6">
+                                                    <b>Posible solución</b><hr>
+                                                    ${data.general.posible_solucion}
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-bottom: 35px;">
+                                                <div class="col-3">
+                                                    <b>Estado</b><hr>
+                                                    <span style="background: ${data.general.estado_color}; color: white; padding: 7px 15px; font-weight: bold; border-radius: 3px;">${data.general.estado}</span>
+                                                </div>
+                                                <div class="col-3">
+                                                    <b>Prioridad</b><hr>
+                                                    <span style="background: ${data.general.prioridad_color}; color: white; padding: 7px 15px; font-weight: bold; border-radius: 3px;">${data.general.prioridad}</span>
+                                                </div>
+                                                <div class="col-3">
+                                                    <b>Fecha inicio</b> <hr>
+                                                    ${strFechaInicio}
+                                                </div>
+                                                <div class="col-3">
+                                                    <b>Fecha final</b> <hr>
+                                                    ${strFechaFin}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+
+                        document.body.insertAdjacentHTML('beforeend', strModal);
+
+                        $(`#mdlSolicitud`).modal('show');
+
+                    }
+
+                    close_loading();
+                })
+                .catch((error) => {
+                    console.error(error);
+                    alert_nova.showNotification('Error de conexión, comuníquese con IT.', "warning", "danger");
+                    close_loading();
+                });
+
+        };
+
+        const drawBody = async (objData, strFuncion = "") => {
+            let strBody = '';
+            for (let key in objData) {
+                const arrData = objData[key];
+
+
+                let strFechaInicio = "";
+                if (arrData.fecha_inicio) {
+                    let dateFechaInicio = new Date(arrData.fecha_inicio);
+                    strFechaInicio = dateTimeGTFormat.format(dateFechaInicio);
+                    strFechaInicio = strFechaInicio.replace(",", "")
+                }
+
+                let strFechaFin = "";
+                if (arrData.fecha_fin) {
+                    let dateFechaFin = new Date(arrData.fecha_fin);
+                    strFechaFin = dateTimeGTFormat.format(dateFechaFin);
+                    strFechaFin = strFechaFin.replace(",", "");
+                }
+
+                let strFecha = "";
+                if (strFechaInicio.length > 0 && strFechaFin.length > 0) {
+                    strFecha = strFechaInicio + " - " + strFechaFin;
+                } else if (strFechaInicio.length > 0) {
+                    strFecha = strFechaInicio;
+                } else if (strFechaFin.length > 0) {
+                    strFecha = strFechaFin;
+                }
+
+                let strInputFecha = '';
+                if (strFecha.length > 0) {
+                    const strCursor = (intUser === arrData.user_id) ? "" : "cursor: not-allowed;";
+                    const strDisabled = (intUser === arrData.user_id) ? "" : "disabled";
+                    strInputFecha = `<input type="text" class="daterange" value="${strFecha}" ${strDisabled} style="${strCursor} background: ${arrData.estado_color};" />`;
+                }
+
+                let strTipo = arrData.es_personal ? "personal" : ((intDepartamento == arrData.departamento_id) ? 'departamento' : 'asignado');
+                let strUrl = `${strUrlDashboard}?workspaces=${arrData.workspace_id}&tipo=${strTipo}&ticket_id=${arrData.id}`;
+                let strFuncion2 = (strFuncion !== "") ? strFuncion : `simple_redireccion('${strUrl}')`;
+                strBody += `
+                    <div class="row">
+                        <div class="col-4" style="border-bottom: 1px solid #ddd; border-left: 1px solid #ddd; padding-left: 0; cursor: pointer;" onclick="${strFuncion2};" data-solicitud="${arrData.id}">
+                            <div class="separador" style="background: #0073ea; margin-right: 5px;">&nbsp;</div>
+                            <span style="padding-top: 7px; display: block;">${arrData.titulo}</span>
+                        </div>
+                        <div class="col-2" style="border-bottom: 1px solid #ddd; border-left: 1px solid #ddd;">
+                            <span style="padding-top: 7px; display: block;">${arrData.nombre_workspace}</span>
+                        </div>
+                        <div class="col-2" style="border-bottom: 1px solid #ddd; border-left: 1px solid #ddd;">
+                            <span style="padding-top: 7px; display: block;"><i class="fas fa-circle" style="color: ${arrData.color_grupo};"></i> ${arrData.nombre_grupo}</span>
+                        </div>
+                        <div class="col-2" style="border-bottom: 1px solid #ddd; border-left: 1px solid #ddd; text-align: center;">
+                            <span style="padding-top: 7px; display: block;">${strInputFecha}</span>
+                        </div>
+                        <div class="col-2" style="border-bottom: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; background: ${arrData.estado_color}; font-weight: bold; color: white; text-align: center;">
+                            <span style="padding-top: 7px; display: block;">${arrData.estado}
+                        </div>
+                    </div>
+                `;
+
+            }
+
+            return strBody;
+        };
+
+        {% if myday %}
+            getTickets();
+            $(document).on("focus", ".daterange", function () {
+                $(this).daterangepicker({
+                    "locale": {
+                        "format": "DD/MM/YYYY H:mm",
+                        "separator": " - ",
+                        "fromLabel": "Desde",
+                        "toLabel": "A",
+                        "customRangeLabel": "Personalizada",
+                        "weekLabel": "S",
+                        "daysOfWeek": [
+                            "Do",
+                            "Lu",
+                            "Ma",
+                            "Mi",
+                            "Ju",
+                            "Vi",
+                            "Sa"
+                        ],
+                        "monthNames": monthNamesSpanish,
+                        "firstDay": 1,
+                    },
+                    timePicker: true,
+                    timePicker24Hour: true,
+                    //autoUpdateInput: false,
+                });
+            });
+        {% endif %}
+
+    </script>
+{% endblock javascripts %}

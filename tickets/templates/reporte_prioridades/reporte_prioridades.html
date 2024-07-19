@@ -1,0 +1,259 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Priorización de Iniciativas {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/static/assets/css/jquery-ui.min.css">
+    <style>
+        #tblReporte {
+            width: 150% !important;
+            max-width: none;
+        }
+
+        #tblReporte thead tr th {
+            background: #1d826a;
+            color: white;
+            border: black 1px solid;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        #tblReporte input[type="number"] {
+            text-align: center;
+        }
+
+        .noneBackground {
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .thPorcentaje {
+            background: #ffff00 !important;
+            color: black !important;
+            text-align: right !important;
+        }
+
+        .thGreen {
+            background: #018101 !important;
+        }
+
+        .thDescripcion {
+            background: transparent !important;
+            color: black !important;
+            text-align: left !important;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">sms_failed</i>
+                        </div>
+                        <h4 class="card-title">Priorización de Iniciativas</h4>
+                    </div>
+                    <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="button" onclick="exportReportToExcel();" class="btn btn-default">EXCEL</button>
+                        </div>
+                    </div>
+                        <div class="row" style="margin: 35px 0;">
+                            <div class="col-12" style="overflow-x: scroll; padding-bottom: 40px;">
+                                <table class="table" id="tblReporte">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="8" class="noneBackground">&nbsp;</th>
+                                            {% for regla in reglas %}
+                                                <th class="thDescripcion">
+                                                    {{ regla.descripcion|safe }}
+                                                </th>
+                                            {% endfor %}
+                                            <th colspan="4" class="noneBackground">&nbsp;</th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="8" class="noneBackground">&nbsp;</th>
+                                            {% for regla in reglas %}
+                                                <th class="thPorcentaje" data-fill-color="ffff00">
+                                                    {{ regla.porcentaje }}%
+                                                </th>
+                                            {% endfor %}
+                                            <th class="thGreen" data-fill-color="018101" data-f-color="ffffff">100%</th>
+                                            <th colspan="3" class="noneBackground">&nbsp;</th>
+                                        </tr>
+                                        <tr>
+                                            <th data-fill-color="1d826a" data-f-color="ffffff">#</th>
+                                            <th data-fill-color="1d826a" data-f-color="ffffff">Workspace</th>
+                                            <th data-fill-color="1d826a" data-f-color="ffffff">Área</th>
+                                            <th data-fill-color="1d826a" data-f-color="ffffff">Requerimiento</th>
+                                            <th data-fill-color="1d826a" data-f-color="ffffff">Origen de la solicitud</th>
+                                            <th data-fill-color="1d826a" data-f-color="ffffff">Solución</th>
+                                            <th data-fill-color="1d826a" data-f-color="ffffff">Usuario</th>
+                                            <th data-fill-color="1d826a" data-f-color="ffffff">Asignado</th>
+                                            {% for regla in reglas %}
+                                                <th data-fill-color="1d826a" data-f-color="ffffff">{{ regla.nombre }}</th>
+                                            {% endfor %}
+                                            <th data-fill-color="1d826a" data-f-color="ffffff">Ponderación</th>
+                                            <th data-fill-color="1d826a" data-f-color="ffffff">Prioridad</th>
+                                            <th data-fill-color="1d826a" data-f-color="ffffff">Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for key, ticket in tickets.items %}
+                                            <tr>
+                                                <td>
+                                                    {{ forloop.counter }}
+                                                    <input type="hidden" name="ponderacion_{{ ticket.id }}" id="ponderacion_{{ ticket.id }}" value="{{ ticket.ponderacion }}">
+                                                </td>
+                                                <td>
+                                                    {{ ticket.workspace }}
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="area_proceso_{{ ticket.id }}" id="area_proceso_{{ ticket.id }}"
+                                                           value="{% if ticket.departamento %}{{ ticket.departamento }}{% endif %}"
+                                                           class="form-control" data-key="{{ ticket.id }}" data-field="area_proceso" onchange="saveDatos(this);">
+                                                </td>
+                                                <td>{% if ticket.titulo %}{{ ticket.titulo }}{% endif %}</td>
+                                                <td>
+                                                    <input type="text" name="origen_{{ ticket.id }}" id="origen_{{ ticket.id }}" value="{% if ticket.origen %}{{ ticket.origen }}{% endif %}"
+                                                           class="form-control" data-key="{{ ticket.id }}" data-field="origen" onchange="saveDatos(this);">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="solucion_{{ ticket.id }}" id="solucion_{{ ticket.id }}" value="{% if ticket.solucion %}{{ ticket.solucion }}{% endif %}"
+                                                           class="form-control" data-key="{{ ticket.id }}" data-field="solucion" onchange="saveDatos(this);">
+                                                </td>
+                                                <td>
+                                                    <input type="hidden" name="user_creador_id_{{ ticket.id }}" id="user_creador_id_{{ ticket.id }}" value="{% if ticket.user_creador_id %}{{ ticket.user_creador_id }}{% endif %}" data-key="{{ ticket.id }}" data-field="user_creador_id">
+                                                    <input type="text" name="user_creador_autocomplete_{{ ticket.id }}" id="user_creador_autocomplete_{{ ticket.id }}" data-id="user_creador_id_{{ ticket.id }}" value="{% if ticket.user_creador %}{{ ticket.user_creador }}{% endif %}" class="form-control">
+                                                </td>
+                                                <td>
+                                                    <input type="hidden" name="user_asignado_id_{{ ticket.id }}" id="user_asignado_id_{{ ticket.id }}" value="{% if ticket.user_asignado_id %}{{ ticket.user_asignado_id }}{% endif %}" data-key="{{ ticket.id }}" data-field="user_asignado_id">
+                                                    <input type="text" name="user_asignado_autocomplete_{{ ticket.id }}" id="user_asignado_autocomplete_{{ ticket.id }}" data-id="user_asignado_id_{{ ticket.id }}" value="{% if ticket.user_asignado %}{{ ticket.user_asignado }}{% endif %}" class="form-control">
+                                                </td>
+                                                {% for regla in reglas %}
+                                                    <td>
+                                                        <input type="number" name="valor_{{ ticket.id }}[]" id="{{ regla.id }}_{{ ticket.id }}" data-regla="{{ regla.id }}"
+                                                               onkeypress="return validarNumerosPonderacion(event);" onchange="changePonderacion({{ ticket.id }});"
+                                                               step="1" min="1" max="5" maxlength="1" class="form-control"
+                                                        value="{% for valores_regla in ticket.valores_reglas %}{% if regla.id == valores_regla.regla_id %}{{ valores_regla.valor }}{% endif %}{% endfor %}">
+                                                        <span class="text-hide" id="span_{{ ticket.id }}_{{ regla.id }}">
+                                                            {% for valores_regla in ticket.valores_reglas %}{% if regla.id == valores_regla.regla_id %}{{ valores_regla.valor }}{% endif %}{% endfor %}
+                                                        </span>
+                                                    </td>
+                                                {% endfor %}
+                                                <td class="text-center" id="td_{{ ticket.id }}">
+                                                    {% if ticket.ponderacion %}{{ ticket.ponderacion }}{% endif %}
+                                                </td>
+                                                <td>
+                                                    <select name="prioridad_id_{{ ticket.id }}" id="prioridad_id_{{ ticket.id }}" class="form-control" data-key="{{ ticket.id }}" data-field="prioridad_id" onchange="saveDatos(this); setColorInput(this);">
+                                                        {% for prioridad in prioridades %}
+                                                            <option value="{{ prioridad.id }}" {% if prioridad.id == ticket.prioridad_id %}selected{% endif %} data-color="{{ prioridad.color }}" data-background-color="{{ prioridad.color }}">{{ prioridad.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="estado_id_{{ ticket.id }}" id="estado_id_{{ ticket.id }}" class="form-control" data-key="{{ ticket.id }}" data-field="estado_id" onchange="saveDatos(this); setColorInput(this);">
+                                                        {% for estado in estados %}
+                                                            <option value="{{ estado.id }}" {% if estado.id == ticket.estado_id %}selected{% endif %} data-color="{{ estado.color }}" data-background-color="{{ estado.color }}">{{ estado.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script src="{% static 'assets/js/tableToExcel.js' %}"></script>
+    <script src="{% static 'assets/js/core/jquery-ui.min.js' %}"></script>
+    <script>
+        const setColorInput = (objThis) => {
+
+            for (let i = 0; i < objThis.options.length; i++) {
+                const objOption = objThis.options[i];
+                if (objOption.selected) {
+                    const strColor = objOption.getAttribute('data-color');
+                    objThis.parentElement.style.setProperty('background', strColor);
+                }
+            }
+
+        };
+
+        const objSelect = document.querySelectorAll(`select`);
+        objSelect.forEach(element => {
+            const strField = element.getAttribute('data-field');
+            if (strField === "estado_id" || strField === "prioridad_id") {
+                setColorInput(element);
+            }
+        });
+
+        const strUrlSavePonderacion = "{% url 'tickets-reporte_prioridades_save_ponderacion' %}",
+            strUrlSaveDatos = "{% url 'tickets-reporte_prioridades_save_datos' %}";
+        const arrReglas = [];
+        {% for regla in reglas %}
+            arrReglas[{{ regla.id }}] = {
+               "id": {{ regla.id }},
+               "porcentaje": {{ regla.porcentaje }},
+               "valor_maximo": {{ regla.valor_maximo }},
+               "valor_ascendente": {% if regla.valor_ascendente %}1{% else %}0{% endif %},
+            };
+        {% endfor %}
+
+        $( `input[id*="autocomplete_"]` ).autocomplete({
+            minLength: 1,
+            source: function( request, response ) {
+
+                let strUrl = "{% url 'tickets-reporte_prioridades_get_users' 'search' %}";
+                strUrl = strUrl.replace('search', request.term);
+                const data = new FormData();
+                data.append('csrfmiddlewaretoken', getCookie("csrftoken"));
+
+                fetch(strUrl, {
+                  method: 'POST',
+                  body: data,
+                })
+                  .then(response => response.json())
+                  .then( (data) => {
+                      response($.map(data.users, function (item) {
+                        return {
+                            label: item.name,
+                            value: item.id
+                        }
+                    }))
+                  })
+                  .catch((error) => {
+                      console.error(error);
+                  });
+            },
+            select: function( event, ui ) {
+                event.preventDefault();
+                const strUsers = ui.item.label;
+                const intUsers = ui.item.value * 1;
+
+                const strId = this.getAttribute('data-id');
+                document.getElementById(strId).value = intUsers;
+                this.value = strUsers;
+                saveDatos(document.getElementById(strId));
+            }
+        });
+    </script>
+    <script src="{% static 'modules/tickets/reporte_prioridades/reporte_prioridades.js' %}" async defer></script>
+
+{% endblock javascripts %}

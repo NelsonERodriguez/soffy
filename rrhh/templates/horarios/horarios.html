@@ -1,0 +1,119 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Horarios {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8 offset-sm-2">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">update</i>
+                        </div>
+                        <h4 class="card-title">Horarios</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 text-right">
+                                <button type="button" class="btn btn-outline-info" onclick="showModal(true);">
+                                    <span class="material-icons">add</span> Agregar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="material-datatables table-hover">
+                                    <table id="datatablesHorarios" class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Día</th>
+                                            <th>Hora entrada</th>
+                                            <th>Hora salida</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tfoot>
+                                        <tr>
+                                            <th></th>
+                                            <th>Día</th>
+                                            <th>Hora entrada</th>
+                                            <th>Hora salida</th>
+                                            <th></th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_horario" tabindex="-1" role="dialog" aria-labelledby="modal_HorarioLabel"
+         aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Horario</h4>
+                    <button type="button" class="close" id="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal_body_horario">
+                    <form name="formHorario" id="formHorario">
+                        <input type="hidden" id="id" name="id">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="dia">Día</label>
+                                <select name="dia" id="dia" class="form-control">
+                                    {% for dia in dias_semana %}
+                                        <option value="{{ dia.id }}">{{ dia.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label for="hora_almuerzo">Almuerzo</label>
+                                <input type="time" class="form-control" name="hora_almuerzo" id="hora_almuerzo">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="hora_entrada">Entrada</label>
+                                <input type="time" class="form-control" name="hora_entrada" id="hora_entrada">
+                            </div>
+                            <div class="col-6">
+                                <label for="hora_salida">Salida</label>
+                                <input type="time" class="form-control" name="hora_salida" id="hora_salida">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-success" onclick="dialogConfirm(saveHorario);">
+                        <span class="material-icons">save</span> Grabar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const strUrlGetHorarios = "{% url 'rrhh-horarios_get_horarios' %}";
+        const strUrlGetHorario = "{% url 'rrhh-horarios_get_horario' %}";
+        const strUrlSaveHorario = "{% url 'rrhh-horarios_save_horario' %}";
+    </script>
+    <script src="{% static 'modules/rrhh/horarios/horarios.js' %}" async defer></script>
+{% endblock javascripts %}

@@ -1,0 +1,237 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Reglas de Comisiones {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+    <style>
+        @media screen and (min-width: 576px) {
+            table.table-responsive {
+                display: inline-table;
+            }
+        }
+
+        .ui-front {
+            z-index: 1060;
+        }
+
+        .required:after {
+            content: " *";
+            color: red;
+        }
+
+        input[type="file"] {
+            -webkit-appearance: listbox;
+        }
+
+        .clases > div > .card {
+            cursor: pointer;
+            min-height: 280px;
+        }
+
+        .clases > div > .card:hover {
+            background-color: #f1f1f1;
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.10)
+        }
+    </style>
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid" id="div_content_1">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">add_business</i>
+                        </div>
+                        <h4 class="card-title">
+                            Reglas de Comisiones
+                            <a href="{% url 'rrhh-reglas_comision_v3_descargar_excel' %}" class="btn btn-outline-primary pull-right text-primary">
+                                <span class="material-icons">download</span>
+                                Descargar todas las reglas
+                            </a>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row clases">
+                            <div class="col-lg-3">
+                                <div class="card" onclick="fntShowSearcher('cliente');">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <i class="fad fa-user-cog fa-5x"
+                                                   style="--fa-primary-color: #1257ce; --fa-secondary-color: #1257ce;"></i>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h3>Comisiones por Cliente</h3>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h4>Cree o modifique las comisiones por cliente específico</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card" onclick="fntShowSearcher('producto');">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <i class="fad fa-drumstick fa-5x"
+                                                   style="--fa-primary-color: #1257ce; --fa-secondary-color: #1257ce;"></i>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h3>Comisiones por Producto</h3>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h4>Cree o modifique las comisiones por producto específico</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card" onclick="fntShowSearcher('vendedor');">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <i class="fad fa-user-tie fa-5x"
+                                                   style="--fa-primary-color: #1257ce; --fa-secondary-color: #1257ce;"></i>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h3>Comisiones por Vendedor</h3>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h4>Cree o modifique las comisiones por vendedor específico</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card" onclick="fntShowSearcher('general');">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <i class="fad fa-globe fa-5x"
+                                                   style="--fa-primary-color: #1257ce; --fa-secondary-color: #1257ce;"></i>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h3>Comisiones Generales</h3>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h4>Cree o modifique las comisiones generales</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" id="div_content_2" style="display: none;">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">add_business</i>
+                        </div>
+                        <h4 class="card-title">
+                            Reglas de Comisiones
+                            <button type="button" rel="tooltip" class="btn btn-outline-success pull-right" data-original-title="Agregar" onclick="fntDibujarRegla(0);">
+                                <span class="material-icons">add</span>
+                                Agregar
+                            </button>
+                            <button type="button" class="btn btn-outline-danger pull-right"
+                                    onclick="fntRegresarDatatable();">
+                                <span class="material-icons">keyboard_return</span>
+                                Regresar
+                            </button>
+                            <a href="{% url 'rrhh-reglas_comision_v3_descargar_excel' %}" class="btn btn-outline-primary pull-right text-primary">
+                                <span class="material-icons">download</span>
+                                Descargar todas las reglas
+                            </a>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="div_filter">
+                            <div class="col-md-4">
+
+                            </div>
+                        </div>
+                        <div class="material-datatables table-hover">
+                            <table id="tblReglas" class="table" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Vendedor</th>
+                                    <th>Tipo de Producto</th>
+                                    <th>Producto</th>
+                                    <th>Comisión Base</th>
+                                    <th>Habilitado</th>
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Vendedor</th>
+                                    <th>Tipo de Producto</th>
+                                    <th>Producto</th>
+                                    <th>Comisión Base</th>
+                                    <th>Habilitado</th>
+                                </tr>
+                                </tfoot>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="mdlRegla" tabindex="-1" role="dialog" aria-labelledby="mdlReglaLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content" id="mdlContent">
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="/static/assets/js/core/jquery-ui.min.js"></script>
+    <script src="/static/assets/js/plugins/jasny-bootstrap.min.js"></script>
+
+    <script>
+        (function () {
+            window.strUrlGetList = "{% url 'rrhh-reglas_comision_v3_get_reglas' %}";
+            window.strUrlEdit = "{% url 'rrhh-reglas_comision_v3_edit' %}";
+            window.strUrlSave = "{% url 'rrhh-reglas_comision_v3_save' %}";
+            window.strUrlBuscarCliente = "{% url 'rrhh-reglas_comision_v3_get_cliente' 'search' 'union' %}";
+            window.strUrlBuscarVendedor = "{% url 'rrhh-reglas_comision_v3_get_vendedor' 'search' 'union' %}";
+            window.strUrlBuscarProducto = "{% url 'rrhh-reglas_comision_v3_get_producto' 'search' 'union' %}";
+            window.valCSRF = getCookie('csrftoken');
+            window.boolAdjuntosRequeridos ={% if bool_adjuntos_requeridos %} true{% else %} false{% endif %};
+            window.intCorrelativo = 0;
+            window.objFrmInterfaz = null;
+            window.strNameInput = null;
+            window.strTitulo = null;
+            window.strNameHidden = null;
+        })();
+    </script>
+
+    <script src="{% static 'modules/rrhh/reglas_comision/reglas_comision_v3.js' %}" async defer></script>
+{% endblock javascripts %}

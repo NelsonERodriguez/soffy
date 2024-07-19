@@ -1,0 +1,219 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="apple-touch-icon" sizes="76x76" href="{% static 'assets/img/mundo.png' %}">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/mundo.png' %}">
+        <title>Nómina</title>
+
+        <style type="text/css">
+
+            @media print {
+                @page {
+                    size: Legal landscape;
+                    margin: 7mm 12.4mm 1mm 10.5mm;
+
+                    @top-right {
+                        margin-top: 40px;
+                        font-size: 12px;
+                        content: "Página " counter(page);
+                    }
+                }
+            }
+
+            html {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+                color: black;
+                font-size: 12px;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            div.break {
+                page-break-before:always;
+            }
+
+            .text-center {
+                text-align: center;
+            }
+
+            .text-left {
+                text-align: left;
+            }
+
+            .text-right {
+                text-align: right;
+            }
+
+            .row {
+                position: relative;
+                display: inline-block;
+                width: 100%;
+            }
+
+            .cell {
+                position: relative;
+                display: block;
+                float: left;
+            }
+
+
+
+            thead > tr:first-child {
+                font-weight: normal;
+                font-size: 11px;
+            }
+            thead > tr > th {
+                font-weight: normal;
+                font-size: 10px;
+            }
+            tbody > tr > td {
+                font-weight: normal;
+                font-size: 10px;
+            }
+
+            .titulo-grande {
+                font-size: 14px;
+            }
+
+            .titulo-departamento > td {
+                margin-top: 15px;
+                padding-top: 25px;
+                padding-bottom: 5px;
+                font-size: 14px;
+            }
+
+            .total-departamento > td {
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+
+            .fila-empleado > td {
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+
+        </style>
+    </head>
+    <body>
+
+        <div>
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th colspan="15">
+                            <div class="text-center" style="font-size: 14px;">
+                                NOVA - Reporte de Nómina
+                            </div>
+                            <div class="text-center" style="font-size: 14px;">
+                                Periodo: {{ periodo.fecha_inicial|date:"d/m/Y" }} - {{ periodo.fecha_final|date:"d/m/Y" }}
+                            </div>
+                            <div class="text-center row" >
+                                <div class="cell text-left" style="width:30%;font-size: 14px;">EMPRESA: {{ empresa.no_empresa }}&emsp;{{ empresa.razon_social }}</div>
+                                <div class="cell" style="width:40%;font-size: 14px;">{{ titulo }}</div>
+                                <div class="cell" style="width:29%;font-size: 14px;text-align: right;">{{ fecha_actual|date:"d/m/Y h:m:s" }}</div>
+                            </div>
+                            <div>
+                                <HR>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="titulo-grande" style="width: 400px;">DATOS DEL EMPLEADO</th>
+                        <th>SUELDO ORDINARIO</th>
+                        <th>BONIFICACIÓN PRODUCTIVIDAD</th>
+                        <th>OTROS INGRESOS</th>
+                        <th>BONIFICACIÓN</th>
+                        <th>HORAS EXTRAS</th>
+                        <th>VACACIONES</th>
+                        <th>TOTAL DEVENGADO</th>
+                        <th>I.G.S.S.</th>
+                        <th>I.S.R.</th>
+                        <th>CRÉDITOS</th>
+                        <th>PRÉSTAMO</th>
+                        <th>CELULAR</th>
+                        <th>OTROS DESCUENTOS</th>
+                        <th>LÍQUIDO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, value in datos.items %}
+                        <tr class="titulo-departamento">
+                            <td colspan="15">
+                                DEPARTAMENTO: {{ value.no_depto }}&emsp;&emsp;{{ value.nombre }}
+                            </td>
+                        </tr>
+                        {% for value2 in value.detalles %}
+                            <tr class="fila-empleado">
+                                <td>
+                                    {{ value2.No_Empleado }} {{ value2.NombreCompleto }}
+                                </td>
+
+                                <td class="text-right">{{ value2.Sueldo_Ordinario|floatformat:2|intcomma }}</td>
+                                <td class="text-right">{{ value2.Bonificacion_Productividad|floatformat:2|intcomma }}</td>
+                                <td class="text-right">{{ value2.OtrosIngresos|floatformat:2|intcomma }}</td>
+                                <td class="text-right">{{ value2.Bonificacion|floatformat:2|intcomma }}</td>
+                                <td class="text-right">{{ value2.Horas_Extras|floatformat:2|intcomma }}</td>
+                                <td class="text-right">{{ value2.Vacaciones|floatformat:2|intcomma }}</td>
+                                <td class="text-right">{{ value2.Total_Devengado|floatformat:2|intcomma }}</td>
+
+                                <td class="text-right">{{ value2.IGSS|floatformat:2|intcomma }}</td>
+                                <td class="text-right">{{ value2.ISR|floatformat:2|intcomma }}</td>
+                                <td class="text-right">{{ value2.Creditos|floatformat:2|intcomma }}</td>
+                                <td class="text-right">{{ value2.Prestamo|floatformat:2|intcomma }}</td>
+                                <td class="text-right">{{ value2.Celular|floatformat:2|intcomma }}</td>
+                                <td class="text-right">{{ value2.OtrosDescuentos|floatformat:2|intcomma }}</td>
+                                <td class="text-right">{{ value2.Liquido|floatformat:2|intcomma }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr class="total-departamento">
+                            <td class="text-center">
+                                TOTAL DEPARTAMENTO
+                            </td>
+                            <td class="text-right">{{ value.tot_sueldo_ordinario|floatformat:2|intcomma }}</td>
+                            <td class="text-right">{{ value.tot_bonificacion_productividad|floatformat:2|intcomma }}</td>
+                            <td class="text-right">{{ value.tot_otros_ingresos|floatformat:2|intcomma }}</td>
+                            <td class="text-right">{{ value.tot_bonificacion|floatformat:2|intcomma }}</td>
+                            <td class="text-right">{{ value.tot_horas_extras|floatformat:2|intcomma }}</td>
+                            <td class="text-right">{{ value.tot_vacaciones|floatformat:2|intcomma }}</td>
+                            <td class="text-right">{{ value.tot_total_devengado|floatformat:2|intcomma }}</td>
+
+                            <td class="text-right">{{ value.tot_igss|floatformat:2|intcomma }}</td>
+                            <td class="text-right">{{ value.tot_isr|floatformat:2|intcomma }}</td>
+                            <td class="text-right">{{ value.tot_creditos|floatformat:2|intcomma }}</td>
+                            <td class="text-right">{{ value.tot_prestamo|floatformat:2|intcomma }}</td>
+                            <td class="text-right">{{ value.tot_celular|floatformat:2|intcomma }}</td>
+                            <td class="text-right">{{ value.tot_otros_descuentos|floatformat:2|intcomma }}</td>
+                            <td class="text-right">{{ value.tot_liquido|floatformat:2|intcomma }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="total-general">
+                        <td class="text-center">
+                            TOTAL GENERAL
+                        </td>
+                        <td class="text-right">{{ general.tot_sueldo_ordinario|floatformat:2|intcomma }}</td>
+                        <td class="text-right">{{ general.tot_bonificacion_productividad|floatformat:2|intcomma }}</td>
+                        <td class="text-right">{{ general.tot_otros_ingresos|floatformat:2|intcomma }}</td>
+                        <td class="text-right">{{ general.tot_bonificacion|floatformat:2|intcomma }}</td>
+                        <td class="text-right">{{ general.tot_horas_extras|floatformat:2|intcomma }}</td>
+                        <td class="text-right">{{ general.tot_vacaciones|floatformat:2|intcomma }}</td>
+                        <td class="text-right">{{ general.tot_total_devengado|floatformat:2|intcomma }}</td>
+
+                        <td class="text-right">{{ general.tot_igss|floatformat:2|intcomma }}</td>
+                        <td class="text-right">{{ general.tot_isr|floatformat:2|intcomma }}</td>
+                        <td class="text-right">{{ general.tot_creditos|floatformat:2|intcomma }}</td>
+                        <td class="text-right">{{ general.tot_prestamo|floatformat:2|intcomma }}</td>
+                        <td class="text-right">{{ general.tot_celular|floatformat:2|intcomma }}</td>
+                        <td class="text-right">{{ general.tot_otros_descuentos|floatformat:2|intcomma }}</td>
+                        <td class="text-right">{{ general.tot_liquido|floatformat:2|intcomma }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

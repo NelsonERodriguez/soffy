@@ -1,0 +1,78 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Anular Facturas {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+<style>
+    #tblDataInvoices > thead > tr > th {
+        background: #ed8929;
+        text-align: center;
+        color: white;
+        font-weight: bold;
+    }
+    #btnAnular {
+        cursor: not-allowed;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">signal_cellular_no_sim</i>
+                        </div>
+                        <h4 class="card-title">Anular Facturas</h4>
+                    </div>
+                    <div class="card-body">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col text-center">
+                                <button type="button" class="btn btn-outline-info" id="btnAnular" disabled>
+                                    <i class="fad fa-ban"></i>
+                                    Anluar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12" id="container-info">
+                                <table class="table table-bordered" id="tblDataInvoices">
+                                    <thead>
+                                        <tr>
+                                            <th>Seleccionar</th>
+                                            <th>Documento</th>
+                                            <th>Empresa</th>
+                                            <th>Factura / Pedido</th>
+                                            <th>Fecha Ingreso</th>
+                                            <th>Cliente</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tBodyContainer"></tbody>
+                                </table>
+                                <form action="" id="formSend"></form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script async defer>
+        const strUrlShow = "{% url 'ventas-anular_facturas_show' %}",
+            strUrlNull = "{% url 'ventas-anular_facturas_anular' %}",
+            btnSearch = document.getElementById('btnBuscar'),
+            valCSRF = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+        let objGlobalInvoices = [];
+    </script>
+    <script src="{% static 'modules/ventas/anular_facturas/anular_facturas.js' %}"></script>
+
+{% endblock javascripts %}

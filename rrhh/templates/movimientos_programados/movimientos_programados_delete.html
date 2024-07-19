@@ -1,0 +1,90 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Movimientos Programados - Borrar {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <style>
+        .cntInputDataForm {
+            margin-top: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">alarm_on</i>
+                        </div>
+                        <h4 class="card-title">Movimientos Programados - Borrar</h4>
+                    </div>
+                    <div class="card-body">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col text-right">
+                                <button class="btn btn-outline-danger" type="button" id="btnBack" onclick="goBack()">
+                                    <i class='material-icons'>history</i>
+                                    Regresar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-4 col-lg-3 cntInputDataForm">
+                                <label class="bmd-label-floating">Selecciona Nomina</label>
+                                <select name="slt_nomina" id="slt_nomina" class="form-control">
+                                    <option value="nominagb">Nomina General</option>
+                                    <option value="nominagbf">Nomina Facturación</option>
+                                    <option value="nominagbv">Nomina Ventas</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-3 cntInputDataForm">
+                                <label for="employee" class="bmd-label-floating">Selecciona Empleado</label>
+                                <input id='employee' type='text' class='form-control' name='employee' list='list_employee' autocomplete='off' onkeyup='getEmployee(event, this)' />
+                                <datalist id="list_employee"></datalist>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-3 cntInputDataForm">
+                                <button class="btn btn-outline-primary" id="btnSearchMovements" type="button" onclick="getDataMovements()">
+                                    <i class="fa fa-search"></i>
+                                    Buscar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 30px;">
+                            <table class="table table-striped" id="tblDefault">
+                                <thead>
+                                    <tr>
+                                        <th>No Empleado</th>
+                                        <th>Nombre</th>
+                                        <th>Tipo Descuento</th>
+                                        <th>Opciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tBodyDefault">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center;">No hay información a mostrar</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="{% static 'modules/rrhh/movimientos_programados/movimientos_programados_delete.js' %}" async defer></script>
+    <script async defer>
+        const urlGetInfoUsers = "{% url 'rrhh-movimientos_programados_get_users' %}",
+            urlGetMovementsByUser = "{% url 'rrhh-movimientos_programados_get_movements_by_user' %}",
+            urlDeleteMovementsByUser = "{% url 'rrhh-movimientos_programados_delete_movements_by_user' %}",
+            valCSRF = document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            urlBase = "{% url 'rrhh-movimientos_programados' %}";
+    </script>
+{% endblock javascripts %}

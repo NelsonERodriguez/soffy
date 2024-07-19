@@ -1,0 +1,105 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Vacaciones {% endblock title %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">playlist_add_check</i>
+                        </div>
+                        <h4 class="card-title">Solicitud de vacaciones</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-12 text-right">
+                            <a type="button" class="btn btn-info" href="{% url 'rrhh-solicitud_vacaciones_create' %}">
+                                <i class="material-icons">note_add</i>
+                                <div class="ripple-container"></div>
+                                Solicitar Vacaciones
+                            </a>
+                        </div>
+                        <div class="material-datatables">
+                            <table id="dtDefault" class="table table-hover" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre del solicitante</th>
+                                        <th>Empresa</th>
+                                        <th>Cantidad Dias</th>
+                                        <th>Estado</th>
+                                        <th class="disabled-sorting"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for vacacion in vacaciones %}
+                                        <tr >
+                                            <td>{{ vacacion.usuario.name }}</td>
+                                            <td>{{ vacacion.empresa.nombre }}</td>
+                                            <td>{{ vacacion.cantidad_dias }}</td>
+                                            <td>
+                                                {% if vacacion.vacaciones_tomadas %}
+                                                    <button class='btn btn-success btn-link' type='button' style='cursor: default;' disabled>
+                                                        Aprobada
+                                                    </button>
+                                                {% else %}
+                                                    {% if vacacion.usuario_id == empleado %}
+                                                        <button class='btn btn-warning btn-link' type='button' style='cursor: default;' disabled>
+                                                            Pendiente de aprobación
+                                                        </button>
+                                                    {% else %}
+                                                        <button class='btn btn-info btn-link' type='button' style='cursor: default;' disabled>
+                                                            Para aprobar
+                                                        </button>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if vacacion.vacaciones_tomadas %}
+                                                    <a class='btn btn-success btn-link' type='button' href='{% url 'rrhh-solicitud_vacaciones_imprimir' vacacion.id %}'>
+                                                        <i class="material-icons">done_all</i>
+                                                        Imprimir solicitud
+                                                    </a>
+                                                {% else %}
+                                                    {% if vacacion.usuario_id == empleado %}
+                                                        <button class='btn btn-warning btn-link' type='button' style='cursor: not-allowed;' disabled>
+                                                            <i class="material-icons">hourglass_bottom</i>
+                                                            Comunicate con tu jefe inmediato
+                                                        </button>
+                                                    {% else %}
+                                                        <a class='btn btn-info btn-link' href='{% url 'rrhh-solicitud_vacaciones_aprobar' vacacion.id %}'>
+                                                            <i class="material-icons">event_available</i>
+                                                            Aprobar solicitud
+                                                        </a>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Nombre del solicitante</th>
+                                        <th>Empresa</th>
+                                        <th>Cantidad Dias</th>
+                                        <th>Estado</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        makeDataTableDefault();
+    </script>
+{% endblock javascripts %}

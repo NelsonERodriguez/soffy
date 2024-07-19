@@ -1,0 +1,122 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>Despacho</title>
+        <style>
+
+        </style>
+    </head>
+    <body style="margin: 0; padding: 0;">
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="4" style="border: black solid 1px; padding-top: 4px;">ODEN DE PEDIDO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><th colspan="4"></th></tr>
+                <tr>
+                    <th colspan="4" style="text-align: right;"><b>No. {{ despacho.NoCotizacionSF }}</b></th>
+                </tr>
+                <tr><th colspan="4"></th></tr>
+                <tr>
+                    <th style="text-align: left;">Cliente:</th>
+                    <td style="text-align: left;">{{ despacho.Nombre }}</td>
+                    <th style="text-align: left;">Fecha:</th>
+                    <td style="text-align: left;">{{ despacho.FechaDespacho|date:"d/m/Y" }}</td>
+                </tr>
+                <tr><th colspan="4"></th></tr>
+                <tr>
+                    <th style="text-align: left;">Sucursal:</th>
+                    <td style="text-align: left;">{{ despacho.Direccion }}</td>
+                    <th style="text-align: left;">Despacho:</th>
+                </tr>
+                <tr><th colspan="4"></th></tr>
+                <tr>
+                    <td><b>Observaciones:</b></td>
+                    <td colspan="3">{{ despacho.Observaciones }}</td>
+                </tr>
+                <tr><th colspan="4"></th></tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+                <tr>
+                    <th style="border-top: black solid 1px; border-bottom: black solid 1px; border-left: black solid 1px; border-right: black solid 1px; padding-top: 4px;">Código Producto</th>
+                    <th style="border-top: black solid 1px; border-bottom: black solid 1px; padding-top: 4px;">Descripción</th>
+                    <th style="border-top: black solid 1px; border-bottom: black solid 1px; border-left: black solid 1px; padding-top: 4px;">Libras</th>
+                    <th style="border-top: black solid 1px; border-bottom: black solid 1px; border-left: black solid 1px; border-right: black solid 1px; padding-top: 4px;">Cajas</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detalle in detalles %}
+                    <tr>
+                        <td style="border-left: black solid 1px; border-right: black solid 1px;">&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td style="border-left: black solid 1px;">&nbsp;</td>
+                        <td style="border-left: black solid 1px; border-right: black solid 1px;">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td style="border-left: black solid 1px; border-right: black solid 1px; text-align: center;">{{ detalle.CodigoProducto }}</td>
+                        <td style="text-align: center;">{{ detalle.Descripcion }}</td>
+                        <td style="border-left: black solid 1px; text-align: right; padding-right: 10px;">{{ detalle.Despacho|intcomma }}</td>
+                        <td style="border-left: black solid 1px; border-right: black solid 1px; text-align: right; padding-right: 10px;">{{ detalle.Cajas|intcomma }}</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td style="border-bottom: black solid 1px; border-left: black solid 1px; border-right: black solid 1px;">&nbsp;</td>
+                    <td style="border-bottom: black solid 1px;">&nbsp;</td>
+                    <td style="border-bottom: black solid 1px; border-left: black solid 1px;">&nbsp;</td>
+                    <td style="border-bottom: black solid 1px; border-left: black solid 1px; border-right: black solid 1px;">&nbsp;</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2"></td>
+                    <th style="border-left: black solid 1px; border-right: black solid 1px;"></th>
+                    <th style="border-right: black solid 1px;"></th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <th style="text-align: right; padding-right: 10px;">Totales:</th>
+                    <th style="border-left: black solid 1px; border-right: black solid 1px; text-align: right; padding-right: 10px;">{{ total|intcomma }}</th>
+                    <th style="border-right: black solid 1px; text-align: right; padding-right: 10px;">{{ total_cajas|intcomma }}</th>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                    <th style="border-left: black solid 1px; border-right: black solid 1px; border-bottom: black solid 1px; "></th>
+                    <th style="border-right: black solid 1px; border-bottom: black solid 1px; "></th>
+                </tr>
+            </tfoot>
+        </table>
+        <div style="width: 100%; position: absolute; margin-top: 50px; text-align: right;">
+            <b>APROBADO CLIENTE</b>
+        </div>
+        <table style="width: 100%;">
+            <tbody>
+                <tr>
+                    <td style="border-top: black solid 1px; border-right: black solid 1px; border-left: black solid 1px; margin-left: 15px;">
+                        <br><b>Nombre:</b> ____________________________________________________________________________________________________________________
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-right: black solid 1px; border-left: black solid 1px; margin-left: 15px;">
+                        <b>Fecha:</b> ______________________________________________________________________________________________________________________
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; border-bottom: black solid 1px; border-left: black solid 1px; border-right: black solid 1px;">
+                        _________________________ <br> <b>Firma Cliente</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">
+                        <br><b>Orden generada desde el pedido: </b> &nbsp;&nbsp;&nbsp; {% if despacho.NoPedido %} {{ despacho.NoPedido }} {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

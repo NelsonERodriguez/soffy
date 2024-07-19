@@ -1,0 +1,169 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Reporte minuta JSA {% endblock title %}
+{% load static %}
+
+{% block stylesheets %}
+    <style>
+        .th-header {
+            background: #009999;
+            color: white;
+            font-weight: bold;
+        }
+
+        th, td {
+            border: solid 1px black;
+            text-align: center;
+        }
+
+        .vertical-lr {
+            writing-mode: vertical-lr;
+        }
+
+        .rotated {
+            transform: rotate(180deg);
+        }
+
+        .img-persona {
+            display: inline-block;
+            height: 2em;
+            line-height: 2em;
+            position: relative;
+            vertical-align: middle;
+            width: 2.5em;
+            padding: 6px 0;
+            cursor: pointer;
+
+            /*width: 27px;
+            height: 27px;
+            margin: 0 auto;
+            display: inline-block;
+            padding: 7px 0px;*/
+        }
+
+        .img-persona > img {
+            width: 86%;
+            border-radius: 50%;
+            text-align: center;
+            height: 100%;
+            position: absolute;
+            left: 2px;
+            /*opacity: 0.5;*/
+        }
+
+        .img-persona > img:hover {
+            opacity: 1;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">list</i>
+                        </div>
+                        <h4 class="card-title">Reporte minuta JSA</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-12">
+
+                                <table class="table" id="tableMinuta">
+                                    <thead>
+                                    <tr>
+                                        <th rowspan="2" class="th-header">#</th>
+                                        <th rowspan="2" class="th-header">ASIGNACIONES / COMPROMISOS</th>
+                                        <th rowspan="2" class="th-header">AREA</th>
+                                        <th rowspan="2" class="th-header">RESPONSABLE</th>
+                                        <th rowspan="2" class="th-header vertical-lr rotated">SEMANA</th>
+                                        <th rowspan="1" class="th-header" colspan="2">FECHA</th>
+                                        <th rowspan="2" class="th-header vertical-lr rotated">ESTADO</th>
+                                        <th rowspan="2" class="th-header">OBSERVACIONES / COMENTARIOS</th>
+                                        {% if perms.tickest.cerrar_minuta_jsa %}
+                                            <th class="th-header" rowspan="2"></th>
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <th class="th-header">ASIGNACIÓN</th>
+                                        <th class="th-header">COMPROMISO DE CIERRE</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for key, ticket in tickets.items %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ ticket.titulo }}</td>
+                                            <td>{{ ticket.area }}</td>
+                                            <td>{{ ticket.responsables|safe }}</td>
+                                            <td>{{ ticket.semana|safe }}</td>
+                                            <td>{{ ticket.fecha|safe }}</td>
+                                            <td>{{ ticket.fecha_hora_fin }}</td>
+                                            <td style="background: {{ ticket.estado_color }};">{{ ticket.estado }}</td>
+                                            <td style="cursor:pointer;" onclick="getComentarios({{ ticket.id }});">
+                                                {% if ticket.comentarios %}
+                                                    {{ ticket.comentarios }}
+                                                    <span class="fa-stack">
+                                                        <i class="fas fa-comment fa-stack-2x"
+                                                           style="color: #0073ea;opacity: 1;"></i>
+                                                        <i class="fa-stack-1x fa-inverse"
+                                                           style="--fa-inverse:var(--fa-navy);left: -1px; top: 5px; font-weight: bold;">{{ ticket.cantidad_comentarios }}</i>
+                                                    </span>
+                                                {% endif %}
+                                            </td>
+                                            {% if perms.tickets.cerrar_minuta_jsa %}
+                                                <td>
+                                                    <button class="btn btn-outline-danger" type="button"
+                                                            onclick="dialogConfirm(cerrarTicket, {{ ticket.id }});">
+                                                        <span class="material-icons">archive</span> Cerrar
+                                                    </button>
+                                                </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalComentarios" tabindex="-1" role="dialog" aria-labelledby="modalComentarios"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style='box-shadow: none; border: none;'>
+                <div class="modal-header">
+                    <h4 class="modal-title">Comentarios</h4>
+                    <button type="button" class="close" id="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id='contentComentarios'>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="{% static 'assets/js/buttons.html5.min.js' %}"></script>
+    <script>
+        const strUrlGetComentarios = "{% url 'tickets-reporte_minuta_jsa_get_comentarios' %}",
+            strUrlCerrar = "{% url 'tickets-reporte_minuta_jsa_cerrar_ticket' %}";
+    </script>
+    <script src="{% static 'modules/tickets/reporte_minuja_jsa/reporte_minuta_jsa.js' %}" async defer></script>
+{% endblock %}

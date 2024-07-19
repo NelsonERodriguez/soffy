@@ -1,0 +1,820 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Reglas de Comisiones {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+    <style>
+        @media screen and (min-width: 576px) {
+            table.table-responsive {
+                display: inline-table;
+            }
+        }
+
+        .ui-front {
+            z-index: 1060;
+        }
+
+        .required:after {
+            content: " *";
+            color: red;
+        }
+
+        input[type="file"] {
+            -webkit-appearance: listbox;
+        }
+
+        .clases > div > .card {
+            cursor: pointer;
+            min-height: 280px;
+        }
+
+        .clases > div > .card:hover {
+            background-color: #f1f1f1;
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.10)
+        }
+    </style>
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid" id="div_content_1">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">add_business</i>
+                        </div>
+                        <h4 class="card-title">Reglas de Comisiones</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row clases">
+                            <div class="col-lg-3">
+                                <div class="card" onclick="fntShowClassYNuevo('cliente');">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <i class="fad fa-user-cog fa-5x"
+                                                   style="--fa-primary-color: #1257ce; --fa-secondary-color: #1257ce;"></i>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h3>Comisiones por Cliente</h3>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h4>Cree o modifique las comisiones por cliente específico</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card" onclick="fntShowClassYNuevo('producto');">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <i class="fad fa-drumstick fa-5x"
+                                                   style="--fa-primary-color: #1257ce; --fa-secondary-color: #1257ce;"></i>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h3>Comisiones por Producto</h3>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h4>Cree o modifique las comisiones por producto específico</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card" onclick="fntShowClassYNuevo('clase');">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <i class="fad fa-line-columns fa-5x"
+                                                   style="--fa-primary-color: #1257ce; --fa-secondary-color: #1257ce;"></i>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h3>Comisiones Generales</h3>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h4>Cree o modifique las comisiones generales por tipo de producto</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card" onclick="fntShowClassYNuevo('vendedor');">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <i class="fad fa-user-tie fa-5x"
+                                                   style="--fa-primary-color: #1257ce; --fa-secondary-color: #1257ce;"></i>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h3>Comisiones por Vendedor</h3>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h4>Cree o modifique las comisiones por vendedor específico</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card" onclick="fntShowClassYNuevo('clienteProducto');">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <i class="fad fa-user-tag fa-5x"
+                                                   style="--fa-primary-color: #1257ce; --fa-secondary-color: #1257ce;"></i>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h3>Comisiones por Cliente y Producto</h3>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h4>Cree o modifique las comisiones por cliente y producto específico</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card" onclick="fntShowClassYNuevo('clienteVendedor');">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <i class="fad fa-user-friends fa-5x"
+                                                   style="--fa-primary-color: #1257ce; --fa-secondary-color: #1257ce;"></i>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h3>Comisiones por Cliente y Vendedor</h3>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h4>Cree o modifique las comisiones por cliente y vendedor específico</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card" onclick="fntShowClassYNuevo('vendedorProducto');">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <i class="fad fa-person-carry fa-5x"
+                                                   style="--fa-primary-color: #1257ce; --fa-secondary-color: #1257ce;"></i>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h3>Comisiones por Vendedor y Producto</h3>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h4>Cree o modifique las comisiones por vendedor y producto específico</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card" onclick="fntShowClassYNuevo('parametro');">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <i class="fad fa-cogs fa-5x"
+                                                   style="--fa-primary-color: #1257ce; --fa-secondary-color: #1257ce;"></i>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h3>Comisiones Parametrizables</h3>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <h4>Cree o modifique las comisiones por todos los parámetros
+                                                    específicos</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" id="div_content_2" style="display: none;">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">add_business</i>
+                        </div>
+                        <h4 class="card-title">
+                            Reglas de Comisiones
+                            <!--button type="button" rel="tooltip" class="btn btn-outline-success pull-right" data-original-title="Agregar" onclick="fntDibujarRegla(0);">
+                                <span class="material-icons">add</span>
+                                Agregar
+                            </button-->
+                            <button type="button" class="btn btn-outline-danger pull-right"
+                                    onclick="fntRegresarDatatable();">
+                                <span class="material-icons">keyboard_return</span>
+                                Regresar
+                            </button>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="material-datatables table-hover">
+                            <table id="tblReglas" class="table" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Vendedor</th>
+                                    <th>Tipo de Producto</th>
+                                    <th>Producto</th>
+                                    <th>Comisión Base</th>
+                                    <th>Habilitado</th>
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Vendedor</th>
+                                    <th>Tipo de Producto</th>
+                                    <th>Producto</th>
+                                    <th>Comisión Base</th>
+                                    <th>Habilitado</th>
+                                </tr>
+                                </tfoot>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" id="div_content_3" style="display: none;">
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="/static/assets/js/core/jquery-ui.min.js"></script>
+    <script src="/static/assets/js/plugins/jasny-bootstrap.min.js"></script>
+
+    <script>
+        (function () {
+            window.strUrlGetList = "{% url 'rrhh-reglas_comision_v2_get_reglas' %}";
+            window.strUrlEdit = "{% url 'rrhh-reglas_comision_v2_edit' %}";
+            window.strUrlSave = "{% url 'rrhh-reglas_comision_v2_save' %}";
+            window.strUrlBuscarCliente = "{% url 'rrhh-reglas_comision_v2_get_cliente' 'search' 'union' %}";
+            window.strUrlBuscarVendedor = "{% url 'rrhh-reglas_comision_v2_get_vendedor' 'search' 'union' %}";
+            window.strUrlBuscarProducto = "{% url 'rrhh-reglas_comision_v2_get_producto' 'search' 'union' %}";
+            window.valCSRF = getCookie('csrftoken');
+            window.boolAdjuntosRequeridos ={% if bool_adjuntos_requeridos %} true{% else %} false{% endif %};
+            window.intCorrelativo = 0;
+            window.objFrmInterfaz = null;
+        })();
+    </script>
+
+    <script>
+        (function () {
+            window.objTblReglas = null;
+
+            window.fntShowClass = async () => {
+                let strClass = window.class;
+                let boolRedirect = false;
+
+                open_loading();
+                let formData = new FormData();
+                formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+                formData.append('strClass', strClass);
+
+                fetch(strUrlGetList, {
+                    method: 'POST',
+                    body: formData,
+                })
+                    .then((response) => {
+                        boolRedirect = response.redirected;
+                        return response.json();
+                    })
+                    .then(data => {
+                        if( boolRedirect ){
+                            validateLogin();
+                        }
+                        else {
+                            let strHtml = "";
+
+                            data.data.forEach((value) => {
+                                strHtml += `
+                            <tr style="cursor:pointer;" onclick="fntDibujarRegla('${value.id}', false);">
+                                <td>${value.cliente}</td>
+                                <td>${value.vendedor}</td>
+                                <td>${value.TipoProducto}</td>
+                                <td>${value.producto}</td>
+                                <td>${value.comisionbase}</td>
+                                <td>${value.habilitado}</td>
+                            </tr>
+                        `;
+                            });
+
+                            fntDataTable(strHtml);
+
+                            $("#div_content_3").hide(400);
+                            $("#div_content_1").hide(400);
+                            $("#div_content_2").show(400);
+                        }
+
+                        close_loading();
+                    })
+                    .catch(error => {
+                        console.error(error)
+                        close_loading();
+                    });
+            };
+
+            window.fntShowClassYNuevo = async (strClass) => {
+                window.class = strClass;
+                await fntDibujarRegla(0, true);
+            };
+
+            window.fntDataTable = async (strContent) => {
+                if (objTblReglas) objTblReglas.destroy();
+                $("#tblReglas > tbody").html(strContent);
+                objTblReglas = $("#tblReglas").DataTable({
+                    "pagingType": "full_numbers",
+                    "lengthMenu": [
+                        [10, 25, 50],
+                        [10, 25, 50]
+                    ],
+                    responsive: false,
+                    language: objLenguajeDataTable,
+                    autoPrint: false
+                });
+                $('[rel="tooltip"]').tooltip();
+            };
+
+            window.fntDibujarRegla = async (intIdRegla, boolNuevo) => {
+                let strClass = window.class;
+                window.idRegla = intIdRegla;
+                let boolRedirect = false;
+
+                open_loading();
+                let formData = new FormData();
+                formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+                formData.append('strClass', strClass);
+                formData.append('intIdRegla', intIdRegla);
+
+                fetch(strUrlEdit, {
+                    method: 'POST',
+                    body: formData,
+                })
+                    .then((response) => {
+                        boolRedirect = response.redirected;
+                        return response.text();
+                    })
+                    .then(data => {
+                        if( boolRedirect ){
+                            validateLogin();
+                        }
+                        else {
+                            $("#div_content_3").html(data);
+
+                            if (boolNuevo) {
+                                $("#div_content_1").hide(400);
+                                $("#div_content_3").show(400);
+                            } else {
+                                $("#div_content_2").hide(400);
+                                $("#div_content_3").show(400);
+                            }
+
+                            fntMakeAutocompletes();
+
+                            $("[for='tipoProducto']").parent().addClass("bmd-form-group is-filled");
+
+                            let tbody = document.getElementById("tbodyDetalle");
+                            let filas = tbody.getElementsByTagName("tr");
+                            intCorrelativo = filas.length + 1;
+
+                            objFrmInterfaz = $("#frm_interfaz").validate({
+                                highlight: function(element) {
+                                    $(element).closest('.form-group').removeClass('has-success').addClass('has-danger');
+                                    $(element).closest('.form-check').removeClass('has-success').addClass('has-danger');
+                                },
+                                success: function(element) {
+                                    $(element).closest('.form-group').removeClass('has-danger').addClass('has-success');
+                                    $(element).closest('.form-check').removeClass('has-danger').addClass('has-success');
+                                },
+                                errorPlacement: function(error, element) {
+                                    console.log(error);
+                                    $(element).closest('.form-group').append(error);
+                                },
+                            });
+                        }
+
+                        close_loading();
+                    })
+                    .catch(error => {
+                        console.error(error)
+                        close_loading();
+                    });
+            };
+
+            window.fntRegresarDatatable = async () => {
+                await fntDibujarRegla(0, false);
+            };
+
+            window.fntRegresarEdit = () => {
+                if (window.idRegla === 0) {
+                    $("#div_content_3").hide(400);
+                    $("#div_content_1").show(400);
+                    $("#div_content_3").html("");
+                } else {
+                    $("#div_content_3").hide(400);
+                    $("#div_content_2").show(400);
+                    $("#div_content_3").html("");
+                }
+            };
+
+            window.fntPreguntaRegresarEdit = async () => {
+                //dialogConfirm(fntRegresarEdit, false, '¿Estás seguro?', '¡No se guardaran los datos que has cambiado o has ingresado!')
+                fntRegresarEdit();
+            };
+
+            window.fntMakeAutocompletes = async () => {
+                $("#cliente").autocomplete({
+                    minLength: 2,
+                    source: function (request, response) {
+                        open_loading();
+                        let strUrl = strUrlBuscarCliente;
+                        let strClass = window.class;
+                        strUrl = strUrl.replace('search', request.term);
+
+                        if( strClass === "parametro" ){
+                            strUrl = strUrl.replace('union', "todos");
+                        }
+
+                        window.data = new FormData();
+                        data.append('csrfmiddlewaretoken', valCSRF);
+
+                        fetch(strUrl, {
+                            method: 'POST',
+                            body: data,
+                        })
+                            .then(response => response.json())
+                            .then((data) => {
+                                close_loading();
+                                response($.map(data, function (item) {
+                                    return {
+                                        label: item.name,
+                                        value: item.id
+                                    }
+                                }))
+                            })
+                            .catch((error) => {
+                                close_loading();
+                                console.error(error);
+                            });
+                    },
+                    select: function (event, ui) {
+                        event.preventDefault();
+                        document.getElementById(`nocliente`).value = (ui.item.value == "Todos" ? "" : ui.item.value);
+                        this.value = ui.item.label;
+                    },
+                    focus: function (event, ui) {
+                        this.value = ui.item.label;
+                        return false;
+                    },
+                    change: function (event, ui) {
+                        if (ui.item == null) {
+                            this.value = '';
+                            return false;
+                        }
+                    }
+                });
+
+                $("#vendedor").autocomplete({
+                    minLength: 2,
+                    source: function (request, response) {
+                        open_loading();
+                        let strUrl = strUrlBuscarVendedor;
+                        let strClass = window.class;
+                        strUrl = strUrl.replace('search', request.term);
+
+                        if( strClass === "parametro" ){
+                            strUrl = strUrl.replace('union', "todos");
+                        }
+
+                        window.data = new FormData();
+                        data.append('csrfmiddlewaretoken', valCSRF);
+
+                        fetch(strUrl, {
+                            method: 'POST',
+                            body: data,
+                        })
+                            .then(response => response.json())
+                            .then((data) => {
+                                close_loading();
+                                response($.map(data, function (item) {
+                                    return {
+                                        label: item.name,
+                                        value: item.id
+                                    }
+                                }))
+                            })
+                            .catch((error) => {
+                                close_loading();
+                                console.error(error);
+                            });
+                    },
+                    select: function (event, ui) {
+                        event.preventDefault();
+                        document.getElementById(`novendedor`).value = (ui.item.value == "Todos" ? "" : ui.item.value);
+                        this.value = ui.item.label;
+                    },
+                    focus: function (event, ui) {
+                        this.value = ui.item.label;
+                        return false;
+                    },
+                    change: function (event, ui) {
+                        if (ui.item == null) {
+                            this.value = '';
+                            return false;
+                        }
+                    }
+                });
+
+                $("#producto").autocomplete({
+                    minLength: 2,
+                    source: function (request, response) {
+                        open_loading();
+                        let strUrl = strUrlBuscarProducto;
+                        let strClass = window.class;
+                        strUrl = strUrl.replace('search', request.term);
+
+                        if( strClass === "parametro" ){
+                            strUrl = strUrl.replace('union', "todos");
+                        }
+
+                        window.data = new FormData();
+                        data.append('csrfmiddlewaretoken', valCSRF);
+
+                        fetch(strUrl, {
+                            method: 'POST',
+                            body: data,
+                        })
+                            .then(response => response.json())
+                            .then((data) => {
+                                close_loading();
+                                response($.map(data, function (item) {
+                                    return {
+                                        label: item.name,
+                                        value: item.id,
+                                        tipo_prod: item.tipo_prod,
+                                    }
+                                }))
+                            })
+                            .catch((error) => {
+                                close_loading();
+                                console.error(error);
+                            });
+                    },
+                    select: function (event, ui) {
+                        event.preventDefault();
+                        document.getElementById(`noproducto`).value = (ui.item.value == "Todos" ? "" : ui.item.value);
+                        this.value = ui.item.label;
+                        if (ui.item.tipo_prod === "M") {
+                            $("#tipoProducto").val("M");
+                            $("[name='es_porcentaje'][value='1']").prop("checked", true);
+                        } else if (ui.item.tipo_prod === "C") {
+                            $("#tipoProducto").val("C");
+                            $("[name='es_porcentaje'][value='0']").prop("checked", true);
+                        }
+                    },
+                    focus: function (event, ui) {
+                        this.value = ui.item.label;
+                        return false;
+                    },
+                    change: function (event, ui) {
+                        if (ui.item == null) {
+                            this.value = '';
+                            return false;
+                        }
+                    }
+                });
+            };
+
+            window.fntSave = async () => {
+                let boolMensajeInicio = false;
+                $("input[id^='inicio_rango_dias_']").each(function () {
+                    if ($.trim($(this).val()).length == 0) {
+                        boolMensajeInicio = true;
+                    }
+                });
+                if (boolMensajeInicio) {
+                    alert_nova.showNotification('El campo Día Inicio es requerido en cada una de las reglas', "warning", "danger");
+                }
+
+                let boolMensajeFin = false;
+                $("input[id^='fin_rango_dias_']").each(function () {
+                    if ($.trim($(this).val()).length == 0) {
+                        boolMensajeFin = true;
+                    }
+                });
+                if (boolMensajeFin) {
+                    alert_nova.showNotification('El campo Día Fin es requerido en cada una de las reglas', "warning", "danger");
+                }
+
+                let boolMensajeComision = false;
+                $("input[id^='comision_rango_']").each(function () {
+                    if ($.trim($(this).val()).length == 0) {
+                        boolMensajeComision = true;
+                    }
+                });
+                if (boolMensajeComision) {
+                    // alert_nova.showNotification("Email enviado.", "add_alert", "success");
+                    alert_nova.showNotification('El campo Comisión es requerido en cada una de las reglas', "warning", "danger");
+                }
+
+                let boolMensajeArchivoAdjunto = false;
+                let filInputFile = document.getElementById('filInputFile');
+                if (boolAdjuntosRequeridos) {
+                    if (filInputFile.files.length === 0) {
+                        alert_nova.showNotification(`El archivo de respaldo de la modificación es requerido`, "warning", "danger");
+                        return false;
+                    }
+                }
+
+                let boolMensajeRangos = false;
+                $("input[id^='inicio_rango_dias_']").each(function () {
+                    let strId = $(this).attr("id");
+                    let arrSplit = strId.split("_");
+                    let valueInicial = parseFloat($(this).val());
+                    let valueFinal = parseFloat($("#fin_rango_dias_" + arrSplit[3]).val());
+                    $("input[id^='inicio_rango_dias_']").each(function () {
+                        let arrSplit2 = $(this).attr("id").split("_");
+                        let valueInicial2 = parseFloat($(this).val());
+                        let valueFinal2 = parseFloat($("#fin_rango_dias_" + arrSplit2[3]).val());
+                        if (strId != $(this).attr("id")) {
+                            if (((valueInicial >= valueInicial2) && (valueInicial <= valueFinal2))) {
+                                boolMensajeRangos = true;
+                            }
+                            if (((valueFinal >= valueInicial2) && (valueFinal <= valueFinal2))) {
+                                boolMensajeRangos = true;
+                            }
+                        }
+                    });
+
+                    if (valueInicial >= valueFinal) {
+                        boolMensajeRangos = true;
+                    }
+                });
+
+                if (boolMensajeRangos) {
+                    alert_nova.showNotification('Los rangos no están correctamente configurados', "warning", "danger");
+                    alert_nova.showNotification('Ejemplo de rangos: 0-5, 6-10. 11-15.', "info", "info");
+                }
+
+                if ($.trim($("#comision_base").val()).length == 0) {
+                    alert_nova.showNotification('El campo Comisón Base es requerido', "warning", "danger");
+                    boolMensajeComision = true;
+                }
+
+                if ($.trim($("#comision_fuera_rango").val()).length == 0) {
+                    alert_nova.showNotification('El campo Comisón Fuera de Rango es requerido', "warning", "danger");
+                    boolMensajeComision = true;
+                }
+
+                if ($.trim($("#tipoProducto").val()).length == 0) {
+                    alert_nova.showNotification('El campo Tipo de Producto es requerido', "warning", "danger");
+                    boolMensajeComision = true;
+                }
+
+                if (!boolMensajeInicio && !boolMensajeFin && !boolMensajeComision && !boolMensajeRangos && !boolMensajeArchivoAdjunto) {
+
+                    if( !objFrmInterfaz.form() ){
+                        alert_nova.showNotification(`No se han llenado todos los campos requeridos.`, "warning", "danger");
+                        return false;
+                    }
+                    saveInterfaz();
+                }
+            };
+
+            window.saveInterfaz = () => {
+                dialogConfirm(submitForm);
+            };
+
+            window.submitForm = () => {
+                //document.frm_interfaz.submit();
+
+                let intIdRegla = window.idRegla;
+
+                open_loading();
+                let formObject = document.getElementById("frm_interfaz");
+                let formData = new FormData(formObject);
+                formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+                formData.append('intIdRegla', intIdRegla);
+                //formData.append('strClass', strClass);
+
+                fetch(strUrlSave, {
+                    method: 'POST',
+                    body: formData,
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status) {
+                            alert_nova.showNotification(data.msj, "add_alert", "success");
+                            fntShowClass();
+                        } else {
+                            alert_nova.showNotification(data.msj, "warning", "danger");
+                        }
+
+                        close_loading();
+                    })
+                    .catch(error => {
+                        alert_nova.showNotification('Ocurrió un error verifique su conexión e intente nuevamente, o, contacte a IT.', "warning", "danger");
+                        console.error(error);
+                        close_loading();
+                    });
+            };
+
+            window.addRow = () => {
+                let strRow = `
+                <tr>
+                    <td>
+                        <input type="number" class="form-control" id="inicio_rango_dias_${intCorrelativo}" name="inicio_rango_dias_${intCorrelativo}" value="" onkeypress="return validar_caracteres(event, 2);">
+                        <input type="hidden" name="id_rango_detalle_${intCorrelativo}" id="id_rango_detalle_${intCorrelativo}" value="0">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" id="fin_rango_dias_${intCorrelativo}" name="fin_rango_dias_${intCorrelativo}" value="" onkeypress="return validar_caracteres(event, 2);">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" id="comision_rango_${intCorrelativo}" name="comision_rango_${intCorrelativo}" value="" onkeypress="return validar_caracteres(event, 7);">
+                    </td>
+                    <td>
+                        <a href="#" onclick="$(this).parent().parent().remove();"><i class="far fa-trash-alt"></i></a>
+                    </td>
+                </tr>`;
+
+                $("#tbodyDetalle").append(strRow);
+
+                intCorrelativo++;
+            };
+
+            window.fntChangeTipoProducto = () => {
+                if ($("#tipoProducto").val() === "M") {
+                    $("[name='es_porcentaje'][value='1']").prop("checked", true);
+                } else if ($("#tipoProducto").val() === "C") {
+                    $("[name='es_porcentaje'][value='0']").prop("checked", true);
+                }
+            };
+
+            window.fntCalcularComisiones = () => {
+                if (window.idRegla === 0) {
+                    let sinComisionBase = parseFloat(document.getElementById("comision_base").value);
+
+                    if (sinComisionBase == 2) {
+                        document.getElementById("comision_rango_1").value = "2.00";
+                        document.getElementById("comision_rango_2").value = "1.50";
+                        document.getElementById("comision_rango_3").value = "1.00";
+                    } else if (sinComisionBase == 1.75) {
+                        document.getElementById("comision_rango_1").value = "1.75";
+                        document.getElementById("comision_rango_2").value = "1.50";
+                        document.getElementById("comision_rango_3").value = "1.25";
+                    } else if (sinComisionBase == 1.5) {
+                        document.getElementById("comision_rango_1").value = "1.50";
+                        document.getElementById("comision_rango_2").value = "1.00";
+                        document.getElementById("comision_rango_3").value = "0.50";
+                    } else if (sinComisionBase == 1.25) {
+                        document.getElementById("comision_rango_1").value = "1.25";
+                        document.getElementById("comision_rango_2").value = "1.00";
+                        document.getElementById("comision_rango_3").value = "0.75";
+                    } else if (sinComisionBase == 1) {
+                        document.getElementById("comision_rango_1").value = "1.00";
+                        document.getElementById("comision_rango_2").value = "0.70";
+                        document.getElementById("comision_rango_3").value = "0.50";
+                    }
+                }
+            };
+
+            window.removeRow = (obj) => {
+                $(obj).parent().parent().find("[id^='hdn_eliminar']").val("1");
+
+                let objClon = $(obj).parent().parent().clone();
+                $("#tfootDetalle").append(objClon);
+
+                $(obj).parent().parent().remove();
+            }
+
+            $(document).ready(function () {
+                $('[rel="tooltip"]').tooltip();
+            });
+        })();
+    </script>
+{% endblock javascripts %}

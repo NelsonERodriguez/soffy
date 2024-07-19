@@ -1,0 +1,1180 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Comisiones {% endblock title %}
+
+{% load static %}
+{% load humanize %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+    <style>
+        .input-percentage:after {
+            content: '%';
+            position: absolute;
+            top: 35%;
+            left: 86%;
+        }
+        input[type="file"] {
+            -webkit-appearance: listbox; }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">paid</i>
+                        </div>
+                        <h4 class="card-title">Comisiones</h4>
+                    </div>
+                    <div class="card-body">
+                        <!--form class="form-horizontal" method="post" id="frm_polizas"-->
+                        <form action="{% url 'rrhh-comisiones' %}" method="POST" name="frm_horas_extras" id="frm_horas_extras">
+                            {% csrf_token %}
+                            <div class="row justify-content-center">
+                                <div class="col-lg-2 col-md-4">
+                                    <label for="sltMes" class="bmd-label-floating required">Mes</label>
+                                    <select name="sltMes" id="sltMes" class="select2">
+                                        {% for mes in meses %}
+                                            <option value="{{ mes.id }}" {% if mes.id == mes_selected %} selected {% endif %}>{{ mes.mes }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-lg-2 col-md-4">
+                                    <label for="sltAnio" class="bmd-label-floating required">Año</label>
+                                    <select name="sltAnio" id="sltAnio" class="select2">
+                                        {% for anio in anios %}
+                                            <option value="{{ anio }}" {% if anio == anio_selected %} selected {% endif %}>{{ anio }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-lg-2 col-md-4">
+                                    <label for="sltVendedor" class="bmd-label-floating required">Vendedor</label>
+                                    <select name="sltVendedor" id="sltVendedor" class="select2">
+                                        <option value="">Todos</option>
+                                        {% for vendedor in vendedores %}
+                                            <option value="{{ vendedor.no_vendedor }}" {% if vendedor.no_vendedor == vendedor_selected %} selected {% endif %}>{{ vendedor.nombre_vendedor }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-lg-2 mt-3 col-md-2">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" name="chkMayoristas" id="chkMayoristas" {% if bool_mayoristas %}checked{% endif %}> Incluir Mayoristas
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-4">
+                                    <button type="submit" class="btn btn-outline-info" id="btnSearch" onclick="//fntGetNomina();">
+                                        <i class="fa fa-search"></i>
+                                        Revisar Comisiones
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    {% if comisiones %}
+                        <div class="card-body">
+                            <ul class="nav nav-pills nav-pills-primary" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#lnkDetalle" role="tablist">
+                                        Detalle
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#lnkResumen" role="tablist" onclick="fntCargarResumen();">
+                                        Resumen
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#lnkSalvador" role="tablist" onclick="fntGetListadoSalvador();">
+                                        El Salvador
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content tab-space">
+                                <div class="tab-pane active" id="lnkDetalle">
+                                    {% if not bool_cerrado %}
+                                        <div class="row">
+                                            <div class="col-sm-12 text-center">
+                                                <button type="button" class="btn btn-outline-success" onclick="dialogConfirm(fntCerrarComisiones, false, '¿Estás seguro?', '¡Se cerrarán todas las comisiones que se mostraron al generar!')">
+                                                    <i class="fa fa-save"></i>
+                                                    Cerrar Comisiones
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="row">
+                                            <div class="col-sm-12 text-center">
+                                                <button type="button" class="btn btn-outline-success" onclick="dialogConfirm(fntGenerarSolicitudes, false, '¿Estás seguro?', '¡Se generaran automáticamente todas las solicitudes en base a la información visualizada!')">
+                                                    <i class="fal fa-inbox-out"></i>
+                                                    Generar Solicitudes o Reimprimir
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="row">
+                                        <div class="col-sm-12" id="div_tabla">
+                                            <table class="table table-striped table-hover" id="tblComisiones">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No. Vendedor</th>
+                                                        <th>Vendedor</th>
+                                                        <th>No. Cliente</th>
+                                                        <th>Cliente</th>
+                                                        <th>No. Recibo</th>
+                                                        <th>Fecha Recibo</th>
+                                                        <th>No. Factura</th>
+                                                        <th>Fecha Factura</th>
+                                                        <th>Tipo</th>
+                                                        <th>Cod. Prod</th>
+                                                        <th>Producto</th>
+                                                        <th>Dias Crédito</th>
+                                                        <th>Dias Diferencia</th>
+                                                        <th>Valor o Porcentaje</th>
+                                                        <th>Comisión</th>
+                                                        <th>Abono</th>
+                                                        <th>Cajas</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th class="text-right"></th>
+                                                        <th class="text-right"></th>
+                                                        <th class="text-right"></th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    {% if not bool_cerrado %}
+                                        <div class="row">
+                                            <div class="col-sm-12 text-center">
+                                                <form action="{% url 'rrhh-comisiones_cerrar' %}" method="POST" name="frm_cerrar" id="frm_cerrar">
+                                                    <input type="hidden" name="sltMes" value="{{ mes_selected }}">
+                                                    <input type="hidden" name="sltAnio" value="{{ anio_selected }}">
+                                                    {% csrf_token %}
+                                                    <button type="button" class="btn btn-outline-success" onclick="dialogConfirm(fntCerrarComisiones, false, '¿Estás seguro?', '¡Se cerrarán todas las comisiones que se mostraron al generar!')">
+                                                        <i class="fa fa-save"></i>
+                                                        Cerrar Comisiones
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="row">
+                                            <div class="col-sm-12 text-center">
+                                                <form action="{% url 'rrhh-comisiones_solicitud' %}" method="POST" name="frm_solicitud" id="frm_solicitud" target="_blank">
+                                                    <input type="hidden" name="sltMes" value="{{ mes_selected }}">
+                                                    <input type="hidden" name="sltAnio" value="{{ anio_selected }}">
+                                                    {% csrf_token %}
+                                                    <button type="button" class="btn btn-outline-success" onclick="dialogConfirm(fntGenerarSolicitudes, false, '¿Estás seguro?', '¡Se generarán todas las solicitudes de cheque en base a las comisiones que se visualizan!')">
+                                                        <i class="fal fa-inbox-out"></i>
+                                                        Generar Solicitudes o Reimprimir
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="tab-pane" id="lnkResumen">
+                                    <div class="row">
+                                        <div class="col-sm-12" id="div_tabla">
+                                            <table class="table table-striped table-hover" id="tblResumen">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No. Vendedor</th>
+                                                        <th>Vendedor</th>
+                                                        <th class="text-right">Comisión</th>
+                                                        <th class="text-right">Abono</th>
+                                                        <th class="text-right">Cajas</th>
+                                                        <th class="text-right">IVA</th>
+                                                        <th class="text-right">Reten IVA</th>
+                                                        <th class="text-right">ISR</th>
+                                                        <th class="text-right">Neto a Pagar</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="tab-pane" id="lnkSalvador">
+                                    {% if not bool_cerrado_sv %}
+                                        <div class="row">
+                                            <div class="col-sm-12 text-center">
+                                                <button type="button" class="btn btn-outline-success" onclick="dialogConfirm(fntCerrarComisionesSV, false, '¿Estás seguro?', '¡Se cerrarán todas las comisiones de El Salvador!')">
+                                                    <i class="fa fa-save"></i>
+                                                    Cerrar Comisiones SV
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4 offset-md-4">
+                                                <label for="txtTipoCambio">Tipo de Cambio</label>
+                                                <input type="text" class="form-control" id="txtTipoCambio" name="txtTipoCambio" onchange="fntGetListadoSalvador();">
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="row">
+                                        <div class="col-sm-12" id="div_tabla_salvador">
+                                            <table class="table table-striped table-hover" id="tblSalvador" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="col-2">No.</th>
+                                                        <th class="col-1">Fecha</th>
+                                                        <th class="col-2">Cliente</th>
+                                                        <th class="col-2">Total</th>
+                                                        <th class="col-2">Producto</th>
+                                                        <th class="col-1">Porcentaje</th>
+                                                        <th class="col-1">Comisión USD</th>
+                                                        <th class="col-1">Comisión GTQ</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th class="text-right"></th>
+                                                        <th>&nbsp;</th>
+                                                        <th>&nbsp;</th>
+                                                        <th class="text-right"></th>
+                                                        <th class="text-right"></th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    {% if not  bool_cerrado_sv %}
+                                        <div class="row">
+                                            <div class="col-sm-12 text-center">
+                                                <button type="button" class="btn btn-outline-success" onclick="dialogConfirm(fntCerrarComisionesSV, false, '¿Estás seguro?', '¡Se cerrarán todas las comisiones de El Salvador!')">
+                                                    <i class="fa fa-save"></i>
+                                                    Cerrar Comisiones SV
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" tabindex="-1" id="mdlObservacion" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Motivo de la modificación</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="txt_observacion" id="lbl_observacion" class="bmd-label-floating">Motivo</label>
+                                                    <input type="text" name="txt_observacion" id="txt_observacion" class="form-control" maxlength="200">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                    <span class="btn btn-outline-primary btn-file">
+                                                        <span class="fileinput-new">Subir Archivo de Respaldo de la Modificación</span>
+                                                        <span class="fileinput-exists">Cambiar Archivo de Respaldo de la Modificación</span>
+                                                        <input type="file" name="filInputFile" id="filInputFile">
+                                                    </span>
+                                                    <span class="fileinput-filename"></span>
+                                                    <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="fntCancelarGuardado();">Cerrar</button>
+                                        <button type="button" class="btn btn-primary" id="btnGuardarWorkspace" onclick="fntGuardarCampo(this);">Grabar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" tabindex="-1" id="mdlObservacionSV" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Motivo de la modificación</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="txtObservacionSV" id="lblObservacionSV" class="bmd-label-floating">Motivo</label>
+                                                    <input type="text" name="txtObservacionSV" id="txtObservacionSV" class="form-control" maxlength="200">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                    <span class="btn btn-outline-primary btn-file">
+                                                        <span class="fileinput-new">Subir Archivo de Respaldo de la Modificación</span>
+                                                        <span class="fileinput-exists">Cambiar Archivo de Respaldo de la Modificación</span>
+                                                        <input type="file" name="filInputFileSv" id="filInputFileSv">
+                                                    </span>
+                                                    <span class="fileinput-filename"></span>
+                                                    <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="fntCancelarGuardadoSV();">Cerrar</button>
+                                        <button type="button" class="btn btn-primary" id="btnGuardarWorkspace" onclick="fntGuardarCampoSV();">Grabar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" tabindex="-1" id="mdlShowRefacturacion" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Refacturación</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="spnFechaFactura" class="bmd-label-floating">Fecha Factura Antigua:</label>
+                                                    <span id="spnFechaFactura"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="spnNoFactura" class="bmd-label-floating" style="font-weight: bold;">Número Factura Antigua:</label>
+                                                    <span id="spnNoFactura"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="spnMontoFactura" class="bmd-label-floating" style="font-weight: bold;">Monto Factura Antigua:</label>
+                                                    <span id="spnMontoFactura"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="spnClienteFactura" class="bmd-label-floating" style="font-weight: bold;">Cliente Factura Antigua:</label>
+                                                    <span id="spnClienteFactura"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="spnObservacionesFacturaAntigua" class="bmd-label-floating" style="font-weight: bold;">Observaciones Factura Antigua:</label>
+                                                    <span id="spnObservacionesFacturaAntigua"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="spnObservacionesFacturaActual" class="bmd-label-floating" style="font-weight: bold;">Observaciones Factura Actual:</label>
+                                                    <span id="spnObservacionesFacturaActual"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="/static/assets/js/plugins/jasny-bootstrap.min.js"></script>
+
+    <script>
+        const strUrlGuardarCampo = "{% url 'rrhh-comisiones_guardar_campo' %}",
+            strUrlCerrar = "{% url 'rrhh-comisiones_cerrar' %}",
+            strUrlSolicitudes = "{% url 'rrhh-comisiones_solicitud' %}",
+            strUrlData = "{% url 'rrhh-comisiones_data' %}",
+            strUrlDataResumen = "{% url 'rrhh-comisiones_resumen' %}",
+            strUrlDataRefacturacion = "{% url 'rrhh-comisiones_data_refacturacion' %}",
+            strUrlDataOrdenes = "{% url 'rrhh-comisiones_listado_salvador' %}",
+            strUrlCambiarPorcentaje = "{% url 'rrhh-comisiones_cambiar_porcentaje' %}",
+            strUrlCerrarSalvador = "{% url 'rrhh-comisiones_cerrar_salvador' %}",
+            valCSRF = getCookie('csrftoken'),
+            boolPost = ("{{ request.method }}" === "POST");
+
+        let tblComisiones, objInput,
+            tblResumen = null, tblSalvador, intDetalleSV;
+
+        let intMesSelectedGlobal = document.getElementById("sltMes").value;
+        let intAnoSelectedGlobal = document.getElementById("sltAnio").value;
+        let strMes = monthNamesSpanish[intMesSelectedGlobal - 1];
+        let strTitleComplemento = `${strMes} de ${intAnoSelectedGlobal}`;
+    </script>
+
+    <script>
+        const fntCargarData = () => {
+            const data = new FormData();
+            let intMesSelected = document.getElementById("sltMes").value;
+            let intAnoSelected = document.getElementById("sltAnio").value;
+
+            data.append('csrfmiddlewaretoken', valCSRF);
+            data.append('sltMes', intMesSelected);
+            data.append('sltAnio', intAnoSelected);
+            data.append('sltVendedor', document.getElementById("sltVendedor").value);
+            if( document.getElementById("chkMayoristas").checked ){
+                data.append('chkMayoristas', 'true');
+            }
+
+            open_loading();
+            fetch(strUrlData, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status){
+                    let strHtml = '';
+                    $("#tblComisiones tbody").html("");
+
+                    data.comisiones.forEach((value)=>{
+                        let strComisionCell = value.afectiva_float;
+
+                        if( !value.cerrado ){
+                            strComisionCell = `
+                            <div class="">
+                                <input type="text" class="form-control" data-value_original="${value.afectiva_float}" value="${value.afectiva_float}" id="txtComision_${value.id}" name="txtComision_${value.id}" onchange="fntMotivo(this)" onkeypress="return validar_caracteres(event, 7);">
+                            </div>
+                            `;
+                        }
+
+                        let strClass = "";
+                        let strNumeroFactura = value.numero_factura;
+                        if( value.NoFacturaAnterior != null && value.NoFacturaAnterior > 0 ){
+                            strClass = "table-danger";
+                            strNumeroFactura = `<a href="#" onclick="fntShowFactura(${value.NoFacturaAnterior})">${value.numero_factura}</a>`;
+                        }
+
+                        let fechaRec = new Date(value.fecha_rec+" 00:00:00");
+                        let fechaRecGt = dateGTFormat.format(fechaRec);
+
+                        let fechaFac = new Date(value.fecha_fac+" 00:00:00");
+                        let fechaFacGt = dateGTFormat.format(fechaFac);
+
+                        strHtml += `
+                            <tr class="${strClass}">
+                                <td>${value.no_vendedor}</td>
+                                <td>${value.nombre_vendedor}</td>
+                                <td>${value.codigo_cliente}</td>
+                                <td>${value.nombre_cliente}</td>
+                                <td>${value.numero_recibo}</td>
+                                <td>${fechaRecGt}</td>
+                                <td>${strNumeroFactura}</td>
+                                <td>${fechaFacGt}</td>
+                                <td>${value.tipo_producto}</td>
+                                <td>${value.codigo_producto}</td>
+                                <td>${value.nombre_producto}</td>
+                                <td>${value.dias_credito}</td>
+                                <td>${value.diferencias_dias}</td>
+                                <td class="text-right">
+                                    ${strComisionCell}
+                                </td>
+                                <td class="text-right"><label id="lblComision_${value.id}">${value.comision_pagada}</label></td>
+                                <td class="text-right">${value.abono_producto}</td>
+                                <td class="text-right">${value.cajas_abonadas}</td>
+                            </tr>
+                        `;
+                    });
+
+                    $("#tblComisiones tbody").html(strHtml);
+
+                    let strMes = monthNamesSpanish[intMesSelected - 1];
+                    let strTitleExcel = `Nova - Comisiones - ${strMes} de ${intAnoSelected}`;
+
+                    $('#tblComisiones').DataTable({
+                        "pagingType": "full_numbers",
+                        "lengthMenu": [
+                            [10, 25, 50, -1],
+                            [10, 25, 50, "Todos"]
+                        ],
+                        responsive: false,
+                        order: [[1, 'asc']],
+                        language: objLenguajeDataTable,
+                        dom: 'lBfrtip',
+                        buttons: [
+                            {
+                                extend: 'excel',
+                                text: 'Excel',
+                                className: 'btn btn-default',
+                                title: strTitleExcel,
+                                exportOptions: {
+                                    format: {
+                                        body: function ( data, row, column, node ) {
+                                            if( column === 13){
+                                                return $(data).find("input").length > 0?
+                                                $(data).find("input").val():
+                                                data;
+                                            }
+                                            else if(column === 14 ){
+                                                return ($(data).is("label") ?
+                                                $(data).text():
+                                                ($(data).find("span").length > 0 ?
+                                                $(data).find("span").text():
+                                                data));
+                                            }
+                                            else{
+                                                return data;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ],
+
+                        footerCallback: function ( row, data, start, end, display ) {
+                            let api = this.api();
+
+                            let totalComision = api.column(14).data().reduce( function (a, b) {
+                                let numeroDecimal = parseFloat(b);
+                                if( isNaN(numeroDecimal) ){
+                                    numeroDecimal = parseFloat(b.match(/<label[^>]*>(.*?)<\/label>/)[1]);
+                                }
+
+                                return parseFloat(a) + numeroDecimal;
+                            }, 0 );
+
+                            let totalAbono = api.column(15).data().reduce( function (a, b) {
+                                return parseFloat(a) + parseFloat(b);
+                            }, 0 );
+
+                            let totalCajas = api.column(16).data().reduce( function (a, b) {
+                                return parseFloat(a) + parseFloat(b);
+                            }, 0 );
+
+                            $( api.column( 14 ).footer() ).html(
+                                '<span id="lblTotalComision">'+
+                                ($.fn.dataTable.render.number(',', '.', 2).display( totalComision ))+
+                                '</span>'
+                            );
+
+                            $( api.column( 15 ).footer() ).html(
+                                $.fn.dataTable.render.number(',', '.', 2).display( totalAbono )
+                            );
+
+                            $( api.column( 16 ).footer() ).html(
+                                $.fn.dataTable.render.number(',', '.', 2).display( totalCajas )
+                            );
+                        }
+                    });
+                }
+                else{
+                    alert_nova.showNotification(`${data.msj}`, "warning", "danger");
+                }
+                close_loading();
+            })
+            .catch(error => {
+                alert_nova.showNotification(`Ocurrió un error inesperado. Revise su conexión a internet o contacte a TI.`, "warning", "danger");
+                console.error(error)
+                close_loading();
+            });
+        }
+
+        const fntCargarResumen = () => {
+            const data = new FormData();
+            let intMesSelected = document.getElementById("sltMes").value;
+            let intAnoSelected = document.getElementById("sltAnio").value;
+
+            data.append('csrfmiddlewaretoken', valCSRF);
+            data.append('sltMes', intMesSelected);
+            data.append('sltAnio', intAnoSelected);
+            data.append('sltVendedor', document.getElementById("sltVendedor").value);
+            if( document.getElementById("chkMayoristas").checked ){
+                data.append('chkMayoristas', 'true');
+            }
+
+            open_loading();
+            fetch(strUrlDataResumen, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status){
+                    let strHtml = '';
+                    $("#tblResumen tbody").html("");
+                    data.resumen.forEach((value)=>{
+                        let sinTotalComision = numberGTFormat.format(value.total_comision),
+                            sinTotalAbono = numberGTFormat.format(value.total_abono),
+                            sinTotalCajas = numberGTFormat.format(value.total_cajas),
+                            sinIva = numberGTFormat.format(value.IVA),
+                            sinRetenIva = numberGTFormat.format(value.Reten_IVA),
+                            sinIsr = numberGTFormat.format(value.ISR),
+                            sinNetoPagar = numberGTFormat.format(value.Neto_a_pagar);
+
+                        strHtml += `
+                            <tr>
+                                <td>${value.no_vendedor}</td>
+                                <td>${value.nombre_vendedor}</td>
+                                <td class="text-right" data-order="${value.total_comision}">${sinTotalComision}</td>
+                                <td class="text-right" data-order="${value.total_abono}">${sinTotalAbono}</td>
+                                <td class="text-right" data-order="${value.total_cajas}">${sinTotalCajas}</td>
+                                <td class="text-right" data-order="${value.IVA}">${sinIva}</td>
+                                <td class="text-right" data-order="${value.Reten_IVA}">${sinRetenIva}</td>
+                                <td class="text-right" data-order="${value.ISR}">${sinIsr}</td>
+                                <td class="text-right" data-order="${value.Neto_a_pagar}">${sinNetoPagar}</td>
+                            </tr>
+                        `;
+                    });
+
+                    if( tblResumen !== null ) {
+                        tblResumen.clear().destroy();
+                    }
+
+                    let strMes = monthNamesSpanish[intMesSelected - 1];
+                    let strTitleExcel = `Nova - Resumen Comisiones - ${strMes} de ${intAnoSelected}`;
+
+                    $("#tblResumen tbody").html(strHtml);
+
+                    tblResumen = $('#tblResumen').DataTable({
+                        "pagingType": "full_numbers",
+                        "lengthMenu": [
+                            [-1],
+                            ["Todos"]
+                        ],
+                        responsive: false,
+                        order: [[0, 'asc']],
+                        language: objLenguajeDataTable,
+                        dom: 'lBfrtip',
+                        buttons: [
+                            {
+                                extend: 'excel',
+                                text: 'Excel',
+                                className: 'btn btn-default',
+                                title: strTitleExcel,
+                            }
+                        ]
+                    });
+                }
+                else{
+                    alert_nova.showNotification(`${data.msj}`, "warning", "danger");
+                }
+                close_loading();
+            })
+            .catch(error => {
+                alert_nova.showNotification(`Ocurrió un error inesperado. Revise su conexión a internet o contacte a TI.`, "warning", "danger");
+                console.error(error)
+                close_loading();
+            });
+        }
+
+        const fntMotivo = (objInputParam) => {
+            objInput = objInputParam;
+            $("#mdlObservacion").modal("show");
+        };
+
+        const fntCancelarGuardado = () => {
+            objInput.value = objInput.dataset.value_original;
+            objInput = null;
+            $("#mdlObservacion").modal("hide");
+        }
+
+        const iLoveU = (int, str = 'hola', bool = true) => {
+            let strReturn = '';
+            if(int === 0)
+                strReturn = 'Es cero';
+
+            if(str === 'hola')
+                strReturn = 'Es un texto que dice hola';
+
+            if(bool)
+                strReturn = 'Es un booleano true';
+
+            return 0;
+        };
+
+        const fntGuardarCampo = () => {
+            const data = new FormData();
+            let objObservacion = document.getElementById("txt_observacion")
+
+            let filInputFile = document.getElementById('filInputFile');
+
+            if( objObservacion.value.length === 0 ){
+                alert_nova.showNotification(`El motivo de la modificación es requerido`, "warning", "danger");
+                return false;
+            }
+            {% if bool_adjuntos_requeridos %}
+                if( filInputFile.files.length === 0 ){
+                    alert_nova.showNotification(`El archivo de respaldo de la modificación es requerido`, "warning", "danger");
+                    return false;
+                }
+            {% endif %}
+            data.append('csrfmiddlewaretoken', valCSRF);
+            data.append('campo', objInput.id);
+            data.append('valor', objInput.value);
+            data.append('observacion', objObservacion.value);
+
+            if( filInputFile.files.length > 0 ){
+                data.append('filArchivo', filInputFile.files[0]);
+            }
+
+            // open_loading();
+            fetch(strUrlGuardarCampo, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status){
+                    alert_nova.showNotification(`${data.msj}`, "add_alert", "success");
+                    let sinOriginal = parseFloat(data.sin_comision_pagada_original.replace(",",""));
+                    let sinValor = parseFloat(data.sin_comision_nueva.replace(",",""));
+                    let sinTotal = parseFloat(document.getElementById(`lblTotalComision`).innerText.replace(",",""));
+                    objInput.value = data.sin_val;
+                    objInput.dataset.value_original = data.sin_val;
+                    document.getElementById(`lblComision_${data.int_id}`).innerText = data.sin_comision_nueva;
+
+                    sinTotal = sinTotal - sinOriginal + sinValor;
+
+                    document.getElementById(`lblTotalComision`).innerText = numberGTFormat.format(sinTotal);
+                    objInput = null;
+                    objObservacion.value = '';
+                }
+                else{
+                    alert_nova.showNotification(`${data.msj}`, "warning", "danger");
+                }
+                $("#mdlObservacion").modal("hide");
+                // close_loading();
+            })
+            .catch(error => {
+                $("#mdlObservacion").modal("hide");
+                alert_nova.showNotification(`Ocurrió un error inesperado. Revise su conexión a internet o contacte a TI.`, "warning", "danger");
+                console.error(error)
+                // close_loading();
+            });
+        }
+
+        const fntCerrarComisiones = () =>{
+            document.getElementById("frm_cerrar").submit();
+        }
+
+        const fntGenerarSolicitudes = () => {
+            document.getElementById("frm_solicitud").submit();
+        }
+
+        const fntShowFactura = ( intNoFactura ) => {
+            const data = new FormData();
+            data.append('csrfmiddlewaretoken', valCSRF);
+            data.append('intNoFactura', intNoFactura);
+
+            open_loading();
+            fetch(strUrlDataRefacturacion, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status){
+                    alert_nova.showNotification(`${data.msj}`, "add_alert", "success");
+
+                    let fechaFac = new Date(data.data.Fecha+" 00:00:00");
+                    let fechaFacGt = dateGTFormat.format(fechaFac);
+
+                    document.getElementById(`spnFechaFactura`).innerHTML = fechaFacGt;
+                    document.getElementById(`spnNoFactura`).innerHTML = data.data.Serie+'-'+data.data.NoDocumento;
+                    document.getElementById(`spnMontoFactura`).innerHTML = numberGTFormat.format(data.data.Total);
+                    document.getElementById(`spnClienteFactura`).innerHTML = data.data.NombreAnterior;
+                    document.getElementById(`spnObservacionesFacturaAntigua`).innerHTML = data.data.Observaciones;
+                    document.getElementById(`spnObservacionesFacturaActual`).innerHTML = data.data.ObservacionesN;
+
+                    $("#mdlShowRefacturacion").modal("show");
+                }
+                else{
+                    alert_nova.showNotification(`${data.msj}`, "warning", "danger");
+                }
+
+                close_loading();
+            })
+            .catch(error => {
+                alert_nova.showNotification(`Ocurrió un error inesperado. Revise su conexión a internet o contacte a TI.`, "warning", "danger");
+                console.error(error)
+                close_loading();
+            });
+        };
+
+        const fntGetListadoSalvador = async () => {
+            const objFormData = new FormData();
+            let intMesSelected = document.getElementById("sltMes").value,
+                intAnoSelected = document.getElementById("sltAnio").value;
+
+
+            objFormData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+            objFormData.append('sltMes', intMesSelected);
+            objFormData.append('sltAnio', intAnoSelected);
+
+            fntCleanTable();
+
+            let objInit = {
+                method: 'POST',
+                body: objFormData
+            };
+
+            open_loading();
+            await coreFetch(strUrlDataOrdenes, objInit, (data) => {
+                tblSalvador.rows.add(data.data).draw();
+                tblSalvador.responsive.recalc();
+                tblSalvador.columns.adjust();
+
+                $('[rel="tooltip"]').tooltip();
+
+                close_loading();
+            }, {boolShowSuccessAlert: false});
+        };
+
+        const fntCleanTable = () => {
+            if (tblSalvador) {
+                $(".ui-tooltip").remove();
+                tblSalvador.clear().draw();
+            }
+        }
+
+        const fntMotivoSV = (itnId) => {
+            intDetalleSV = itnId;
+            $("#mdlObservacionSV").modal("show");
+        };
+
+        const fntCancelarGuardadoSV = () => {
+            let objInputPorcentaje = document.getElementById(`txtPorcentaje_${intDetalleSV}`),
+                objInputFile = document.getElementById('filInputFileSv');
+            objInputPorcentaje.value = objInputPorcentaje.dataset.value_original;
+            objInputFile.value = null;
+            intDetalleSV = null;
+            document.getElementById('txtObservacionSV').value = "";
+            let event = new Event('change');
+            objInputFile.dispatchEvent(event);
+            $("#mdlObservacionSV").modal("hide");
+        }
+
+        const fntGuardarCampoSV = async () => {
+            const objFormData = new FormData();
+            let objObservacion = document.getElementById("txtObservacionSV")
+            let filInputFile = document.getElementById('filInputFileSv');
+            let objInputPorcentaje = document.getElementById(`txtPorcentaje_${intDetalleSV}`);
+
+            if( objObservacion.value.length === 0 ){
+                alert_nova.showNotification(`El motivo de la modificación es requerido`, "warning", "danger");
+                return false;
+            }
+            {% if bool_adjuntos_requeridos %}
+                if( filInputFile.files.length === 0 ){
+                    alert_nova.showNotification(`El archivo de respaldo de la modificación es requerido`, "warning", "danger");
+                    return false;
+                }
+            {% endif %}
+            objFormData.append('csrfmiddlewaretoken', valCSRF);
+            objFormData.append('id', intDetalleSV);
+            objFormData.append('valor', objInputPorcentaje.value);
+            objFormData.append('txtObservacion', objObservacion.value);
+
+            if( filInputFile.files.length > 0 ){
+                objFormData.append('filArchivo', filInputFile.files[0]);
+            }
+
+            let objInit = {
+                method: 'POST',
+                body: objFormData
+            };
+
+            open_loading();
+            await coreFetch(strUrlCambiarPorcentaje, objInit, (data) => {
+                let strPorcentaje = data.porcentaje_comision === null ? "1.00" : data.porcentaje_comision;
+                let strComisionU = parseFloat(strPorcentaje) / 100 * data.total;
+                let strTipoCambio = document.getElementById("txtTipoCambio").value;
+
+                let strComisionQ = "";
+                if (strTipoCambio.trim().length > 0) {
+                    strComisionQ = strComisionU * parseFloat(strTipoCambio);
+                }
+                document.getElementById(`lblComisionD_${intDetalleSV}`).innerText = currencyFormatUS.format(strComisionU);
+                document.getElementById(`lblComisionQ_${intDetalleSV}`).innerText = currencyFormat.format(strComisionQ);
+
+                intDetalleSV = null;
+                objObservacion.value = '';
+                let event = new Event('change');
+                filInputFile.dispatchEvent(event);
+
+
+                $("#mdlObservacionSV").modal("hide");
+                close_loading();
+            });
+        }
+
+        const fntCerrarComisionesSV = async () => {
+            let comisiones = new Array();
+            let intMesSelected = document.getElementById("sltMes").value,
+                intAnoSelected = document.getElementById("sltAnio").value;
+
+            let sinTipoCambio = document.getElementById("txtTipoCambio").value;
+
+            if( sinTipoCambio.trim().length === 0 ){
+                alert_nova.showNotification(`Tiene que ingresar un Tipo de Cambio para cerrar las comisiones.`, "warning", "danger");
+                return false;
+            }
+
+            tblSalvador.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                let data = this.data();
+                comisiones[rowIdx] = {};
+                comisiones[rowIdx]["id"] = data.id;
+            });
+
+            let objInit = {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                method: 'POST',
+                body: JSON.stringify({
+                    "comisiones": comisiones,
+                    "sinTipoCambio": sinTipoCambio,
+                    "sltMes": intMesSelected,
+                    "sltAnio": intAnoSelected,
+                })
+            };
+
+            open_loading();
+            await coreFetch(strUrlCerrarSalvador, objInit, (data) => {
+
+                close_loading();
+                fntGetListadoSalvador();
+            });
+        };
+
+        $(document).ready(function() {
+            $(".select2").select2();
+
+            if( boolPost ){
+                fntCargarData();
+            }
+
+            tblSalvador = $('#tblSalvador').DataTable({
+                data: [],
+                processing: true,
+                responsive: false,
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "Todos"]
+                ],
+                columns: [
+
+                    {data: 'orden_compra_sv__id'},
+                    {
+                        data: 'orden_compra_sv__fecha',
+                        "render": function ( data, type, row ) {
+                            if ( type === 'display' || type === 'filter' ) {
+                                let date = new Date(data);
+                                return dateGTFormat.format(date);
+                            }
+                            return data;
+                        }
+                    },
+                    {data: 'orden_compra_sv__cliente_sv__cliente'},
+                    {
+                        data: 'total',
+                        "render": function ( data, type, row ) {
+                            if ( type === 'display' || type === 'filter' ) {
+                                return currencyFormatUS.format(parseFloat(data));
+                            }
+                            return data;
+                        }
+                    },
+                    {data: 'producto'},
+                    {
+                        data: 'porcentaje_comision',
+                        "render": function ( data, type, row ) {
+                            if ( type === 'display' || type === 'filter' ) {
+                                let strPorcentaje = row.porcentaje_comision === null ? "1.00" : row.porcentaje_comision;
+                                if( !row.esta_cerrada ){
+                                    return `
+                                        <input type="text" class="form-control" name="txtPorcentaje_${row.id}" id="txtPorcentaje_${row.id}" value="${strPorcentaje}" data-value_original="${strPorcentaje}" onchange="fntMotivoSV(${row.id})" onkeypress="return validar_caracteres(event, 7);">
+                                    `;
+                                }
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        data: 'valor_comision_dolar',
+                        "render": function ( data, type, row ) {
+                            if( !row.esta_cerrada ) {
+                                let strPorcentaje = row.porcentaje_comision === null ? "1.00" : row.porcentaje_comision;
+                                let strComisionUSD = parseFloat(strPorcentaje) / 100 * row.total;
+                                let strComisionUSDDisplay = strComisionUSD;
+                                strComisionUSD = currencyFormatUS.format(strComisionUSD);
+                                row.valor_comision_dolar = strComisionUSDDisplay;
+                                if ( type === 'display' || type === 'filter' ) {
+                                    return `
+                                        <label name="lblComisionD_${row.id}" id="lblComisionD_${row.id}">${strComisionUSD}</label>
+                                    `;
+                                }
+                                else{
+                                    return strComisionUSDDisplay;
+                                }
+                            }
+                            else{
+                                if ( type === 'display' || type === 'filter' ) {
+                                    return currencyFormatUS.format(row.valor_comision_dolar);
+                                }
+                                else{
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    {
+                        data: 'valor_comision_quetzal',
+                        "render": function ( data, type, row ) {
+                            if( !row.esta_cerrada ) {
+                                let strPorcentaje = row.porcentaje_comision === null ? "1.00" : row.porcentaje_comision;
+                                let strComisionU = parseFloat(strPorcentaje) / 100 * row.total;
+                                let objTipoCambio = document.getElementById("txtTipoCambio");
+
+                                let strComisionQ = "";
+                                let strComisionQDisplay = "";
+
+                                if( objTipoCambio !== null ){
+                                    let strTipoCambio = objTipoCambio.value;
+                                    if (strTipoCambio.trim().length > 0) {
+                                        strComisionQ = strComisionU * parseFloat(strTipoCambio)
+                                        strComisionQDisplay = strComisionQ;
+                                        strComisionQ = currencyFormat.format(strComisionQ);
+                                    }
+                                }
+                                row.valor_comision_quetzal = strComisionQDisplay;
+                                if ( type === 'display' || type === 'filter' ){
+                                    return `
+                                        <label name="lblComisionQ_${row.id}" id="lblComisionQ_${row.id}">${strComisionQ}</label>
+                                    `;
+                                }
+                                else{
+                                    return strComisionQDisplay;
+                                }
+                            }
+                            else{
+                                if ( type === 'display' || type === 'filter' ) {
+                                    return currencyFormat.format(row.valor_comision_quetzal);
+                                }
+                                else{
+                                    return data;
+                                }
+                            }
+
+                        }
+                    },
+                ],
+                order: [[0, 'asc']],
+                dom: 'Blfrtip',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        className: 'btn-flat btn-aquadeep',
+                        title: `Nova - Comisiones El Salvador - ${strTitleComplemento}`,
+
+                    },
+                ],
+                language: objLenguajeDataTable,
+                footerCallback: function ( row, data, start, end, display ) {
+                    let api = this.api();
+
+                    let totalVenta = api.column(3).data().reduce( function (a, b) {
+                        return parseFloat(a) + parseFloat(b);
+                    }, 0 );
+
+                    let totalComisionU = api.column(6).data().reduce( function (a, b) {
+                        return parseFloat(a) + parseFloat(b);
+                    }, 0 );
+
+                    let totalComisionQ = api.column(7).data().reduce( function (a, b) {
+                        return parseFloat(a) + parseFloat(b);
+                    }, 0 );
+
+                    let objTipoCambio = document.getElementById("txtTipoCambio");
+
+                    if( objTipoCambio !== null ){
+                        let strTipoCambio = objTipoCambio.value
+                        if (strTipoCambio.trim().length === 0) {
+                            totalComisionQ = "";
+                        }
+                    }
+
+                    $( api.column( 3 ).footer() ).html(
+                        $.fn.dataTable.render.number(',', '.', 2).display( totalVenta )
+                    );
+
+                    $( api.column( 6 ).footer() ).html(
+                        $.fn.dataTable.render.number(',', '.', 2).display( totalComisionU )
+                    );
+
+                    $( api.column( 7 ).footer() ).html(
+                        $.fn.dataTable.render.number(',', '.', 2).display( totalComisionQ )
+                    );
+                }
+            });
+        });
+    </script>
+
+{% endblock javascripts %}

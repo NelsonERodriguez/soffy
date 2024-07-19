@@ -1,0 +1,152 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Proveedores {% endblock title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">domain</i>
+                        </div>
+                        <h4 class="card-title">Localidad</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                        <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+                        <form action="{% url 'core-localidades_create' %}" method="POST" name="frm_localidades">
+                            {% csrf_token %}
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group {% if form.nombre.errors %}has-danger{% endif %}">
+                                        <label for="nombre" class="bmd-label-floating">Nombre</label>
+                                        <input type="text" class="form-control {% if form.nombre.errors %}is-invalid{% endif %}" id="nombre" name="nombre" value="{% if form.nombre.value %}{{ form.nombre.value }}{% endif %}">
+                                        <div class="invalid-feedback">
+                                            {% for error in form.nombre.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group {% if form.codigo.errors %}has-danger{% endif %}">
+                                        <label for="codigo" class="bmd-label-floating">Código</label>
+                                        <input type="text" class="form-control {% if form.codigo.errors %}is-invalid{% endif %}" id="codigo" name="codigo" value="{% if form.codigo.value %}{{ form.codigo.value }}{% endif %}" min="0">
+                                        <div class="invalid-feedback">
+                                            {% for error in form.codigo.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group {% if form.telefono.errors %}has-danger{% endif %}">
+                                        <label for="telefono" class="bmd-label-floating">Teléfono</label>
+                                        <input type="text" class="form-control {% if form.telefono.errors %}is-invalid{% endif %}" id="telefono" name="telefono" value="{% if form.telefono.value %}{{ form.telefono.value }}{% endif %}">
+                                        <div class="invalid-feedback">
+                                            {% for error in form.telefono.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group {% if form.direccion.errors %}has-danger{% endif %}">
+                                        <label for="direccion" class="bmd-label-floating">Dirección</label>
+                                        <input type="text" class="form-control {% if form.direccion.errors %}is-invalid{% endif %}" id="direccion" name="direccion" value="{% if form.direccion.value %}{{ form.direccion.value }}{% endif %}">
+                                        <div class="invalid-feedback">
+                                            {% for error in form.direccion.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 {% if form.empresa.errors %}has-danger{% endif %}">
+                                    <div class="form-group">
+                                        <label for="empresa" class="bmd-label-floating"></label>
+                                        <select name="empresa" id="empresa" class="form-control {% if form.empresa.errors %}is-invalid{% endif %}">
+                                            <option value="">Empresa</option>
+                                            {% for empresa in empresas %}
+                                                <option value="{{ empresa.id }}">{{ empresa.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.empresa.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-check {% if form.activo.errors %}has-danger{% endif %}">
+                                        <label class="form-check-label">Activo
+                                            <input class="form-check-input {% if form.activo.errors %}is-invalid{% endif %}" type="checkbox" id="activo" name="activo" {% if form.activo.value %}checked{% endif %}>
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.activo.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-fill btn-success">Grabar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+  
+  <script>
+    $(document).ready(function() {
+
+      $('.btn-success').click(function (){
+          swal({
+            title: 'Esta seguro?',
+            text: "¡No podrás revertir esto!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-danger',
+            confirmButtonText: 'Aceptar',
+            buttonsStyling: false
+          }).then(function(e) {
+              if (e.value) {
+                document.frm_localidades.submit();
+              }
+          }).catch(swal.noop);
+      });
+
+    });
+  </script>
+
+{% endblock javascripts %}

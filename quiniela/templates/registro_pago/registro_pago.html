@@ -1,0 +1,152 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Registro de Pago {% endblock title %}
+{% load static %}
+{% load humanize %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/static/assets/css/jquery-ui.min.css">
+    <style>
+        @media screen and (min-width: 576px) {
+            table.table-responsive {
+                display: inline-table;
+            }
+        }
+        .ui-front {
+            z-index: 1060;
+        }
+        .required:after {
+            content:" *";
+            color:red;
+        }
+
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">payments</i>
+                        </div>
+                        <h4 class="card-title">Registro de Pago</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table table-striped" id="datatables">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-md-2 text-center">
+                                                No. Empleado
+                                            </th>
+                                            <th class="col-md-8">
+                                                Participante
+                                            </th>
+                                            <th class="col-md-2">
+                                                Acción
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for clasificado in datos %}
+                                            <tr>
+                                                <td class="col-md-2 text-center">
+                                                    {{ forloop.counter }}
+                                                </td>
+                                                <td class="col-md-8 ">
+                                                    {{ clasificado.nombre }} {{ clasificado.apellido }}
+                                                </td>
+                                                <td class="col-md-2">
+                                                    {% if clasificado.pago_realizado %}
+                                                        <span class="badge badge-pill badge-primary">Pago Registrado</span>
+                                                    {% else %}
+                                                        <button type="button" class="btn btn-sm btn-success" data-id="{{ clasificado.empleado_id }}" onclick="fntPregunta(this);">
+                                                            Registrar Pago
+                                                        </button>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const strUrlRegistar = "{% url 'quiniela-registro_pago_registrar' %}";
+
+        const fntGuardarRegistro = async (object) => {
+            const csrftoken = getCookie('csrftoken'),
+            objForm = new FormData();
+
+            let intEmpleadoId = object.dataset.id;
+
+            objForm.append('empleado_id', intEmpleadoId);
+
+            open_loading();
+            await fetch(strUrlRegistar, {
+                method: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                body: objForm
+            })
+            .then(response => response.json())
+            .then( async (data) => {
+
+                if (data.status) {
+                    alert_nova.showNotification(data.mensaje, "add_alert", "success");
+                    let objParent = object.parentElement;
+                    objParent.innerHTML = '<span class="badge badge-pill badge-primary">Pago Registrado</span>';
+                }
+                else {
+                    alert_nova.showNotification(data.mensaje, "warning", "danger");
+                }
+
+                close_loading();
+            })
+            .catch((error) => {
+                console.error(error);
+                alert_nova.showNotification('Error de conexión, comuníquese con IT.', "warning", "danger");
+                close_loading();
+            });
+        }
+
+        const fntPregunta = async (object) => {
+
+            dialogConfirm(fntGuardarRegistro, object, '¿Está seguro de registrar el pago de este colaborador?', '¡No podrá revertir está acción!')
+        };
+
+        $(document).ready(function() {
+            $('#datatables').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                responsive: false,
+                language: objLenguajeDataTable,
+                dom: 'lBfrtip',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        text: 'Excel',
+                        className: 'btn btn-default',
+                    }
+                ]
+            });
+        });
+    </script>
+
+{% endblock javascripts %}

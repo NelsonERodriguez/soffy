@@ -1,0 +1,323 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Ingreso a Bodega {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/static/assets/css/jquery-ui.min.css">
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-md-2 col-md-8">
+                <form action="{% url 'rrhh-libreria_ingreso_bodega_save_ingreso_bodega' %}" method="POST" name="frmEgreso" id="frmEgreso">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">publish</i>
+                            </div>
+                            <h4 class="card-title">
+                                Ingreso a Bodega
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                        <label class="btn btn-outline-primary active">
+                                            <input type="radio" name="optTipo" id="optLibreria" checked value="lib" onchange="fntLimpiarProductos();"> Librería
+                                        </label>
+                                        <label class="btn btn-outline-primary">
+                                            <input type="radio" name="optTipo" id="optLimpieza" value="lim" onchange="fntLimpiarProductos();"> Limpieza
+                                        </label>
+                                        <label class="btn btn-outline-primary">
+                                            <input type="radio" name="optTipo" id="optFarmacia" value="far" onchange="fntLimpiarProductos();"> Farmacia
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="offset-md-3 col-md-6">
+                                    <label for="txtOrdenCompra" class="bmd-label-floating">
+                                        Orden de Compra
+                                    </label>
+                                    <input type="text" class="form-control" id="txtOrdenCompra" name="txtOrdenCompra" required="true">
+                                    <input type="hidden" id="hdnOrdenCompra" name="hdnOrdenCompra">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="offset-md-2 col-md-4">
+                                    <label for="txtMonto" class="bmd-label-floating">
+                                        Monto
+                                    </label>
+                                    <input type="text" class="form-control" id="txtMonto" disabled="disabled">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="txtObservaciones" class="bmd-label-floating">
+                                        Observaciones
+                                    </label>
+                                    <input type="text" class="form-control" id="txtObservaciones" disabled="disabled">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="offset-md-2 col-md-8">
+                                    <table class="table table-striped table-hover" id="tblDetalleProductos">
+                                        <thead>
+                                            <tr>
+                                                <th>Producto</th>
+                                                <th>Existencias</th>
+                                                <th>Cantidad</th>
+                                                <th>Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="4">
+                                                    <button class="btn btn-sm btn-outline-primary" type="button" onclick="fntAgregarFila();"><i class="far fa-plus"></i> Agregar Fila</button>
+                                                </th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="offset-md-2 col-md-8 text-center">
+                                    <button type="button" class="btn btn-fill btn-outline-danger" id="btnRegresar">
+                                        <span class="material-icons">arrow_back</span>
+                                        Regresar
+                                    </button>
+                                    <button class="btn btn-fill btn-outline-primary" type="submit" id="btnGuardar">
+                                        <span class="material-icons">save</span> Guardar Ingreso
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script src="{% static 'assets/js/core/jquery-ui.min.js' %}"></script>
+    <script>
+        let intCorrelativo = 0,
+            intCorrelativo1 = 1,
+            intCorrelativo2 = 2;
+
+        const strUrlGetUsuarios = '{% url 'rrhh-libreria_get_users' %}',
+            strUrlGetProductos = '{% url 'rrhh-libreria_ingreso_bodega_get_productos' %}',
+            strUrlIndex = '{% url 'rrhh-libreria_ingreso_bodega' %}',
+            strUrlGetOrdenCompra = '{% url 'rrhh-libreria_ingreso_bodega_get_orden_compra' %}';
+
+        const fntAgregarFila = () => {
+            intCorrelativo++;
+            let strHtml = `
+                <tr>
+                    <td>
+                        <input type="text" id="txtProducto_${intCorrelativo}" name="txtProducto_${intCorrelativo}" class="form-control" value="" required="true">
+                        <input type="hidden" id="hdnProducto_${intCorrelativo}" name="hdnProducto_${intCorrelativo}" value="">
+                    </td>
+                    <td><span id="spnExistencias_${intCorrelativo}"></span></td>
+                    <td><input type="number" id="txtCantidad_${intCorrelativo}" name="txtCantidad_${intCorrelativo}" class="form-control" required="true"></td>
+                    <td><a href="#" class="btn btn-sm btn-outline-primary" onclick="fntDeleteRow(this);"><i class="fas fa-trash-alt fa-2x"></i></a></td>
+                </tr>
+            `;
+
+            $("#tblDetalleProductos tbody").append(strHtml);
+
+            fntDeclareAutocompleteProducto(intCorrelativo);
+        }
+
+        const fntDeleteRow = (objRow) => {
+            $(objRow).parent().parent().remove();
+        }
+
+        const fntDeclareAutocompleteUser = () => {
+            $( "#txtOrdenCompra" ).autocomplete({
+                minLength: 3,
+                source: function( request, response ) {
+                    open_loading();
+                    const data = new FormData();
+                    data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+                    data.append('filter', request.term);
+
+                    fetch(strUrlGetOrdenCompra, {
+                        method: 'POST',
+                        body: data,
+                    })
+                    .then(response => response.json())
+                    .then( (data) => {
+                        close_loading();
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.name,
+                                value: item.name,
+                                id: item.id,
+                                total: item.total,
+                                observacion: item.observacion
+                            }
+                        }))
+                    })
+                    .catch((error) => {
+                        close_loading();
+                    });
+                },
+                select: function( event, ui ) {
+                    event.preventDefault();
+                    document.getElementById('hdnOrdenCompra').value = ui.item.id;
+                    document.getElementById('txtOrdenCompra').value = ui.item.name;
+                    document.getElementById('txtMonto').value = currencyFormat.format(ui.item.total);
+                    document.getElementById('txtObservaciones').value = ui.item.observacion;
+                    this.value = ui.item.label;
+                },
+                focus: function( event, ui ) {
+                    this.value = ui.item.label;
+                    return false;
+                },
+                change: function( event, ui ){
+                    if( ui.item == null ){
+                        document.getElementById('hdnOrdenCompra').value = "";
+                        document.getElementById('txtOrdenCompra').value = "";
+                        document.getElementById('txtMonto').value = "";
+                        document.getElementById('txtObservaciones').value = "";
+                        return false;
+                    }
+                }
+            });
+        }
+
+        const fntDeclareAutocompleteProducto = (intId) => {
+            $( "#txtProducto_"+intId ).autocomplete({
+                minLength: 1,
+                source: function( request, response ) {
+                    open_loading();
+                    const data = new FormData();
+                    data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+                    data.append('filter', request.term);
+
+                    let strTipo = "";
+                    if( document.getElementById("optLimpieza").checked ){
+                        strTipo = "lim";
+                    }
+                    else if( document.getElementById("optLibreria").checked ){
+                        strTipo = "lib";
+                    }
+                    else if( document.getElementById("optFarmacia").checked ){
+                        strTipo = "far";
+                    }
+
+                    data.append('tipo', strTipo);
+
+                    let strIdsSelected = "";
+
+                    document.querySelectorAll("[id^='hdnProducto_']").forEach(function(element){
+                        if( element.value.trim().length > 0 ){
+                            strIdsSelected += (strIdsSelected.length === 0 ? "" : ",") + element.value;
+                        }
+                    });
+                    data.append('idsNotIn', strIdsSelected);
+
+                    fetch(strUrlGetProductos, {
+                        method: 'POST',
+                        body: data,
+                    })
+                    .then(response => response.json())
+                    .then( (data) => {
+                        close_loading();
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.name,
+                                value: item.name,
+                                id: item.id,
+                                existencia: item.existencia
+                            }
+                        }))
+                    })
+                    .catch((error) => {
+                        close_loading();
+                    });
+                },
+                select: function( event, ui ) {
+                    let arrId = this.id.split("_");
+                    event.preventDefault();
+                    document.getElementById('hdnProducto_'+arrId[1]).value = ui.item.id;
+                    document.getElementById('txtProducto_'+arrId[1]).value = ui.item.label;
+                    document.getElementById('txtCantidad_'+arrId[1]).min = 0;
+                    document.getElementById('spnExistencias_'+arrId[1]).innerText = ui.item.existencia;
+                    this.value = ui.item.label;
+                },
+                focus: function ( event, ui ) {
+                    this.value = ui.item.label;
+                    return false;
+                },
+                change: function( event, ui ){
+                    if( ui.item == null ){
+                        let arrId = this.id.split("_");
+                        document.getElementById('hdnProducto_'+arrId[1]).value = '';
+                        document.getElementById('txtProducto_'+arrId[1]).value = '';
+                        document.getElementById('spnExistencias_'+arrId[1]).innerText = '';
+                        document.getElementById('txtCantidad_'+arrId[1]).min = 0;
+                        document.getElementById('txtCantidad_'+arrId[1]).value = '';
+                        return false;
+                    }
+                }
+            });
+        }
+
+        const fntSubmit = () => {
+            if( $("#frmEgreso").valid() ){
+                document.getElementById("frmEgreso").submit();
+            }
+        }
+
+        const fntLimpiarProductos = () => {
+            $("#tblDetalleProductos tbody").html("");
+            intCorrelativo = 0;
+            fntAgregarFila();
+        }
+
+        const redirectIndex = () => {
+            document.location = strUrlIndex;
+        }
+
+        $(document).ready(function(){
+            fntAgregarFila();
+            fntDeclareAutocompleteUser();
+
+            $('#frmEgreso').validate({
+                highlight: function(element) {
+                    $(element).closest('.form-group').removeClass('has-success').addClass('has-danger');
+                    $(element).closest('.form-check').removeClass('has-success').addClass('has-danger');
+                },
+                success: function(element) {
+                    $(element).closest('.form-group').removeClass('has-danger').addClass('has-success');
+                    $(element).closest('.form-check').removeClass('has-danger').addClass('has-success');
+                },
+                errorPlacement: function(error, element) {
+                    $(element).closest('.form-group').append(error);
+                },
+                submitHandler: function(form) {
+                    dialogConfirm(fntSubmit, false);
+                }
+            });
+
+            document.getElementById("btnRegresar").addEventListener('click', () => {
+                dialogConfirm(redirectIndex, false, '¿Estás seguro?', '¡No se guardaran los datos que has cambiado o has ingresado!')
+            });
+        });
+    </script>
+{% endblock javascripts %}

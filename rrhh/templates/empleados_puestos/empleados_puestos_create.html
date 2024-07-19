@@ -1,0 +1,115 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Empleados Puestos {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/static/assets/css/jquery-ui.min.css">
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">badge</i>
+                        </div>
+                        <h4 class="card-title">Empleados Puestos</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="{% url 'rrhh-empleados_puestos_create' %}" method="POST" name="frm_empleados_puestos">
+                            {% csrf_token %}
+
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group {% if form.user.errors %}has-danger{% endif %}">
+                                        <label for="autocomplete_user" class="bmd-label-floating">Nombre del empleado</label>
+                                        <input type="text" class="form-control {% if form.user.errors %}is-invalid{% endif %}" id="autocomplete_user"
+                                                value="{% if form.user.value %}{{ form.user.value }}{% endif %}">
+                                        <input type="hidden" id="autocomplete_user_id" name="user">
+
+                                        <div class="invalid-feedback">
+                                            {% for error in form.user.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group {% if form.departamento.errors %}has-danger{% endif %}" id="contentDepartamento">
+                                        <label for="autocomplete_departamento" class="bmd-label-floating">Nombre del departamento</label>
+                                        <input type="text" class="form-control {% if form.departamento.errors %}is-invalid{% endif %}" id="autocomplete_departamento"
+                                                value="{% if form.departamento.value %}{{ form.departamento.value }}{% endif %}">
+                                        <input type="hidden" id="autocomplete_departamento_id" name="departamento">
+
+                                        <div class="invalid-feedback">
+                                            {% for error in form.departamento.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group {% if form.puesto.errors %}has-danger{% endif %}">
+                                        <label for="autocomplete_puesto" class="bmd-label-floating">Puesto que ocupa</label>
+                                        <input type="text" class="form-control {% if form.puesto.errors %}is-invalid{% endif %}" id="autocomplete_puesto"
+                                                value="{% if form.puesto.value %}{{ form.puesto.value }}{% endif %}">
+                                        <input type="hidden" id="autocomplete_puesto_id" name="puesto">
+
+                                        <div class="invalid-feedback">
+                                            {% for error in form.puesto.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group {% if form.user_jefe.errors %}has-danger{% endif %}">
+                                        <label for="autocomplete_user_jefe" class="bmd-label-floating">Nombre del jefe</label>
+                                        <input type="text" class="form-control {% if form.user_jefe.errors %}is-invalid{% endif %}" id="autocomplete_user_jefe"
+                                                value="{% if form.user_jefe.value %}{{ form.user_jefe.value }}{% endif %}">
+                                        <input type="hidden" id="autocomplete_user_jefe_id" name="user_jefe">
+
+                                        <div class="invalid-feedback">
+                                            {% for error in form.user_jefe.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 text-center">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-outline-success" id="btnSave">
+                                            <span class="material-icons">save</span>
+                                            Grabar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="{% static 'assets/js/core/jquery-ui.min.js' %}"></script>
+    <script async>
+        const urls = {
+            search_user: "{% url 'user-search_user' 'strSearch' %}",
+            search_departamento: "{% url 'rrhh-search_departamento' 'strSearch' %}",
+            search_puesto: "{% url 'rrhh-search_puesto' 'strSearch' 0 %}",
+        };
+        const valCSRF = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+    </script>
+    <script src="{% static 'assets/rrhh/empleados_puestos/empleados_puestos_create.js' %}"></script>
+{% endblock javascripts %}

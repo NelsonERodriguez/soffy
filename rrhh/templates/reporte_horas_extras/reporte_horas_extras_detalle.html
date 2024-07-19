@@ -1,0 +1,122 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} REPORTE DE HORAS EXTRAS {% endblock title %}
+
+{% load static %}
+{% load humanize %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">summarize</i>
+                        </div>
+                        <h4 class="card-title">REPORTE DE HORAS EXTRAS</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" style="margin-top: 50px;">
+                            <div class="col-4 text-center">
+                                <h4>Año: {{ horas.year }}</h4>
+                            </div>
+                            <div class="col-4 text-center">
+                                <h4>Mes: {{ horas.month }}</h4>
+                            </div>
+                            <div class="col-4 text-center">
+                                <h4>Quincena: {{ horas.quincena }}A</h4>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 50px;">
+                            <div class="col-12">
+                                <table class="table table-hover" id="datatables">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center;">CÓDIGO</th>
+                                            <th style="text-align: center;">EMPLEADO</th>
+                                            <th style="text-align: center;">PUESTO</th>
+                                            <th style="text-align: center;">AÑO</th>
+                                            <th style="text-align: center;">MES</th>
+                                            <th style="text-align: center;">QUINCENA</th>
+                                            <th style="text-align: center;">SUMA DE SIMPLES</th>
+                                            <th style="text-align: center;">SUMA DE DOBLES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for detalle in detalles %}
+                                            <tr>
+                                                <td style="text-align: center;">{{ detalle.CodigoEmpleado }}</td>
+                                                <td style="text-align: center;">{{ detalle.Empleado }}</td>
+                                                <td style="text-align: center;">{{ detalle.Puesto }}</td>
+                                                <td style="text-align: center;">{{ detalle.Year }}</td>
+                                                <td style="text-align: center;">{{ detalle.Month }}</td>
+                                                <td style="text-align: center;">{{ detalle.Quincena }}</td>
+                                                <td style="text-align: center;">{% if detalle.Simples %}{{ detalle.Simples|intcomma }}{% endif %}</td>
+                                                <td style="text-align: center;">{% if detalle.Dobles %}{{ detalle.Dobles|intcomma }}{% endif %}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 25px 0;">
+                            <div class="col-12 text-center">
+                                {% if not horas.procesado %}
+                                    <button type="button" class="btn btn-outline-success" onclick="dialogConfirm(openQuicena);">
+                                        <span class="material-icons">import_contacts</span> Abrir
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        $(document).ready(function() {
+            $('#datatables').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                "order": [0, "desc"],
+                iDisplayLength: -1,
+                responsive: false,
+                language: objLenguajeDataTable,
+                dom: 'lBfrtip',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        text: 'Excel',
+                        className: 'btn btn-default',
+                        exportOptions: {
+                            modifier: {
+                                page: 'current'
+                            }
+                        }
+                    }
+                ]
+            });
+        });
+
+        const openQuicena = () => {
+            simple_redireccion('{% url 'rrhh-reporte_horas_extras_abrir' horas.id %}');
+        };
+    </script>
+
+{% endblock javascripts %}

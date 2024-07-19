@@ -1,0 +1,184 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Sala De Ventas {% endblock title %}
+
+{% block stylesheets %}
+    <style>
+     .box-shadow {
+         box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+     }
+
+     .card.active.box-shadow {
+         cursor: pointer;
+     }
+
+     .img-producto {
+         padding: 4px;
+         margin: 25px;
+         line-height: 1.42857143;
+         background-color: #fff;
+         border: 1px solid #ddd;
+         border-radius: 4px;
+         -webkit-transition: border .2s ease-in-out;
+         -o-transition: border .2s ease-in-out;
+         transition: border .2s ease-in-out;
+         font-weight: bold;
+         font-size: 16px;
+     }
+
+     #divProductos {
+         height: 850px;
+         overflow: scroll;
+     }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+
+        <div class="row" id="divBigButtons">
+            <div class="offset-2 col-4">
+                <div class="wizard-container" data-clasificacion="cerdo">
+                    <div class="card active box-shadow" data-color="rose">
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <i class="fal fa-10x fa-pig"></i>
+                                    <h2>CERDO</h2>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="wizard-container" data-clasificacion="pollo">
+                    <div class="card active box-shadow" data-color="rose">
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <i class="fal fa-10x fa-drumstick-bite"></i>
+                                    <h2>POLLO</h2>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="offset-2 col-4">
+                <div class="wizard-container" data-clasificacion="res">
+                    <div class="card active box-shadow" data-color="rose">
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <i class="fal fa-10x fa-cow"></i>
+                                    <h2>RES</h2>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="wizard-container" data-clasificacion="embutidos">
+                    <div class="card active box-shadow" data-color="rose">
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <i class="fal fa-10x fa-sausage"></i>
+                                    <h2>EMBUTIDO</h2>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="offset-4 col-4">
+                <div class="wizard-container" data-clasificacion="otros">
+                    <div class="card active box-shadow" data-color="rose">
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <i class="fal fa-10x fa-french-fries"></i>
+                                    <h2>OTROS</h2>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row" id="divContenedor" style="display: none;">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 text-right">
+                                <button type="button" class="btn btn-white" onclick="toggle_big_buttons(); toggle_contenido();">
+                                    <i class="material-icons">keyboard_backspace</i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <button type="button" class="btn btn-white" id="cerdo" data-button="cerdo">
+                                    <i class="fal fa-2x fa-pig"></i>
+                                    Cerdo
+                                </button>
+                                <button type="button" class="btn btn-white" id="pollo" data-button="pollo">
+                                    <i class="fal fa-2x fa-drumstick-bite"></i>
+                                    Pollo
+                                </button>
+                                <button type="button" class="btn btn-white" id="res" data-button="res">
+                                    <i class="fal fa-2x fa-cow"></i>
+                                    Res
+                                </button>
+                                <button type="button" class="btn btn-white" id="embutidos" data-button="embutidos">
+                                    <i class="fal fa-2x fa-sausage"></i>
+                                    Embutidos
+                                </button>
+                                <button type="button" class="btn btn-white" id="otros" data-button="otros">
+                                    <i class="fal fa-2x fa-french-fries"></i>
+                                    Otros
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="divProductos"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+    <script>
+        const strUrlGetProductos = "{% url 'ventas-precio_productos_get_productos' %}";
+    </script>
+    <script src="/static/modules/ventas/precio_productos/precio_productos.js?v=1.0.0" type="text/javascript" async defer></script>
+
+{% endblock javascripts %}

@@ -1,0 +1,682 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Inventario RRHH {% endblock title %}
+
+{% block stylesheets %} {% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-md-1 col-md-10">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">local_library</i>
+                        </div>
+                        <h4 class="card-title">
+                            Productos de Librería
+                            <button class="btn btn-fill btn-outline-primary float-sm-right" onclick='$("#mdlAgregarProductos").modal("show")'>
+                                <span class="material-icons">add</span> Agregar Productos Nuevos
+                            </button>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <label class="btn btn-outline-primary active">
+                                        <input type="radio" name="optTipo" id="optLibreria" checked value="lib" onchange="fntGetProductos();"> Librería
+                                    </label>
+                                    <label class="btn btn-outline-primary">
+                                        <input type="radio" name="optTipo" id="optLimpieza" value="lim" onchange="fntGetProductos();"> Limpieza
+                                    </label>
+                                    <label class="btn btn-outline-primary">
+                                        <input type="radio" name="optTipo" id="optFarmacia" value="far" onchange="fntGetProductos();"> Farmacia
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table table-striped table-hover" id="tblProductos">
+                            <thead>
+                                <tr>
+                                    <th width="100px">Código</th>
+                                    <th width="200px">Unidad de Medida</th>
+                                    <th>Producto</th>
+                                    <th>Existencias</th>
+                                    <th width="300px">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlAgregarProductos" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Carga Inicial de Productos</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <form name="frmProductosNuevos" id="frmProductosNuevos">
+                                {% csrf_token %}
+                                <table class="table table-striped table-hover" id="tblProductosNuevos">
+                                    <thead>
+                                        <tr>
+                                            <th>Código</th>
+                                            <th>Unidad de Medida</th>
+                                            <th>Producto</th>
+                                            <th>Existencias</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-left">
+                                                <input type="text" class="form-control" name="txtCodigo_1" value="" maxlength="25" required>
+                                            </td>
+                                            <td class="text-left">
+                                                <input type="text" class="form-control" name="txtUnidadMedida_1" value="" maxlength="30" required>
+                                            </td>
+                                            <td class="text-left">
+                                                <input type="text" class="form-control" name="txtProducto_1" value="" maxlength="100" required>
+                                            </td>
+                                            <td class="text-right" >
+                                                <input type="number" class="form-control" name="txtExistencia_1" value="0" required>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="$(this).parent().parent().remove();">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="4" class="text-center">
+                                                <button type="button" class="btn btn-sm btn-fill btn-outline-primary float-sm-right" onclick='fntAgregarRow();'>
+                                                    <span class="material-icons">add</span> Agregar Producto
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="fntCancelarGuardado();">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="fntGuardarNuevos();">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlIngresoProducto" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Existencias de Producto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <label id="lblTituloProducto" for="txtIngresoExistencia"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <input type="number" class="form-control" name="txtIngresoExistencia" id="txtIngresoExistencia" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#mdlIngresoProducto').modal('hide');">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="fntGuardarIngresoProducto();">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlHistorialProducto" aria-hidden="true" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Historial de Movimientos</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 id="lblTituloProductoHistorial"></h6>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-striped table-hover" id="tblHistorial">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">No.</th>
+                                        <th class="text-center">Movimiento</th>
+                                        <th class="text-center">Cantidad</th>
+                                        <th class="text-center">Fecha y Hora</th>
+                                        <th class="text-center">Usuario</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlEditarProducto" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Producto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="txtCodigoProductoEditar">Código del Producto</label>
+                            <input type="text" class="form-control" name="txtCodigoProductoEditar" id="txtCodigoProductoEditar" value="" maxlength="50">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="txtUnidadMedidaEditar">Unidad de Medida</label>
+                            <input type="text" class="form-control" name="txtUnidadMedidaEditar" id="txtUnidadMedidaEditar" value="" maxlength="30">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="txtProductoEditar">Nombre del Producto</label>
+                            <input type="text" class="form-control" name="txtProductoEditar" id="txtProductoEditar" value="" maxlength="100">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#mdlEditarProducto').modal('hide');">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="fntGuardarEdicion();">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const strUrlGetProductos = "{% url 'rrhh-libreria_productos_get_productos' %}",
+            strUrlGuardarProductos = "{% url 'rrhh-libreria_productos_save_productos' %}",
+            strUrlGuardarIngresoExistencia = "{% url 'rrhh-libreria_productos_ingreso_existencia' %}",
+            strUrlEliminarProducto = "{% url 'rrhh-libreria_productos_eliminar_producto' %}",
+            strUrlHistorialProducto = "{% url 'rrhh-libreria_productos_historial_producto' %}",
+            strUrlProductoInfo = "{% url 'rrhh-libreria_producto_info' %}",
+            strUrlActualizarProducto = "{% url 'rrhh-libreria_actualizar_producto' %}";
+        let intCorrelativo = 1, objDataTable = null;
+
+        const fntCreateDatatable = () => {
+            objDataTable = $('#tblProductos').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "Todos"]
+                ],
+                language: objLenguajeDataTable,
+            });
+            $('[rel="tooltip"]').tooltip();
+        };
+
+        const fntGetProductos = () => {
+            const data = new FormData();
+            data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+            let strTipo = "";
+            if( document.getElementById("optLimpieza").checked ){
+                strTipo = "lim";
+            }
+            else if( document.getElementById("optLibreria").checked ){
+                strTipo = "lib";
+            }
+            else if( document.getElementById("optFarmacia").checked ){
+                strTipo = "far";
+            }
+
+            data.append('tipo', strTipo);
+
+            open_loading();
+            fetch(strUrlGetProductos, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(data => {
+                let strHtml = '';
+                if(data.status){
+                    //alert_nova.showNotification(`${data.msj}`, "add_alert", "success");
+
+                    data.productos.forEach((value)=>{
+                        let strCodigo = value.codigo === null ? "" : value.codigo;
+                        let strUnidadMedida = value.unidad_medida === null ? "" : value.unidad_medida;
+
+                        strHtml += `
+                            <tr>
+                                <td class="text-left" width="100px">${strCodigo}</td>
+                                <td class="text-left" width="200px">${strUnidadMedida}</td>
+                                <td class="text-left">${value.producto}</td>
+                                <td class="text-left">${value.existencia}</td>
+                                <td class="text-left" width="300px">
+                                    <a class="btn btn-sm btn-outline-primary" href="#" onclick="fntEditarProducto(${value.id});" rel="tooltip" title="Editar" position="right">
+                                        <i class="fas fa-pencil fa-2x"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-outline-primary" href="#" onclick="fntIngresoProducto(${value.id}, '${value.producto}');" rel="tooltip" title="Ingresar" position="right">
+                                        <i class="far fa-plus-square fa-2x"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-outline-primary" href="#" onclick="fntEliminarProducto(${value.id});" rel="tooltip" title="Eliminar" position="right">
+                                        <i class="fas fa-trash-alt fa-2x"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-outline-primary" href="#" onclick="fntHistorialProducto(${value.id});" rel="tooltip" title="Historial" position="right">
+                                        <i class="fas fa-history fa-2x"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                    if( objDataTable !== null ) {
+                        objDataTable.clear().destroy();
+                    }
+
+                    $("#tblProductos tbody").html(strHtml);
+
+                    fntCreateDatatable();
+                }
+                else{
+                    alert_nova.showNotification(`${data.msj}`, "warning", "danger");
+                }
+                close_loading();
+            })
+            .catch(error => {
+                alert_nova.showNotification(`Ocurrió un error inesperado. Revise su conexión a internet o contacte a TI.`, "warning", "danger");
+                console.error(error);
+                close_loading();
+            });
+        };
+
+        const fntAgregarRow = () => {
+            intCorrelativo++;
+
+            let strHtml = `
+                <tr>
+                    <td class="text-left">
+                        <input type="text" class="form-control" name="txtCodigo_${intCorrelativo}" value="" maxlength="25" required>
+                    </td>
+                    <td class="text-left">
+                        <input type="text" class="form-control" name="txtUnidadMedida_${intCorrelativo}" value="" maxlength="30" required>
+                    </td>
+                    <td class="text-left">
+                        <input type="text" class="form-control" name="txtProducto_${intCorrelativo}" value="" maxlength="100" required>
+                    </td>
+                    <td class="text-right" >
+                        <input type="number" class="form-control" name="txtExistencia_${intCorrelativo}" value="0" required>
+                    </td>
+                    <td>
+                        <a href="#" onclick="$(this).parent().parent().remove();">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </td>
+                </tr>
+            `;
+
+            $("#tblProductosNuevos tbody").append(strHtml);
+        }
+
+        const fntCancelarNuevos = () => {
+            $("#mdlAgregarProductos").modal("hide");
+            $("#tblProductosNuevos tbody").html("");
+            intCorrelativo = 0;
+            fntAgregarRow();
+        }
+
+        const fntEditarProducto = (intId) => {
+            window.id_producto = intId;
+
+            const data = new FormData();
+            data.append('id_producto', window.id_producto);
+            data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+            open_loading();
+            fetch(strUrlProductoInfo, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status){
+                    //alert_nova.showNotification(`${data.msj}`, "add_alert", "success");
+                    //fntGetProductos();
+                    document.getElementById("txtCodigoProductoEditar").value = (data.producto.codigo) ? data.producto.codigo : "";
+                    document.getElementById("txtUnidadMedidaEditar").value = (data.producto.unidad_medida) ? data.producto.unidad_medida : "";
+                    document.getElementById("txtProductoEditar").value = data.producto.producto;
+                    $('#mdlEditarProducto').modal('show');
+                }
+                else{
+                    alert_nova.showNotification(`${data.msj}`, "warning", "danger");
+                }
+                close_loading();
+            })
+            .catch(error => {
+                alert_nova.showNotification(`Ocurrió un error inesperado. Revise su conexión a internet o contacte a TI.`, "warning", "danger");
+                console.error(error);
+                close_loading();
+            });
+        }
+
+        const fntGuardarNuevos = () => {
+            let boolVacioCodigo = false,
+                boolVacioUnidad = false,
+                boolVacioProducto = false,
+                boolVacioExistencia = false;
+
+            document.querySelectorAll("[name^='txtCodigo_']").forEach((elm) => {
+                if( elm.value.trim().length === 0 ){
+                    boolVacioCodigo = true;
+                }
+            });
+
+            document.querySelectorAll("[name^='txtUnidadMedida_']").forEach((elm) => {
+                if( elm.value.trim().length === 0 ){
+                    boolVacioUnidad = true;
+                }
+            });
+
+            document.querySelectorAll("[name^='txtProducto_']").forEach((elm) => {
+                if( elm.value.trim().length === 0 ){
+                    boolVacioProducto = true;
+                }
+            });
+
+            document.querySelectorAll("[name^='txtExistencia_']").forEach((elm) => {
+                if( elm.value.trim().length === 0 ){
+                    boolVacioExistencia = true;
+                }
+            });
+
+            if( boolVacioCodigo ){
+                alert_nova.showNotification(`El código de los productos es requerido`, "warning", "danger");
+            }
+
+            if( boolVacioUnidad ){
+                alert_nova.showNotification(`La unidad de medida de los productos es requerida`, "warning", "danger");
+            }
+
+            if( boolVacioProducto ){
+                alert_nova.showNotification(`El nombre de los productos es requerido`, "warning", "danger");
+            }
+
+            if( boolVacioExistencia ){
+                alert_nova.showNotification(`La existencia de los productos es requerida`, "warning", "danger");
+            }
+
+            if( boolVacioCodigo || boolVacioUnidad || boolVacioProducto || boolVacioExistencia ){
+                return false;
+            }
+
+            const data = new FormData(document.getElementById("frmProductosNuevos"));
+
+            data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+            let strTipo = "";
+            if( document.getElementById("optLimpieza").checked ){
+                strTipo = "lim";
+            }
+            else if( document.getElementById("optLibreria").checked ){
+                strTipo = "lib";
+            }
+            else if( document.getElementById("optFarmacia").checked ){
+                strTipo = "far";
+            }
+
+            data.append('tipo', strTipo);
+
+            open_loading();
+            fetch(strUrlGuardarProductos, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status){
+                    fntCancelarNuevos();
+                    alert_nova.showNotification(`${data.msj}`, "add_alert", "success");
+                    fntGetProductos();
+                }
+                else{
+                    alert_nova.showNotification(`${data.msj}`, "warning", "danger");
+                }
+
+                close_loading();
+            })
+            .catch(error => {
+                //$("#mdlAgregarProductos").modal("hide");
+                alert_nova.showNotification(`Ocurrió un error inesperado. Revise su conexión a internet o contacte a TI.`, "warning", "danger");
+                console.error(error)
+                close_loading();
+            });
+        }
+
+        const fntIngresoProducto = (intId, strProducto) => {
+            window.id_producto = intId;
+            document.getElementById("lblTituloProducto").innerHTML = strProducto;
+            document.getElementById("txtIngresoExistencia").value = "";
+            $("#mdlIngresoProducto").modal("show");
+        }
+
+        const fntGuardarIngresoProducto = () => {
+            const data = new FormData();
+            data.append('id_producto', window.id_producto);
+            data.append('cantidad', document.getElementById("txtIngresoExistencia").value);
+            data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+            open_loading();
+            fetch(strUrlGuardarIngresoExistencia, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status){
+                    alert_nova.showNotification(`${data.msj}`, "add_alert", "success");
+                    fntGetProductos();
+                    $('#mdlIngresoProducto').modal('hide');
+                }
+                else{
+                    alert_nova.showNotification(`${data.msj}`, "warning", "danger");
+                }
+                close_loading();
+            })
+            .catch(error => {
+                alert_nova.showNotification(`Ocurrió un error inesperado. Revise su conexión a internet o contacte a TI.`, "warning", "danger");
+                console.error(error);
+                close_loading();
+            });
+        }
+
+        const fntGuardarEdicion = () => {
+
+            let boolVacioCodigo = false,
+                boolVacioUnidad = false,
+                boolVacioProducto = false,
+                strCodigoValue = document.getElementById("txtCodigoProductoEditar").value,
+                strUnidadMedidaValue = document.getElementById("txtUnidadMedidaEditar").value,
+                strProductoValue = document.getElementById("txtProductoEditar").value;
+
+            if( strCodigoValue.trim().length === 0 ){
+                boolVacioCodigo = true;
+            }
+
+            if( strUnidadMedidaValue.trim().length === 0 ){
+                boolVacioUnidad = true;
+            }
+
+            if( strProductoValue.trim().length === 0 ){
+                boolVacioProducto = true;
+            }
+
+            if( boolVacioCodigo ){
+                alert_nova.showNotification(`El código de los productos es requerido`, "warning", "danger");
+            }
+
+            if( boolVacioUnidad ){
+                alert_nova.showNotification(`La unidad de medida de los productos es requerida`, "warning", "danger");
+            }
+
+            if( boolVacioProducto ){
+                alert_nova.showNotification(`El nombre de los productos es requerido`, "warning", "danger");
+            }
+
+            if( boolVacioCodigo || boolVacioUnidad || boolVacioProducto ){
+                return false;
+            }
+
+            const data = new FormData();
+            data.append('id_producto', window.id_producto);
+            data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+            data.append('codigo_producto', strCodigoValue);
+            data.append('unidad_medida', strUnidadMedidaValue);
+            data.append('producto', strProductoValue);
+
+            open_loading();
+            fetch(strUrlActualizarProducto, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status){
+                    alert_nova.showNotification(`${data.msj}`, "add_alert", "success");
+                    $('#mdlEditarProducto').modal('hide');
+                    fntGetProductos();
+                }
+                else{
+                    alert_nova.showNotification(`${data.msj}`, "warning", "danger");
+                }
+                close_loading();
+            })
+            .catch(error => {
+                alert_nova.showNotification(`Ocurrió un error inesperado. Revise su conexión a internet o contacte a TI.`, "warning", "danger");
+                console.error(error);
+                close_loading();
+            });
+        }
+
+        const fntEliminarProducto = (intId) => {
+            window.id_producto = intId;
+            dialogConfirm(fntGuardarEliminar, false, "¿Está seguro(a) de eliminar este producto?", "Se eliminará el producto de este listado sin importar que tenga existencias.");
+        }
+
+        const fntGuardarEliminar = () => {
+            const data = new FormData();
+            data.append('id_producto', window.id_producto);
+            data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+            open_loading();
+            fetch(strUrlEliminarProducto, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status){
+                    alert_nova.showNotification(`${data.msj}`, "add_alert", "success");
+                    fntGetProductos();
+                }
+                else{
+                    alert_nova.showNotification(`${data.msj}`, "warning", "danger");
+                }
+                close_loading();
+            })
+            .catch(error => {
+                alert_nova.showNotification(`Ocurrió un error inesperado. Revise su conexión a internet o contacte a TI.`, "warning", "danger");
+                console.error(error);
+                close_loading();
+            });
+        }
+
+        const fntHistorialProducto = (intId) => {
+            const data = new FormData();
+            data.append('id_producto', intId);
+            data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+            $("#tblHistorial tbody").html("");
+
+            open_loading();
+            fetch(strUrlHistorialProducto, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(data => {
+                let strHtml = '';
+                if(data.status){
+                    //alert_nova.showNotification(`${data.msj}`, "add_alert", "success");
+
+                    data.historial.forEach((value)=>{
+                        strHtml += `
+                            <tr>
+                                <td class="text-right">${value.id}</td>
+                                <td class="text-left">${value.movimiento}</td>
+                                <td class="text-right">${value.cantidad}</td>
+                                <td class="text-left">${value.FechaFormat}</td>
+                                <td class="text-left">${value.name}</td>
+                            </tr>
+                        `;
+                    });
+
+                    $("#tblHistorial tbody").html(strHtml);
+
+                    $("#mdlHistorialProducto").modal("show");
+                }
+                else{
+                    alert_nova.showNotification(`${data.msj}`, "warning", "danger");
+                }
+                close_loading();
+            })
+            .catch(error => {
+                alert_nova.showNotification(`Ocurrió un error inesperado. Revise su conexión a internet o contacte a TI.`, "warning", "danger");
+                console.error(error);
+                close_loading();
+            });
+        }
+
+        $(document).ready(function(){
+            fntGetProductos();
+        });
+    </script>
+{% endblock javascripts %}

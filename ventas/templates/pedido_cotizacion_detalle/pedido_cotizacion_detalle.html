@@ -1,0 +1,1186 @@
+{% extends "layouts/base-public.html" %}
+
+{% block title %} Pedidos {% endblock title %}
+
+{% load static %}
+{% load humanize %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+    <style>
+        .contenedores {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            grid-gap: 10px;
+            grid-template-rows: repeat(3, 0fr);
+            width: 100vw;
+            height: 100vh;
+            padding: 15px;
+            position: fixed;
+            background: #eee;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            overflow-x: scroll;
+        }
+
+        .encabezado {
+            grid-column: span 9;
+            grid-row: 1;
+            height: fit-content;
+        }
+
+        .informacion {
+            grid-column: 1 / 5;
+            grid-row: 2;
+        }
+
+        .datos-entrega {
+            grid-column: 5 / 6;
+            grid-row: 2;
+        }
+
+        .datos-ejemplo {
+            display: none;
+            grid-column: 4 / 5;
+            grid-row: 2;
+            --height: fit-content;
+        }
+
+        .otros-datos {
+            grid-column: 6 / 7;
+            grid-row: 2;
+            --height: fit-content;
+        }
+
+        .documento {
+            grid-column: 7 / 10;
+            grid-row: 2 / span 2;
+            height: fit-content;
+        }
+
+        .detalles {
+            grid-column: 1 / 7;
+            grid-row: 3;
+            height: fit-content;
+        }
+
+        .detalles {
+            --margin-top: 25px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .contenedores {
+                display: grid;
+                grid-template-columns: repeat(1, 100%);
+                grid-gap: 10px;
+                grid-template-rows: repeat(5, 1fr);
+                width: 100vw;
+                height: 100vh;
+                padding: 15px;
+                position: fixed;
+                background: #eee;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                overflow-x: scroll;
+            }
+
+            .encabezado {
+                grid-column: 1;
+                grid-row: 1;
+            }
+
+            .informacion {
+                grid-column: 1;
+                grid-row: 2;
+            }
+
+            .datos-entrega {
+                grid-column: 1;
+                grid-row: 3;
+            }
+
+            .otros-datos {
+                grid-column: 1;
+                grid-row: 4;
+            }
+
+            .documento {
+                grid-column: 1;
+                grid-row: 5;
+            }
+
+            .detalles {
+                grid-column: 1;
+                grid-row: 6;
+            }
+
+            .detalles {
+                margin-top: 25px;
+            }
+
+        }
+
+        .ui-front {
+            z-index: 1060;
+        }
+
+        .ui-menu-item {
+            font-weight: normal !important;
+        }
+
+        body, label, textarea, input, th {
+            font-weight: bold;
+            color: black;
+        }
+
+        .form-control[readonly] {
+            background: #f1f1f1 !important;
+        }
+
+        .contenedores > div {
+            padding: 15px;
+            background: white;
+            box-shadow: 0 1px 4px 0 rgb(0 0 0 / 14%);
+            border: #dadada solid 1px;
+            border-radius: 8px;
+        }
+
+        .bmd-label-floating {
+            font-weight: bold;
+            color: black !important;
+        }
+
+        textarea.form-control {
+            height: auto;
+        }
+
+        .picture-container {
+            position: relative;
+            text-align: center;
+        }
+
+        .picture {
+            width: 106px;
+            height: 106px;
+            background-color: #999999;
+            border: 4px solid #CCCCCC;
+            color: #FFFFFF;
+            border-radius: 50%;
+            margin: 5px auto;
+            overflow: hidden;
+            transition: all 0.2s;
+            -webkit-transition: all 0.2s;
+        }
+
+        .picture-src{
+            width: 100%;
+        }
+
+        .card {
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+
+        .bmd-label-floating {
+            font-weight: bold;
+        }
+
+        .bmd-form-group:not(.has-success):not(.has-danger) [class^='bmd-label'].bmd-label-floating, .bmd-form-group:not(.has-success):not(.has-danger) [class*=' bmd-label'].bmd-label-floating {
+            font-weight: bold;
+        }
+
+        .table thead tr th {
+            font-weight: bold;
+        }
+
+        .togglebutton label {
+            color: black;
+        }
+
+        .bmd-label-floating, .is-focused .bmd-label-floating, .is-filled .bmd-label-floating {
+            top: -1.5rem;
+            left: 0;
+            font-size: 1rem;
+        }
+
+        .bmd-form-group .checkbox label, .bmd-form-group .radio label, .bmd-form-group label {
+            font-size: 1rem;
+        }
+
+        .form-control {
+            margin-bottom: 10px;
+        }
+
+        .form-check {
+            margin-bottom: 0px !important;
+            margin-top: 0px !important;
+        }
+
+        select.form-control {
+            /*top: -15px !important;*/
+        }
+
+        .card .card-body .form-group {
+            /*margin: 1px 0 0 0 !important;*/
+        }
+
+        hr {
+            --margin-top: unset;
+            --margin-bottom: unset;
+        }
+    </style>
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <form name="frm_pedido" id="frm_pedido" method="POST" autocomplete="new-password">
+
+        <div class="contenedores">
+            <div class="encabezado">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-lg-flex flex-row bd-highlight">
+                            <div class="p-2">
+                                <img src="{% static 'assets/img/logo_normal.jpg' %}" title="" alt="Logo" style="height: 65px;" />
+                                <!--label>
+                                    Usuario: {{ request.user.name }}
+                                </label-->
+                            </div>
+
+                            {% comment %}
+                            <!--div class="col-md-2 text-center" style="overflow:hidden; white-space:nowrap; text-overflow: ellipsis;">
+                                <div class="picture-container" id="div-picture">
+                                    <div class="picture">
+                                        <img src="{% if request.user.avatar %}{% if DEBUG %}https://nova.ffinter.com{% endif %}/media/{{ request.user.avatar }}{% else %}{% static 'assets/img/default-avatar.png' %}{% endif %}" class="picture-src" id="avatarPicturePreview" title="" alt="Foto" />
+                                    </div>
+
+                                </div>
+
+                            </div-->
+                            {% endcomment %}
+
+                            <div class="p-2">
+                                {% if pedido %}<b>Pedido Movil:</b> {{ pedido.NoPedido }}{% endif %}
+                                <div id="DivnoDocumento" style="display: none;"><b>Pedido:</b> <span id="span_nodocumento"></span></div>
+                                {% if not pedido %}
+                                    <div class="form-group" id="divBuscarPedido">
+                                        <label for="buscar_pedido" class="bmd-label-floating">Pedido</label>
+                                        <input type="number" id="buscar_pedido" class="form-control" onchange="getCotizacion();">
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="p-2">
+                                <a href="{% url 'ventas-pedido_cotizacion' %}" class="btn btn-outline-info" type="button" style="background: white;margin: 5px; ">
+                                    <i class='material-icons'>arrow_back</i> Regresar
+                                </a>
+                                {% if pedido and not pedido.NoDocumento and total or not pedido %}
+                                    <button type="button" class="btn btn-outline-success" id="btnFactura" style="background: white; display: none;margin: 5px;">
+{#                                    <button type="button" class="btn btn-outline-success" id="btnFactura" style="float: right; background: white; margin: 5px; {% if datos_cliente.disponibilidad_red or datos_cliente.Dias_Disponibles < 0 or no_procesar %}display: none;{% endif %}" onclick="validateForm('factura');">#}
+{#                                    <button type="button" class="btn btn-outline-success" id="btnFactura" style="float: right; background: white; margin: 5px; display: none;" onclick="validateForm('factura');">#}
+                                        <i class='material-icons'>credit_score</i> Facturar
+                                    </button>
+                                    <button type="button" class="btn btn-outline-warning" id="btnCotizacion" style="background: white; margin: 5px; {% if datos_cliente.disponibilidad_red or datos_cliente.Dias_Disponibles < 0 or no_procesar %}display: none;{% endif %}" onclick="validateForm('cotizacion');">
+                                        <i class='material-icons'>assignment_turned_in</i> Grabar
+                                    </button>
+                                {% endif %}
+                                {% if perms.ventas.anular_pedidos %}
+                                <button type="button" class="btn btn-outline-danger" id="btnAnular" style="background: white; margin: 5px; {% if not pedido %}display: none;{% endif %}" onclick="dialogConfirm(setAnulado);">
+                                    <i class='material-icons'>subtitles_off</i> Anular
+                                </button>
+                                {% endif %}
+                                <button type="button" class="btn btn-outline-secondary" id="btnImpresion" data-bs-toggle="modal" data-bs-target="#modal_impresion" style="background: white; margin: 5px; display: none;" onclick="$('#modal_impresion').modal('show');">
+                                    <i class='material-icons'>print</i> IMPRESIÓN
+                                </button>
+                                {% if pedido and not pedido.NoDocumento %}
+                                    <button type="button" class="btn btn-outline-primary" id="btnTomaPeso" style="background: white; margin: 5px;" onclick="dialogConfirm(setPesado);">
+                                        <i class='material-icons'>balance</i> Toma Peso
+                                    </button>
+                                {% endif %}
+                                {% if perms.ventas.agregar_cotizacion %}
+                                    <a href="{% url 'ventas-pedido_cotizacion_pedido_detalle' 0 %}" class="btn btn-outline-danger" type="button" style="background: white; margin: 5px;">
+                                        <i class='material-icons'>add</i> Nuevo
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="informacion">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-12">
+
+{#                                {% if datos_cliente.disponibilidad_red or no_procesar %}#}
+                                    <div class="alert alert-danger alert-with-icon" data-notify="container" id="divDisponible" style="{% if datos_cliente and datos_cliente.disponibilidad_red or no_procesar %}{% else %}display: none;{% endif %}">
+                                        <i class="material-icons" data-notify="icon">notifications</i>
+                                        <span data-notify="message">No es posible generar documento, no tiene suficiente crédito disponible.</span>
+                                    </div>
+{#                                {% elif datos_cliente.Dias_Disponibles < 0 %}#}
+                                    <div class="alert alert-danger alert-with-icon" data-notify="container" id="divDias" style="{% if not datos_cliente or datos_cliente and datos_cliente.Dias_Disponibles > 0 or datos_cliente and datos_cliente.cliente_contado %}display: none;{% endif %}">
+                                        <i class="material-icons" data-notify="icon">notifications</i>
+                                        <span data-notify="message">No es posible generar documento, no cuenta con dias.</span>
+                                    </div>
+{#                                {% endif %}#}
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="cliente" class="bmd-label-floating">Cliente</label>
+                                                    <input type="text" name="cliente" id="cliente" class="form-control" value="{{ pedido.Nombre }}" {% if pedido %}readonly{% endif %} data-tipo="nombre" autocomplete="new-password">
+                                                    {% comment %} <input type="text" name="cliente" id="cliente" class="form-control" value="{{ pedido.Nombre }}" {% if pedido %}readonly{% endif %} data-tipo="nombre" onkeyup="getCliente(event, this);"
+                                                        onchange="getDatos(this, 'list_autocomplete_nombre');" list="list_autocomplete_nombre" autocomplete="new-password"> {% endcomment %}
+                                                    {% comment %} <datalist id="list_autocomplete_nombre"></datalist> {% endcomment %}
+                                                    <input type="hidden" name="nocliente" id="nocliente" value="{% if pedido %}{{ pedido.NoCliente }}{% endif %}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="nit_cliente" class="bmd-label-floating">NIT</label>
+                                                    {% comment %} <input type="text" name="nit_cliente" id="nit_cliente" class="form-control" value="{{ pedido.NIT }}" {% if pedido %}readonly{% endif %} data-tipo="nit" onkeyup="getCliente(event, this);" {% endcomment %}
+                                                    <input type="text" name="nit_cliente" id="nit_cliente" class="form-control" value="{{ pedido.NIT }}" data-tipo="nit" readonly autocomplete="new-password">
+                                                    <datalist id="list_autocomplete_nit"></datalist>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="codigo_cliente" class="bmd-label-floating text-nowrap">Código Cliente</label>
+                                                    {% comment %} <input type="text" name="codigo_cliente" id="codigo_cliente" class="form-control" value="{{ pedido.CodigoCliente }}" {% if pedido %}readonly{% endif %} data-tipo="codigo" onkeyup="getCliente(event, this);" {% endcomment %}
+                                                    <input type="text" name="codigo_cliente" id="codigo_cliente" class="form-control" value="{{ pedido.CodigoCliente }}" data-tipo="nit" readonly autocomplete="new-password">
+                                                    <datalist id="list_autocomplete_codigo"></datalist>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="vendedor" class="bmd-label-floating">Vendedor</label>
+                                                    <input type="text" name="vendedor" id="vendedor" class="form-control" value="{{ pedido.name }}" readonly>
+                                                    <input type="hidden" name="novendedor" id="novendedor" value="{{ pedido.NoVendedor }}">
+                                                    {% if pedido %}
+                                                        <input type="hidden" name="pedido" id="pedido" value="{{ pedido.NoPedido }}">
+                                                    {% endif %}
+                                                    <input type="hidden" name="nousuario" id="nousuario" value="{{ pedido.NoUsuario }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="fecha" class="bmd-label-floating">Fecha</label>
+                                                    <input type="date" name="fecha" id="fecha" class="form-control" value="{{ dia }}" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <div class="form-group">
+                                                    <label for="direccion_sucursal" class="bmd-label-floating">Dirección del cliente</label>
+                                                    <input type="text" name="direccion_sucursal" id="direccion_sucursal" class="form-control" value="{{ pedido.Direccion }}" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="form-group bmd-form-group is-filled">
+                                                    <input type="hidden" name="hdn_sucursal" id="hdn_sucursal" value="{{ pedido.DireccionSucursal }}" readonly>
+                                                    <label for="sucursal" class="bmd-label-floating">Sucursal</label>
+                                                    <select name="sucursal" id="sucursal" class="form-control" onchange="changeSucursal(this);">
+                                                        {% if pedido and pedido.Sucursal %}
+                                                            <option value="{{ pedido.NoSucursal }}">{{ pedido.DireccionSucursal }}</option>
+                                                        {% else %}
+                                                            <option value=""></option>
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <label for="empresa" class="bmd-label-floating">Empresa</label>
+                                                    <input type="text" name="empresa" id="empresa" class="form-control" value="{{ pedido.EmpresaF }}" {% if pedido %}readonly{% endif %} readonly>
+                                                    <input type="hidden" name="empresa_id" id="empresa_id" value="{{ pedido.NoEmpresaF }}" empresa_id="{{ pedido.NoEmpresaF }}">
+                                                    <input type="hidden" name="empresa_f" id="empresa_f" value="{% if pedido.NoEmpresaF %}{{ pedido.EmpresaF }}{% endif %}"
+                                                        data-noempresa="{% if pedido.NoEmpresaF %}{{ pedido.NoEmpresaF }}{% endif %}" data-direccion="{% if pedido.NoEmpresaF %}{{ pedido.DireccionEmpresaF }}{% endif %}">
+                                                    <input type="hidden" name="empresa_e" id="empresa_e" value="{% if pedido.NoEmpresaE %}{{ pedido.EmpresaE }}{% endif %}"
+                                                        data-noempresa="{% if pedido.NoEmpresaE %}{{ pedido.NoEmpresaE }}{% endif %}" data-direccion="{% if pedido.NoEmpresaE %}{{ pedido.DireccionEmpresaE }}{% endif %}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="form-group">
+                                                    <label for="ruta" class="bmd-label-floating">Ruta</label>
+                                                    <input type="text" name="ruta" id="ruta" class="form-control" value="{{ pedido.RutaSucursal }}" readonly>
+                                                    <input type="hidden" name="direccion_empresa" id="direccion_empresa" class="form-control" value="{{ pedido.DireccionEmpresaF }}" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group bmd-form-group is-filled">
+                                                    <label for="observaciones" class="bmd-label-floating">Observaciones</label>
+                                                    <textarea name="observaciones" id="observaciones" class="form-control" rows="2" style="height: auto;">{% if pedido.Observaciones %} {{ pedido.Observaciones }}{% endif %}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6" id="divContendores" style="display: none;">
+                                                <div class="card">
+                                                    <div class="card-body" style="padding: 1rem 8px 0rem;">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="form-group bmd-form-group is-filled" style="padding-bottom: unset;">
+                                                                    <label for="contenedor" class="bmd-label-floating">Contenedor</label>
+                                                                    <input type="text" id="contenedor" name="contenedor" class="form-control" list="list_autocomplete_contenedor" autocomplete="new-password" onchange="selectContenedor(this);">
+                                                                    <datalist id="list_autocomplete_contenedor">
+                                                                        {% for contenedor in contenedores %}
+                                                                            <option value="{{ contenedor }}">{{ contenedor }}</option>
+                                                                        {% endfor %}
+                                                                    </datalist>
+                                                                    {% comment %} <select name="contenedor" id="contenedor" class="form-control" onchange="selectContenedor(this);">
+                                                                        <option value=""></option>
+                                                                        {% for contenedor in contenedores %}
+                                                                            <option value="{{ contenedor }}">{{ contenedor }}</option>
+                                                                        {% endfor %}
+                                                                    </select> {% endcomment %}
+                                                                    {% for producto in productos %}
+                                                                        <input type="hidden" name="productos[]" value="{{ producto.NoProducto }}" data-contenedor="{{ producto.NoContenedor }}" data-producto="{{ producto.Producto }}" data-lote="{{ producto.NoLote }}">
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" id="btnSaldo" style="{% if not pedido %}display: none;{% endif %}">
+                                            <div class="offset-md-8 col-4">
+                                                <button type="button" class="btn btn-outline-success" style="float: right; background: white; margin: 5px;" onclick="getInfoSaldos(false, true);">
+                                                    <i class='material-icons'>autorenew</i> Actualizar saldo
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% comment %}
+            <div class="datos-ejemplo">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="" class="bmd-label-floating" style="font-size: 14px;"><b>Documento a generar</b></label>
+                                <div class="form-group bmd-form-group is-filled">
+                                    <input type="hidden" name="escredito" id="escredito" value="0">
+
+                                    <select name="" id="" class="form-control" onchange="changeFormaPago();" style="top: -30px;">
+
+                                        <option value=""></option>
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="" class="bmd-label-floating" style="font-size: 14px;"><b>Despacho</b></label>
+                                <div class="form-group bmd-form-group is-filled">
+                                    <select name="" id="" class="form-control" onchange="changeFormaPago();" style="top: -30px;">
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="" class="bmd-label-floating" style="font-size: 14px;"><b>Fecha Despacho</b></label>
+                                <div class="form-group bmd-form-group is-filled">
+                                    <select name="" id="" class="form-control" onchange="changeFormaPago();" style="top: -30px;">
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="" class="bmd-label-floating" style="font-size: 14px;"><b>Bodega</b></label>
+                                <div class="form-group bmd-form-group is-filled">
+                                    <select name="" id="" class="form-control" onchange="changeFormaPago();" style="top: -30px;">
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="" class="bmd-label-floating" style="font-size: 14px;"><b>Forma de pago</b></label>
+                                <div class="form-group bmd-form-group is-filled">
+                                    <select name="" id="" class="form-control" onchange="changeFormaPago();" style="top: -30px;">
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="" class="bmd-label-floating" style="font-size: 14px;"><b>Forma de despacho</b></label>
+                                <div class="form-group bmd-form-group is-filled">
+                                    <select name="" id="" class="form-control" onchange="changeFormaPago();" style="top: -30px;">
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="togglebutton">
+                                        <label>
+                                            <input type="checkbox" name="" id="" onchange="setDiasporciento();">
+                                            <span class="toggle"></span>
+                                            10%
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="form-group">
+                                    <div class="togglebutton">
+                                        <label>
+                                            <input type="checkbox" name="" id="">
+                                            <span class="toggle"></span>
+                                            Refacturación
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endcomment %}
+
+            <div class="datos-entrega">
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Documento a generar</label>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="documento" value="F" onchange="changeDocumento();" checked> Factura
+                                        <span class="circle">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="documento" value="E"
+                                            {% if request.user.id == 849 %}style="cursor:not-allowed;padding: 0 !important;margin-top: 9px;" disabled
+                                            {% elif request.user.id == 932 %}style="cursor:not-allowed;padding: 0 !important;margin-top: 9px;" disabled
+                                            {% elif request.user.id == 135 %}style="cursor:not-allowed;padding: 0 !important;margin-top: 9px;" disabled
+                                            {% else %}onchange="changeDocumento();"
+                                            {% endif %}
+                                        > Envio
+                                        <span class="circle">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                                {% if request.user.id == 849 or request.user.id == 932 or request.user.id == 135 %}
+                                    <hr>
+                                    <div class="togglebutton">
+                                        <label>
+                                            <input type="checkbox" name="precio_mayorista" id="precio_mayorista" {% if pedido %}checked disabled{% endif %}>
+                                            <span class="toggle"></span>
+                                            Precio caja
+                                        </label>
+                                    </div>
+                                    {% comment %} <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" name="precio_mayorista" id="precio_mayorista" {% if pedido %}checked disabled{% endif %}> Precio caja
+                                            <span class="circle">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div> {% endcomment %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Despacho</label>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="despacho" value="E"
+                                            {% if request.user.id != 849 and request.user.id != 932 %}checked
+                                            {% endif %}
+                                        > Entregan
+                                        <span class="circle">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="despacho" value="R"
+                                            {% if request.user.id == 849 or request.user.id == 932 or request.user.id == 135 %}checked
+                                            {% endif %}
+                                        > Recogen
+                                        <span class="circle">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="despacho" value="V"
+                                            {% if request.user.id == 849 %}style="cursor:not-allowed;padding: 0 !important;margin-top: 9px;" disabled
+                                            {% endif %}
+                                        > Vendedor entrega
+                                        <span class="circle">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="despacho" value="D"
+                                            {% if request.user.id == 849 %}style="cursor:not-allowed;padding: 0 !important;margin-top: 9px;" disabled
+                                            {% endif %}
+                                        > Domicilio
+                                        <span class="circle">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Fecha Despacho</label>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="fecha_despacho" value="H" checked onchange="changeFecha();"> Hoy
+                                        <span class="circle">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="fecha_despacho" value="M" onchange="changeFecha();"
+                                            {% if request.user.id == 849 or request.user.id == 932 or request.user.id == 135 %}style="cursor:not-allowed;padding: 0 !important;margin-top: 9px;" disabled
+                                            {% endif %}
+                                        > Mañana
+                                        <span class="circle">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="otros-datos">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Bodega</label>
+                                <div class="form-check">
+                                    <label class="form-check-label {% if not pedido and request.user.id != 147 and request.user.id != 53 and request.user.id != 916 and request.user.id != 152 %}disabled{% endif %}">
+                                        <input class="form-check-input" type="radio" name="bodega" value="G" {% if pedido %}checked{% elif request.user.id == 147 or request.user.id == 53 or request.user.id == 916 or request.user.id == 152 %}checked{% else %}disabled{% endif %} > General
+                                        <span class="circle" {% if not pedido and request.user.id != 147 and request.user.id != 53 and request.user.id != 916 and request.user.id != 152 %}style="cursor: not-allowed;" {% endif %}>
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label {% if not pedido and request.user.id != 147 and request.user.id != 53 and request.user.id != 916 and request.user.id != 152 %}disabled{% endif %}">
+                                        <input class="form-check-input" type="radio" name="bodega" value="S" {% if not pedido and request.user.id != 147 and request.user.id != 53 and request.user.id != 916 and request.user.id != 152 %}checked{% else %}disabled{% endif %}> Sala de ventas
+                                        <span class="circle" {% if not pedido and request.user.id != 147 and request.user.id != 53 and request.user.id != 916 and request.user.id != 152 %} style="cursor: not-allowed;" {% endif %}>
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="hidden" name="escredito" id="escredito" value="0">
+                                <label>Forma de pago</label>
+                                {% for forma in formas %}
+                                    {% if datos_cliente and datos_cliente.cliente_contado %}
+                                        {% if forma.NoFormaDePago == "C" %}
+                                            <div class="form-check" style="display: none;">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="radio" name="formapago" value="{{ forma.NoFormaDePago }}" onchange="changeFormaPago();" disabled="disabled"> {{ forma.Descripcion }}
+                                                    <span class="circle">
+                                                        <span class="check"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        {% elif forma.NoFormaDePago == "E" %}
+                                            <div class="form-check" style="display: none;">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="radio" name="formapago" value="{{ forma.NoFormaDePago }}" onchange="changeFormaPago();" disabled="disabled"> {{ forma.Descripcion }}
+                                                    <span class="circle">
+                                                        <span class="check"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        {% elif forma.NoFormaDePago == "T" %}
+                                            <div class="form-check" style="display: none;">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="radio" name="formapago" value="{{ forma.NoFormaDePago }}" onchange="changeFormaPago();" disabled="disabled"> {{ forma.Descripcion }}
+                                                    <span class="circle">
+                                                        <span class="check"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="form-check" {% if forma.NoFormaDePago != "O" and forma.NoFormaDePago != "R" %} style="display: none;"{% endif %}>
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="formapago" value="{{ forma.NoFormaDePago }}" onchange="changeFormaPago();"
+                                                {% if forma.NoFormaDePago != "O" and forma.NoFormaDePago != "R" %} disabled="disabled"{% endif %}> {{ forma.Descripcion }}
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+
+
+                                {% comment %}
+                                <label for="formapago" class="bmd-label-floating" style="font-size: 14px;"><b>Forma de pago</b></label>
+                                <div class="form-group bmd-form-group is-filled">
+                                    <input type="hidden" name="escredito" id="escredito" value="0">
+
+                                    <select name="formapago" id="formapago" class="form-control" onchange="changeFormaPago();" style="top: -30px;">
+
+                                        <option value=""></option>
+                                        {% for forma in formas %}
+                                            {% if pedido or forma.NoFormaPago == "O" or forma.NoFormaPago == "R" %}
+                                                {% if datos_cliente and datos_cliente.cliente_contado %}
+                                                    {% if forma.NoFormaDePago == "C" %}
+                                                        <option value="{{ forma.NoFormaDePago }}">{{ forma.Descripcion }}</option>
+                                                    {% elif forma.NoFormaDePago == "E" %}
+                                                        <option value="{{ forma.NoFormaDePago }}">{{ forma.Descripcion }}</option>
+                                                    {% elif forma.NoFormaDePago == "T" %}
+                                                        <option value="{{ forma.NoFormaDePago }}">{{ forma.Descripcion }}</option>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <option value="{{ forma.NoFormaDePago }}">{{ forma.Descripcion }}</option>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+
+                                    </select>
+                                </div>
+                                {% endcomment %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="togglebutton">
+                                        <label>
+                                            <input type="checkbox" name="dies_porciento" id="dies_porciento" onchange="setDiasporciento();">
+                                            <span class="toggle"></span>
+                                            10%
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="form-group">
+                                    <div class="togglebutton" style="display: none;">
+                                        <label>
+                                            <input type="checkbox" name="refacturacion" id="refacturacion"
+                                                {% if request.user.id == 849 or request.user.id == 932 or request.user.id == 135 %}style="cursor:not-allowed;padding: 0 !important;margin-top: 9px;" disabled
+                                                {% endif %}
+                                            >
+                                            <span class="toggle"></span>
+                                            Refacturación
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Forma de despacho</label>
+                                {% for envio in envios %}
+                                    <div class="form-check">
+                                        <label class="form-check-label {% if request.user.id == 849 or request.user.id == 932 or request.user.id == 135 %}disabled{% endif %}">
+                                            <input class="form-check-input" type="radio" name="formaenvio" value="{{ envio.id }}" {% if envio.id == 1 %}checked{% endif %}
+                                                {% if request.user.id == 849 or request.user.id == 932 or request.user.id == 135 %}onchange="this.value = 1" style="cursor:not-allowed;padding: 0 !important;margin-top: 9px;" readonly="readonly"
+                                                {% else %}onchange="mostrarEnvio(this);"
+                                                {% endif %}
+                                            > {{ envio.descripcion }}
+                                            <span class="circle"
+                                                {% if request.user.id == 849 or request.user.id == 932 or request.user.id == 135 %}
+                                                    style="cursor: not-allowed;"
+                                                {% endif %} >
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                                {% comment %}
+                                <div class="form-group bmd-form-group is-filled" style="padding-bottom: unset;height: 46px;">
+                                    <label for="formaenvio" class="bmd-label-floating" style="font-size: 14px;"><b>Forma de despacho</b></label>
+                                    <select name="formaenvio" id="formaenvio" class="form-control"
+                                            {% if request.user.id == 849 or request.user.id == 932 or request.user.id == 135 %}onchange="this.value = 1" style="cursor:not-allowed;padding: 0 !important;margin-top: 9px;" readonly="readonly"
+                                            {% else %}onchange="mostrarEnvio(this);"
+                                            {% endif %}>
+
+                                        {% for envio in envios %}
+                                            <option value="{{ envio.id }}">{{ envio.descripcion }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="documento">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="nit" class="bmd-label-floating">Nit</label>
+                                    <input type="text" name="nit" id="nit" class="form-control" value="{% if pedido.NIT %}{{ pedido.NIT }}{% endif %}" onchange="validateNitFactura(true);" autocomplete="new-password">
+                                <input type="hidden" name="cambio_nit" id="cambio_nit" value="0" autocomplete="new-password">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="nombre" class="bmd-label-floating">Nombre</label>
+                                    {% comment %} <input type="text" name="nombre" id="nombre" class="form-control" value="{% if pedido.Nombre %}{{ pedido.Nombre }}{% endif %}" autocomplete="new-password" {% if request.user.id == 932 or request.user.id == 849 or request.user.id == 135 %}readonly{% endif %}> {% endcomment %}
+                                    <input type="text" name="nombre" id="nombre" class="form-control" value="{% if pedido.Nombre %}{{ pedido.Nombre }}{% endif %}" autocomplete="new-password" onchange="cambioNombre();">
+                                    <input type="hidden" name="cambio_nombre" id="cambio_nombre" value="0" autocomplete="new-password">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="direccion" class="bmd-label-floating">Dirección</label>
+                                    <input type="text" name="direccion" id="direccion" class="form-control" value="{% if pedido.Direccion %}{{ pedido.Direccion }}{% endif %}" autocomplete="new-password">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="observacion_cliente" class="bmd-label-floating">Observaciones</label>
+                                    <textarea name="observacion_cliente" id="observacion_cliente" cols="30" rows="4" class="form-control" readonly>{% if pedido.observacion_cliente %}{{ pedido.observacion_cliente }}{% endif %}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-md-12">
+
+                                <table class="table table-striped table-sm" id="tblSaldos">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2">Creditos</th>
+                                            <th colspan="2">Dias</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="{% if datos_cliente.saldo_red %}color: red;{% endif %}">Saldo</td>
+                                            <td id="td_saldo" style="{% if datos_cliente.saldo_red %}color: red;{% endif %}">Q {{ datos_cliente.Saldo|intcomma }}</td>
+                                            <td style="{% if datos_cliente.Dias_Disponibles < 0 %}color: red;{% endif %}">Dias Disponibles</td>
+                                            <td id="td_dias_disponibles" style="{% if datos_cliente.Dias_Disponibles < 0 %}color: red;{% endif %}">{{ datos_cliente.Dias_Disponibles }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="{% if datos_cliente.disponibilidad_red %}color: red;{% endif %}">
+                                                Disponibles
+                                                <input type="hidden" name="monto_disponible" id="monto_disponible" value="{{ datos_cliente.Disponibilidad }}">
+                                                <input type="hidden" name="dias_credito" id="dias_credito" value="{{ datos_cliente.Dias_Credito }}">
+                                                <input type="hidden" name="limite_credito" id="limite_credito" value="{{ datos_cliente.Limite_Credito }}">
+                                                <input type="hidden" name="cliente_contado" id="cliente_contado" value="{% if datos_cliente.cliente_contado %}1{% else %}0{% endif %}">
+                                            </td>
+                                            <td id="td_disponibilidad" style="{% if datos_cliente.disponibilidad_red %}color: red;{% endif %}">Q {{ datos_cliente.Disponibilidad|intcomma }}</td>
+                                            <td style="{% if datos_cliente.Dias_Credito < 0 %}color: red;{% endif %}">Dias Credito</td>
+                                            <td id="td_dias_credito" style="{% if datos_cliente.Dias_Credito < 0 %}color: red;{% endif %}">{{ datos_cliente.Dias_Credito|intcomma }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="{% if datos_cliente.credito_red %}color: red;{% endif %}">Limite Crédito</td>
+                                            <td id="td_limite_credito" style="{% if datos_cliente.credito_red %}color: red;{% endif %}">Q {{ datos_cliente.Limite_Credito|intcomma }}</td>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="detalles">
+                <div class="card">
+                    <div class="card-body">
+
+                        {% if not pedido %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-outline-info" rel="tooltip" data-original-title="Agregar" onclick="addRow();" id="btn_add" style="display: none;">
+                                        <i class="material-icons">add</i> Agregar producto
+                                    </button>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Línea</th>
+                                                <th>Código</th>
+                                                <th>Descripción</th>
+                                                <th>Libras</th>
+                                                <th>Cajas</th>
+                                                <th>Unitario</th>
+                                                <th>Total</th>
+                                                {% if not pedido %}
+                                                    <th></th>
+                                                {% endif %}
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodyDetalles">
+
+                                            {% for detalle in detalles %}
+                                                <tr>
+                                                    <td>
+                                                        {{ detalle.Linea }}
+                                                        <input type="hidden" name="lote_id[]" id="lote_id_{{ forloop.counter0 }}" value="" data-row="{{ forloop.counter0 }}">
+                                                        <input type="hidden" name="producto_id[]" id="producto_id_{{ forloop.counter0 }}" value="{{ detalle.NoProducto }}" data-row="{{ forloop.counter0 }}">
+                                                        <input type="hidden" name="descripcion[]" id="descripcion_{{ forloop.counter0 }}" value="{{ detalle.Descripcion }}" data-row="{{ forloop.counter0 }}">
+                                                        <input type="hidden" name="cajas[]" id="cajas_{{ forloop.counter0 }}" value="{{ detalle.Cajas }}" data-row="{{ forloop.counter0 }}">
+                                                        <input type="hidden" name="libras[]" id="libras_{{ forloop.counter0 }}" value="{{ detalle.Libras }}" data-row="{{ forloop.counter0 }}">
+                                                        <input type="hidden" name="unitario[]" id="unitario_{{ forloop.counter0 }}" value="{{ detalle.Unitario }}" data-row="{{ forloop.counter0 }}">
+                                                        <input type="hidden" name="unitario_original[]" id="unitario_original_{{ forloop.counter0 }}" value="{{ detalle.Unitario }}" data-row="{{ forloop.counter0 }}">
+                                                        <input type="hidden" name="existencia[]" id="existencia_{{ forloop.counter0 }}" value="{{ detalle.Existencia }}" data-row="{{ forloop.counter0 }}">
+                                                        <input type="hidden" name="total[]" id="total_{{ forloop.counter0 }}" value="{{ detalle.Total }}" data-row="{{ forloop.counter0 }}">
+                                                    </td>
+                                                    <td>{{ detalle.CodigoProducto }}</td>
+                                                    <td>{{ detalle.Descripcion }}</td>
+                                                    <td>{{ detalle.Libras|intcomma }}</td>
+                                                    <td>{{ detalle.Cajas|intcomma }}</td>
+                                                    <td id="td_unitario_{{ forloop.counter0 }}">Q {{ detalle.Unitario|intcomma }}</td>
+                                                    <td id="td_total_{{ forloop.counter0 }}">Q {{ detalle.Total|intcomma }}</td>
+                                                </tr>
+                                            {% endfor %}
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="6"><input type="hidden" name="total" id="total" value="{% if total %}{{ total }}{% endif %}">
+                                                </td>
+                                                <td id="td_total_global">{% if total %}Q {{ total|intcomma }}{% endif %}</td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+
+    <div class="modal fade" id="modal_cliente" tabindex="-1" role="dialog" aria-labelledby="modal_clienteLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Cliente</h4>
+                    <button type="button" class="close" id="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal_body_cliente">
+                    <form name="frm_cliente_nuevo" id="frm_cliente_nuevo" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group bmd-form-group is-filled">
+                                    <label for="codigo_cliente_nuevo">Código Cliente</label>
+                                    <input type="text" name="codigo_cliente_nuevo" id="codigo_cliente_nuevo" class="form-control" autocomplete="new-password">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nombre_cliente_nuevo" class="bmd-label-floating">Nombre</label>
+                                    <input type="text" name="nombre_cliente_nuevo" id="nombre_cliente_nuevo" class="form-control" autocomplete="new-password">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group bmd-form-group is-filled">
+                                    <label for="nit_cliente_nuevo" class="">NIT</label>
+                                    <input type="text" name="nit_cliente_nuevo" id="nit_cliente_nuevo" class="form-control" onchange="validateNitClienteNuevo();" autocomplete="new-password">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="tel_cliente_nuevo" class="bmd-label-floating">Teléfono</label>
+                                    <input type="tel" name="tel_cliente_nuevo" id="tel_cliente_nuevo" class="form-control" autocomplete="new-password" onkeypress="return validar_caracteres(event, 2);" pattern="[0-9]{8}" minlength="8" maxlength="8">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email_cliente_nuevo" class="bmd-label-floating">Email</label>
+                                    <input type="email" name="email_cliente_nuevo" id="email_cliente_nuevo" class="form-control" autocomplete="new-password" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="direccion_cliente_nuevo" class="bmd-label-floating">Dirección Fiscal</label>
+                                    <textarea name="direccion_cliente_nuevo" id="direccion_cliente_nuevo" class="form-control">CIUDAD</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="offset-md-6 col-md-6">
+                                <div class="form-group">
+                                    <label for="direccion_sucursal_nuevo" class="bmd-label-floating">Dirección de Entrega</label>
+                                    <textarea name="direccion_sucursal_nuevo" id="direccion_sucursal_nuevo" class="form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger btn-link" onclick="addNewCliente();">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_impresion" tabindex="-1" role="dialog" aria-labelledby="modal_impresionLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Impresiones</h4>
+                    <button type="button" class="close" id="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal_body_impresion">
+                    <div class="row">
+                        <div class="col-4 text-center">
+                            <button type="button" class="btn btn-outline-info" id="btnImpresionOrden">
+                                <i class='material-icons'>print</i> ORDEN COMPRA
+                            </button>
+                        </div>
+                        <div class="col-4 text-center">
+                            <button type="button" class="btn btn-outline-info" id="btnImpresionCotizacion">
+                                <i class='material-icons'>print</i> COTIZACIÓN
+                            </button>
+                        </div>
+                        <div class="col-4 text-center">
+                            <button type="button" class="btn btn-outline-info" id="btnImpresionFactura">
+                                <i class='material-icons'>print</i> FACTURA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        const strUrlGetPedidos = '{% url 'ventas-pedido_cotizacion_get_pedidos' %}',
+            strUrlPedidos = '{% url 'ventas-pedido_cotizacion' %}',
+            strUrlValidateNit = '{% url 'factura_electronica-validate_nit' %}',
+            strUrlGetDatosClientes = '{% url 'ventas-pedido_cotizacion_get_datos_cliente' %}',
+            strUrlGetSucursales = '{% url 'ventas-pedido_cotizacion_get_sucursales' %}',
+            strUrlGetSaldosCliente = '{% url 'ventas-pedido_cotizacion_get_saldos_cliente' %}',
+            strUrlGetProductos = '{% url 'ventas-pedido_cotizacion_get_productos' %}',
+            strUrlAddCliente = '{% url 'ventas-pedido_cotizacion_add_cliente' %}',
+            strUrlProcessVenta = '{% url 'ventas-pedido_cotizacion_process_venta' %}',
+            strUrlImpresion = '{% url 'ventas-pedido_cotizacion_impresion' 0 'cotizacion' %}',
+            strUrlSetPesado = '{% url 'ventas-pedido_cotizacion_set_pesado' %}',
+            strUrlSetAnulado = '{% url 'ventas-pedido_cotizacion_set_anulado' %}',
+            strUrlGetCodigoCliente = '{% url 'ventas-pedido_cotizacion_get_codigo_cliente' %}',
+            strUrlGetCotizacion = '{% url 'ventas-pedido_cotizacion_api_get_cotizacion' %}',
+            strUrlNuevoPedido = '{% url 'ventas-pedido_cotizacion_pedido_detalle' 0 %}',
+            strUrlGetPrecioProducto = '{% url 'ventas-pedido_cotizacion_get_precio_producto' %}',
+            boolPedido = {% if pedido %}true{% else %}false{% endif %},
+            boolSalaVentas = {% if request.user.id == 932 or request.user.id == 849 or request.user.id == 135 %}true{% else %}false{% endif %};
+            let boolClienteContado = {% if datos_cliente.cliente_contado %}true{% else %}false{% endif %};
+    </script>
+    <script src="{% static 'assets/js/core/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'modules/ventas/pedido_cotizacion/pedido_cotizacion_detalle.js' %}" async defer></script>
+
+{% endblock javascripts %}

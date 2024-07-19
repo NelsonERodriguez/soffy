@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Boleta</title>
+</head>
+<style>
+    :root {
+        --main-color: #4f229d;
+        --main-font-size-header: 10px;
+        --main-font-size-details: 10px;
+        --main-font-color-template: black;
+        --main-font-family: "Times New Roman", Times, serif;
+    }
+
+    .section {
+        margin: 1em 0;
+    }
+
+    .row- {
+        width: 100%;
+        display: table;
+    }
+
+    .row-float {
+        display: inline-table;
+    }
+
+    .left {
+        float: left;
+        margin-left: 10%;
+    }
+
+    .right {
+        float: right;
+        margin-right: 10%;
+    }
+
+    .center {
+        margin: auto;
+        text-align: center;
+    }
+
+    .section-detail {
+        margin: 0.5em 13%;
+    }
+
+    .tbl-print {
+        width: 100%;
+        border: 0;
+        border-spacing: unset;
+    }
+
+    .th-bordered {
+        border: 1px dashed;
+        width: 50%;
+        padding: 4px 0;
+    }
+
+    .td-detail-tables {
+        vertical-align: initial;
+    }
+
+    .more-margin {
+        margin-top: 3em !important;
+    }
+
+    .tab-left {
+        margin-left: 1em;
+    }
+
+    .tab-right {
+        float: right;
+        margin-right: 1em;
+    }
+
+    .firma {
+        float: right;
+        margin-top: -2em;
+        height: 80px;
+        width: 250px;
+    }
+
+    .only-padding-right {
+        padding: 10px;
+    }
+
+    @media print {
+        @page {
+            size: 215.9mm 279.4mm;
+            margin: 5mm 0 0 8.5mm;
+        }
+    }
+</style>
+<body>
+{% if result %}
+    <div style="overflow: auto;">
+        <div class="section">
+            <div class="row-">
+                <div class="row-float left">
+                    <p style="font-size: 15px; margin: 0">RECIBO DE PAGO</p>
+                </div>
+                <div class="row-float right">
+                    <p style="font-size: 18px; margin: 0; font-weight: bold;">{{ result.0.Nombre_Comercial }}</p>
+                </div>
+            </div>
+            {% if no_boleta %}
+                <div class="row-">
+                    <div class="row-float left">
+                        <p style="font-size: 15px; margin: 0;">No. {{ no_boleta }}</p>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="row-">
+                <div class="center">
+                    <p style="margin: 0">Período: {{ result.0.Fecha_Inicial }} - {{ result.0.Fecha_Final }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="section-detail">
+            <table>
+                <thead></thead>
+                <tbody>
+                <tr>
+                    <td>Nombre</td>
+                    <td>:</td>
+                    <td>{{ result.0.No_Empleado }} {{ result.0.empleado }}</td>
+                </tr>
+                <tr>
+                    <td>Departamento</td>
+                    <td>:</td>
+                    <td>{{ result.0.Departamento }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section-detail">
+            <table class="tbl-print">
+                <thead class="no-spacing-table">
+                <th class="th-bordered only-padding-right">Ingresos</th>
+                <th class="th-bordered only-padding-right">Descuentos</th>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="td-detail-tables">
+                        <table class="tbl-print">
+                            <thead></thead>
+                            <tbody>
+                            {% for detail in result %}
+                                {% if detail.tipo == "Ingreso" %}
+                                    <tr>
+                                        <td style="padding-left: 1em;">{{ detail.Descripcion }}</td>
+                                        <td style="text-align: right; padding-right: 1em;">{{ detail.valor }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                    <td class="td-detail-tables">
+                        <table class="tbl-print">
+                            <thead></thead>
+                            <tbody>
+                            {% for detail in result %}
+                                {% if detail.tipo == "Descuento" %}
+                                    <tr>
+                                        <td style="padding-left: 1em;">{{ detail.Descripcion }}</td>
+                                        <td style="text-align: right; padding-right: 1em;">{{ detail.valor }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section-detail more-margin">
+            <table class="tbl-print">
+                <thead>
+                </thead>
+                <tbody class="no-spacing-table">
+                <tr>
+                    <td class="th-bordered">
+                        <div class="row-float tab-left">
+                            <p style="margin: 0">Total ingresos:</p>
+                        </div>
+                        <div class="row-float tab-right">
+                            <p style="margin: 0">{{ totalIngresos }}</p>
+                        </div>
+                    </td>
+                    <td class="th-bordered">
+                        <div class="row-float tab-left">
+                            <p style="margin: 0">Total descuentos:</p>
+                        </div>
+                        <div class="row-float tab-right">
+                            <p style="margin: 0">{{ totalEgresos }}</p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="row-float tab-left">
+                            <p style="margin: 0">LIQUIDO A RECIBIR:</p>
+                        </div>
+                        <div class="row-float tab-right">
+                            <p style="margin: 0">{{ totalLiquido }}</p>
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+        <div class="section-detail more-margin">
+            <div class="row-">
+                <div class="row-float tab-left" id="divImage">
+                    <p style="margin: 0; display: inline-table; top: 0;">Recibo conforme:</p>
+                    {% if image %}
+                        <img src="{{ image }}" alt="firma" class="firma">
+                    {% endif %}
+                </div>
+                <div class="row-float tab-right">
+                    <p style="margin: 0">Fecha: {% now "d/m/Y" %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+</body>
+</html>

@@ -1,0 +1,43 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Carga Archivos Pagos | Movimientos {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">file_upload</i>
+                        </div>
+                        <h4 class="card-title">Carga Archivos Pagos | Movimientos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-12" id="content-tabs"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script async defer>
+        const arrMovements = {{ movements|safe }},
+            csrfToken = getCookie('csrftoken'),
+            urlSaveMovements = "{% url 'rrhh-carga_archivos_guardar_nomina' %}",
+            urlDeleteMovement = "{% url 'rrhh-carga_archivos_borrar_registro' %}";
+            urlDeleteMovements = "{% url 'rrhh-carga_archivos_borrar_registros' %}";
+        let arrGlobalTabs = [];
+    </script>
+    <script src="{% static 'modules/rrhh/carga_archivos_pagos/carga_archivos_pagos_movimientos.js' %}" async defer></script>
+{% endblock javascripts %}

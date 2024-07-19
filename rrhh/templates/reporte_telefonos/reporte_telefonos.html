@@ -1,0 +1,137 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block title %} Reporte de Teléfonos {% endblock title %}
+
+{% block stylesheets %}
+    <style>
+        .input-numerico {
+            text-align: right;
+        }
+        .required:after {
+            content:" *";
+            color:red;
+        }
+
+        input[type="file"] {
+            -webkit-appearance: listbox; }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">call</i>
+                        </div>
+                        <h4 class="card-title">Reporte de Teléfonos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="box box-widget widget-user">
+                            <div class="box-footer">
+                                <div class="row">
+                                    <div class="col-sm-3 border-right">
+                                        <div class="description-block">
+                                            <label for="fecha">Fecha</label>
+                                            <input name="fecha" id="fecha" type='month' class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 border-right">
+                                        <label for="filtro">Filtros</label>
+                                        <select class="form-control" name="filtro" id="filtro" data-width="100%">
+                                            <option value="">Seleccione una opción...</option>
+                                            <option value="0">Empleado</option>
+                                            <option value="1">Subsidio</option>
+                                            <option value="2">Sin Subsidio</option>
+                                            <option value="3">Pagan Interesados</option>
+                                            <option value="4">Resumen Poliza</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="reporte" class="table table-hover table-bordered table-condensed nowrap" cellspacing="0" width="100%" >
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Código</th>
+                                            <th>Nombre</th>
+                                            <th>Empresa</th>
+                                            <th>Departamento</th>
+                                            <th>Teléfono</th>
+                                            <th>Total</th>
+                                            <th>Cuenta Subsidio</th>
+                                            <th>Valor Subsidio</th>
+                                            <th>Cuenta Descuento</th>
+                                            <th>Valor Descuento</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                            <!--  table-bordered table-condensed nowrap -->
+                                <table id="resumen" class="table table-hover table-bordered table-condensed nowrap" cellspacing="0" width="100%" >
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Tipo</th>
+                                            <th>Cuentas</th>
+                                            <th>SAT</th>
+                                            <th>Colaboradores</th>
+                                            <th>Sin Subsidio</th>
+                                            <th>Subsidio</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                    <tfoot class="bg-denim">
+                                        <tr>
+                                            <th colspan="6" font size="8" style="text-align:right;!important">TOTAL:</th>
+                                            <th colspan="1" font size="10" style="text-align:center">0.00</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="/static/assets/js/plugins/jasny-bootstrap.min.js"></script>
+
+    <script>
+        const strUrlGetData = "{% url 'rrhh-telefonos_reporte_telefonos_get_data' %}",
+            strUrlGuardar = "{% url 'rrhh-telefonos_matriz_descuentos_guardar' %}",
+            strUrlProcesar = "{% url 'rrhh-telefonos_matriz_descuentos_procesar' %}",
+            valCSRF = getCookie('csrftoken');
+        let objTblMatriz = null,
+            objPoliza = null,
+            objReport = null,
+            objFecha = document.getElementById("fecha"),
+            objFiltro = document.getElementById("filtro");
+    </script>
+
+    <script src="{% static 'modules/rrhh/reporte_telefonos/reporte_telefonos.js' %}" async defer></script>
+
+{% endblock javascripts %}

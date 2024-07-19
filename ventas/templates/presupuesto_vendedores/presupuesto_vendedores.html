@@ -1,0 +1,44 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Presupuesto anual de vendedores {% endblock title %}
+{% load static %}
+
+{% block stylesheets %}
+    <link href="{% static 'assets/lib/css/dx.light.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">price_check</i>
+                        </div>
+                        <h4 class="card-title">Presupuesto anual de vendedores</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="reporte"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+     const objDatos = {{ datos|safe }};
+    </script>
+    <script src="{% static 'assets/lib/js/dx.all.js' %}"></script>
+    <script src="{% static 'modules/ventas/presupuesto_vendedores/presupuesto_vendedores.js' %}" async defer></script>
+
+{% endblock javascripts %}

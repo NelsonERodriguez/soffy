@@ -1,0 +1,105 @@
+{% extends "layouts/base.html" %}
+
+{% load humanize %}
+{% load static %}
+
+{% block title %} Pasivos Pagados {% endblock title %}
+
+{% block stylesheets %} {% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid" id="divContentIndex">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">receipt</i>
+                        </div>
+                        <h4 class="card-title">
+                            Pasivos Pagados
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="" method="POST" target="_blank">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="txtFechaInicial">Fecha Inicial</label>
+                                    <input type="date" id="txtFechaInicial" name="txtFechaInicial"
+                                           value="{{ fecha_inicial }}"
+                                           class="form-control">
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="txtFechaFinal">Fecha Final</label>
+                                    <input type="date" id="txtFechaFinal" name="txtFechaFinal" value="{{ fecha_final }}"
+                                           class="form-control">
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="sltNomina">Nomina</label>
+                                    <select class="form-control" name="sltNomina" id="sltNomina"
+                                            style="max-height: 36px;" onchange="fntGetEmpresa();">
+                                        <option value="">Seleccione una nómina...</option>
+                                        {% for nomina in databases %}
+                                            <option value="{{ nomina.id }}">{{ nomina.name|title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="sltEmpresa">Empresa</label>
+                                    <select class="form-control" name="sltEmpresa" id="sltEmpresa"
+                                            style="max-height: 36px;">
+                                        <option value="">Seleccione una empresa...</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 text-center">
+                                    <button class="btn btn-fill btn-outline-success" type="button"
+                                            onclick="fntGetListado();">
+                                        <span class="material-icons">search</span> Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="tblConceptos" class="table table-striped" cellspacing="0"
+                                       width="100%">
+                                    <thead class="bg-black">
+                                        <tr>
+                                            <th>Documento</th>
+                                            <th>No. Empleado</th>
+                                            <th>Empleado</th>
+                                            <th>Concepto</th>
+                                            <th>Cantidad</th>
+                                            <th>Inicio</th>
+                                            <th>Fin</th>
+                                            <th>Cheque</th>
+                                            <th>Monto</th>
+                                            <th>Fecha Pago</th>
+                                            <th>Observaciones</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const strUrlGetEmpresas = "{% url 'rrhh-listado_pasivos_empresas' %}",
+            strUrlGetListado = "{% url 'rrhh-listado_pasivos_listado' %}";
+        let objTblConceptos = null;
+    </script>
+
+    <script src="{% static 'modules/rrhh/listado_pasivos/listado_pasivos.js' %}" async defer></script>
+{% endblock javascripts %}

@@ -1,0 +1,83 @@
+{% load humanize %}
+
+<div class="row">
+    <div class="col-sm-8 offset-sm-2">
+        <div class="card">
+            <div class="card-header card-header-primary card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons">call</i>
+                </div>
+                <h4 class="card-title">
+                    Administración Teléfonos |
+                    {% if id_telefono == "0" %}
+                        Nuevo
+                    {% else %}
+                        Editar
+                    {% endif %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form action="{% url 'ventas-anular_cotizaciones_show' %}" method="POST" name="frm_telefono" id="frm_telefono">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="numero" class="bmd-label-floating required">Número de Teléfono</label>
+                                <input type="number" name="numero" id="numero" class="form-control" max="99999999" maxlength="8" value="{{ data.numero }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="usuario" class="bmd-label-floating">Usuario</label>
+                                <input type="text" name="usuario" id="usuario" class="form-control" value="{{ data.user.name|default_if_none:"" }}">
+                                <input type="hidden" name="id_usuario" id="id_usuario" value="{{ data.user.id|default_if_none:"" }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="subsidio" class="bmd-label-floating required">Subsidio</label>
+                                <input type="number" name="subsidio" id="subsidio" class="form-control" value="{{ data.subsidio|floatformat:2|default_if_none:"--" }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="cuenta_subsidio_show" class="bmd-label-floating">Cuenta de Subsidio</label>
+                                <input type="text" name="cuenta_subsidio_show" id="cuenta_subsidio_show" class="form-control" value="{{ data.cuenta_subsidio_texto|default_if_none:"" }}">
+                                <input type="hidden" name="cuenta_subsidio" id="cuenta_subsidio" value="{{ data.cuenta_subsidio|default_if_none:"" }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="cuenta_descuento_show" class="bmd-label-floating">Cuenta de Descuento</label>
+                                <input type="text" name="cuenta_descuento_show" id="cuenta_descuento_show" class="form-control" value="{{ data.cuenta_descuento_texto|default_if_none:"" }}">
+                                <input type="hidden" name="cuenta_descuento" id="cuenta_descuento" value="{{ data.cuenta_descuento|default_if_none:"" }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="activo" class="bmd-label-floating">Activo</label>
+                                <input type="checkbox" name="activo" id="activo" class="form-control" {% if data.activo %} checked {% endif %}>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <hr/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <button class="btn btn-outline-success" type="button" onclick="fntPreguntaGuardar();"><i class="fas fa-save"></i> Guardar</button>
+                            <button class="btn btn-outline-danger" type="button" onclick="fntPreguntaRegresar();"><i class="fas fa-arrow-circle-left"></i> Regresar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

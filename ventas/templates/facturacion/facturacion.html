@@ -1,0 +1,200 @@
+d{% extends "layouts/base.html" %}
+
+{% block title %} Facturación {% endblock title %}
+
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">receipt_long</i>
+                        </div>
+                        <h4 class="card-title">Facturación</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 text-right">
+                                <button class="btn btn-outline-success" type="button" onclick="simple_redireccion('{% url 'ventas-pedido_facturacion' %}');">
+                                    <span class="material-icons">cloud_sync</span> Recargar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="table-responsive">
+                                    <table id="tblPorFacturar" style="width: 100%;" class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Acciones</th>
+                                                <th>Documento</th>
+                                                <th>Empresa</th>
+                                                <th>Estado</th>
+                                                <th>Pedido</th>
+                                                <th>Fecha Ingreso</th>
+                                                <th>Código</th>
+                                                <th>Cliente</th>
+                                                <th>Ruta</th>
+                                                <th>Entrega</th>
+                                                <th>Observaciones</th>
+                                                <th>Total</th>
+                                                <th>Despacho</th>
+                                                <th>Usuario</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for row in reporte %}
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <button class="btn btn-link fas fa-save fa-lg text-primary" onclick="dialogConfirm(fntFacturar, {{ row.id }}, '¿Estás seguro?', '¡No podrás revertir esto!', 'warning', 'Aceptar', 'Cancelar', this);" title="FEL" data-toggle="tooltip" data-placement="right"></button>
+                                                    </td>
+                                                    <td>{{ row.documento }}</td>
+                                                    <td>
+                                                        <span style="font-weight: bold;height: 6px;width: 6px;display: inline-block;vertical-align: middle;padding: 3px 3px;" class="badge badge-pill badge-primary">&nbsp;</span>
+                                                        &nbsp;
+                                                        <span class="text-primary">
+                                                        {{ row.empresa }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge badge-pill badge-primary">Facturar</span>
+                                                    </td>
+                                                    <td>{{ row.pedido }}</td>
+                                                    <td>{{ row.fecha_ingreso }}</td>
+                                                    <td class="text-right">{{ row.Codigo }}</td>
+                                                    <td>{{ row.cliente }}</td>
+                                                    <td class="text-right">{{ row.ruta }}</td>
+                                                    <td>
+                                                        {% if row.entrega == "Hoy" %}
+                                                            <span style="font-weight: bold;height: 6px;width: 6px;display: inline-block;vertical-align: middle;padding: 3px 3px;" class="badge badge-pill badge-success">&nbsp;</span>&nbsp;
+                                                            <span class="text-success">
+                                                                {{ row.entrega }}
+                                                            </span>
+                                                        {% elif row.entrega == "Mañana" %}
+                                                            <span style="font-weight: bold;height: 6px;width: 6px;display: inline-block;vertical-align: middle;padding: 3px 3px;" class="badge badge-pill badge-info">&nbsp;</span>&nbsp;
+                                                            <span class="text-info">
+                                                                {{ row.entrega }}
+                                                            </span>
+                                                        {% elif row.entrega == "No Facturado" %}
+                                                            <span style="font-weight: bold;height: 6px;width: 6px;display: inline-block;vertical-align: middle;padding: 3px 3px;" class="badge badge-pill badge-danger">&nbsp;</span>&nbsp;
+                                                            <span class="text-danger">
+                                                                {{ row.entrega }}
+                                                            </span>
+                                                        {% else %}
+                                                            {{ row.entrega }}
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="text-right">{{ row.observaciones }}</td>
+                                                    <td>Q{{ row.total|intcomma }}</td>
+                                                    <td>{{ row.despacho }}</td>
+                                                    <td>{{ row.usuario }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        let strUrlImpresion = '{% url 'ventas-pedido_cotizacion_impresion' 0 'factura' %}';
+        var arrDataTables = new Array();
+
+        const arrTable = new Array();
+        arrTable["por_facturar"] =  "tblPorFacturar";
+
+        const formatter = new Intl.NumberFormat(undefined, {
+            style: 'currency',
+            currency: 'GTQ',
+            currencyDisplay: 'narrowSymbol'
+        });
+
+        const valCSRF = getCookie('csrftoken');
+
+        function fntFacturar( id_cotizacion, objButton = undefined ){
+            let strUrl = "{% url 'ventas-factura_process_factura' %}";
+
+            if (objButton) objButton.setAttribute('disabled', 'disabled');
+
+            open_loading();
+            let formData = new FormData();
+            formData.append('cotizacion', id_cotizacion);
+            formData.append('csrfmiddlewaretoken', valCSRF);
+
+            fetch(strUrl, {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+
+                if (data.status && data.status_fel) {
+                    printDocument(data.id);
+                    alert_nova.showNotification("Factura generada.", "add_alert", "success");
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 3000);
+                }
+                else if (data.status && !data.status_fel) {
+                    alert_nova.showNotification("Error al firmar el documento: <br><br>" + data.message , "warning", "danger");
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 4000);
+                }
+                else {
+                    alert_nova.showNotification("Error al generar el documento: <br><br>" + data.message , "warning", "danger");
+                }
+
+                close_loading();
+            })
+            .catch(error => {
+                console.error(error)
+                close_loading();
+                alert_nova.showNotification("Error en comunicación, intente de nuevo. Si continua el error comuníquese con IT.", "warning", "danger");
+            })
+
+        }
+
+        const printDocument = (id) => {
+            const strUrl = strUrlImpresion.replace('/0/', `/${id}/`);
+            window.open(strUrl);
+        };
+
+        $(document).ready(function(){
+            $.fn.dataTable.ext.errMode = 'throw';
+
+            arrDataTables["tblPorFacturar"] = $("#tblPorFacturar").DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "Todos"]
+                ],
+                "order": [[ 5, "desc" ]],
+                //responsive: true,
+                language: objLenguajeDataTable,
+            });
+
+            arrDataTables["tblPorFacturar"].on( 'draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+
+        });
+
+    </script>
+{#    <script src="{% static 'modules/ventas/pedido_cotizacion/pedido_cotizacion.js' %}" async defer></script>#}
+
+{% endblock javascripts %}

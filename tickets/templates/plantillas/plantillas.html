@@ -1,0 +1,99 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Plantillas {% endblock title %}
+
+{% load static %}
+{% load humanize %}
+
+{% block stylesheets %}
+    <style>
+
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">cases</i>
+                        </div>
+                        <h4 class="card-title">Plantillas</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <div class="col-12 text-right">
+                                <button type="button" rel="tooltip" class="btn btn-info" data-original-title="Agregar" onclick="simple_redireccion('{% url 'tickets-plantillas_edit' 0 %}');">
+                                    <i class="material-icons">add</i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="material-datatables table-hover">
+                            <table id="datatables" class="table" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Categoría</th>
+                                        <th>Departamentos</th>
+                                        <th>Etiquetas</th>
+                                        <th>Habilitado</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Categoría</th>
+                                        <th>Departamentos</th>
+                                        <th>Etiquetas</th>
+                                        <th>Habilitado</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                    {% for fila in data %}
+                                        <tr style="cursor:pointer;" onclick="simple_redireccion('{% url 'tickets-plantillas_edit' fila.id %}');">
+                                            <td>{{ fila.titulo }}</td>
+                                            <td>{{ fila.tipo_categoria }}</td>
+                                            <td>
+                                                <ul>
+                                                    {% for departamento in fila.departamentos %}
+                                                        <li>{{ departamento.nombre }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                <ul>
+                                                    {% for etiqueta in fila.etiquetas %}
+                                                        <li>{{ etiqueta.nombre }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                {% if fila.activo %}
+                                                    Si
+                                                {% else %}
+                                                    No
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+
+    </script>
+
+{% endblock javascripts %}

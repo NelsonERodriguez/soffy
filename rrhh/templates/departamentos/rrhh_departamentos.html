@@ -1,0 +1,78 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Departamentos {% endblock title %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">dns</i>
+                        </div>
+                        <h4 class="card-title">Departamentos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                        <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+                        <div class="col-12 text-right">
+                            <a type="button" rel="tooltip" class="btn btn-info" data-original-title="Agregar" href="{% url 'rrhh-departamentos_create' %}">
+                                <i class="material-icons">add</i>
+                                <div class="ripple-container"></div>
+                            </a>
+                        </div>
+                        <div class="material-datatables table-hover">
+                            <table id="datatables" class="table" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Activo</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Activo</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                    {% for departamento in departamentos %}
+                                        <tr style="cursor:pointer;" onclick="simple_redireccion('{% url 'rrhh-departamentos_edit' departamento.id %}');">
+                                            <td>{{ departamento.nombre }}</td>
+                                            <td>{% if departamento.activo %}Si{% else %}No{% endif %}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                      </div>
+                    </div>
+                    <!-- end content-->
+                  </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <script>
+    $(document).ready(function() {
+        $('#datatables').DataTable({
+            "pagingType": "full_numbers",
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            responsive: true,
+            language: objLenguajeDataTable,
+        });
+
+    });
+  </script>
+
+{% endblock javascripts %}

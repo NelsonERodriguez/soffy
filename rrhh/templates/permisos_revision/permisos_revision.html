@@ -1,0 +1,116 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block title %} Revisión de permisos {% endblock title %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">calendar_month</i>
+                        </div>
+                        <h4 class="card-title">Revisión de permisos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="sltDepartamento">Departamento</label>
+                                <select class="form-control" name="sltDepartamento" id="sltDepartamento"
+                                        onchange="fntChangeDepto();">
+                                    <option value="0">Todos</option>
+                                    {% for departamento in departamentos %}
+                                        <option value="{{ departamento.id }}">{{ departamento.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <label for="sltEmpleado">Empleado</label>
+                                <select class="form-control" name="sltEmpleado" id="sltEmpleado"
+                                        onchange="fntGetEvents();">
+                                    <option value="0">Seleccione un empleado...</option>
+                                    {% for empleado in empleados_master %}
+                                        <option value="{{ empleado.empleado_id }}">{{ empleado.no_empleado }}
+                                            - {{ empleado.nombre_completo }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-2 text-left">
+                                <label for="chkFinalizadas">Ver Finalizadas</label>
+                                <input type="checkbox" name="chkFinalizadas" id="chkFinalizadas" class="form-control"
+                                       style="text-align: left;width: 20px;" onchange="fntGetEvents();">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 25px 0;">
+                            <div class="col-sm-12 table-responsive">
+                                <table id="tblRevision" class="table table-striped" cellspacing="0"
+                                       width="100%">
+                                    <thead class="bg-black">
+                                    <tr>
+                                        <th>No. Empleado</th>
+                                        <th>Nombre</th>
+                                        <th>Departamento</th>
+                                        <th>Estatus</th>
+                                        <th>Fecha Inicio</th>
+                                        <th>Fecha Fin</th>
+                                        <th>Cantidad Días</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="mdlRechazar" tabindex="-1" role="dialog" aria-labelledby="modalPermiso"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content modalContainerPermiso">
+                <div class="modal-header" style='height: 80px;'>
+                    <button type="button" class="close" id="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body" id="cntBodyPermiso">
+                    <div class="row">
+                        <div class="col-12">
+                            <input type="hidden" name="permiso_id" id="permiso_id">
+                            <label for="observacion">Motivo rechazo</label>
+                            <textarea name="txtMotivoRechazo" id="txtMotivoRechazo" cols="30" rows="3"
+                                      style="height: auto"
+                                      class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-success" type="button" id="btnRechazado"
+                            onclick="dialogConfirm(fntRechazar);">
+                        <span class="material-icons">save</span> Enviar rechazo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        const strUrlGetListado = "{% url 'rrhh-permisos_revision_listado_permisos' %}",
+            strUrlGetEmpleados = "{% url 'rrhh-vacaciones_autorizacion_rrhh_get_empleados' %}",
+            strUrlImprimir = "{% url 'rrhh-permisos_impresion_imprimir' 0 %}",
+            strUrlFinalizar = "{% url 'rrhh-permisos_revision_finalizar_permiso' %}",
+            strUrlVer = "{% url 'rrhh-vacaciones_autorizacion_rrhh_ver' %}",
+            strUrlRechazar = "{% url 'rrhh-permisos_aprobar_rechazar_permiso' %}";
+    </script>
+    <script src="{% static 'modules/rrhh/permisos_revision/permisos_revision.js' %}" async defer></script>
+{% endblock javascripts %}

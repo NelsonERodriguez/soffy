@@ -1,0 +1,584 @@
+{% extends "layouts/base-public.html" %}
+
+{% block title %} Ingreso de Cliente Nuevo {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <style>
+
+        .required:after {
+            content:" *";
+            color:red;
+        }
+        #bancos {
+            position: relative;
+        }
+
+        input[type="file"] {
+            -webkit-appearance: listbox; }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class='row contentTitleGlobal'>
+                <div class="col-7 offset-1 col-lg-9">
+                    <h2 style='margin-top: 20px;'>
+                        Ingreso de Cliente Nuevo
+                    </h2>
+                </div>
+                <div class="col-3 col-lg-1">
+                    <img src="{% static 'assets/img/mundo.png' %}" alt="logo" class='img-logo'>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-xl-10 offset-xl-1 contentForm'>
+                    <div class="card">
+                        <div class="card-body">
+                            <ul class="nav nav-pills nav-pills-primary" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#lnkIngreso" role="tablist" onclick="">
+                                        Ingreso
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#lnkActualizar" role="tablist" onclick="">
+                                        Actualizar
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#lnkDevoluciones" role="tablist" onclick="">
+                                        Devoluciones
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content tab-space">
+                                <div class="tab-pane active" id="lnkIngreso">
+                                    <form id='frm_ingreso' action='{% url "ventas-clientes_prospectos" %}' method='POST' name='frm_ingreso' enctype="multipart/form-data">
+                                        <input type="hidden" name="hdnAccion" value="ingreso">
+                                        {% csrf_token %}
+                                        <div class='row'>
+                                            <div class='col-md-12'>
+                                                <h3 class=''>
+                                                    Ingreso de Cliente Nuevo
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-md-12'>
+                                                <h3 class="m-form__heading-title" style="font-size:small; margin: 10px; text-align: justify;">
+                                                    Favor de llenar todos los campos cuyo título tenga un asterisco rojo o que digan "campo obligatorio".
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-lg-4'>
+                                                <div class='form-group'>
+                                                    <label class="required">1. Número de identificación tributaria (NIT)</label>
+                                                    <input class="form-control m-input" value="" id="nit" name="nit" type="text" required="true" maxlength="15" onkeypress="return validar_caracteres(event, 6);">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id='contentSectionOne'>
+                                            <div class='row contentDetail'>
+                                                <div class='col-lg-4'>
+                                                    <div class='form-group'>
+                                                        <label class="required">2. Nombre del cliente</label>
+                                                        <input class="form-control m-input" value="" id="nombre_cliente" name="nombre_cliente" type="text" required="true" maxlength="300">
+                                                    </div>
+                                                </div>
+                                                <div class='col-lg-4'>
+                                                    <div class='form-group'>
+                                                        <label class="required">3. Nombre del contacto</label>
+                                                        <input class="form-control m-input" value="" id="nombre_contacto" name="nombre_contacto" type="text" required="true" maxlength="300">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='row contentDetail'>
+                                                <div class='col-lg-6'>
+                                                    <div class='form-group'>
+                                                        <label class="required">4. Dirección de entrega</label>
+                                                        <input class="form-control m-input" value="" id="direccion_entrega" name="direccion_entrega" type="text" required="true" maxlength="300">
+                                                    </div>
+                                                </div>
+                                                <div class='col-lg-6'>
+                                                    <div class='form-group'>
+                                                        <label class="required">5. Nombre de negocio</label>
+                                                        <input class="form-control m-input" value="" id="nombre_negocio" name="nombre_negocio" type="text" required="true" maxlength="300">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='row contentDetail'>
+                                                <div class='col-lg-6'>
+                                                    <div class='form-group'>
+                                                        <label class="required">6. Dirección fiscal</label>
+                                                        <input class="form-control m-input" value="" id="direccion_fiscal" name="direccion_fiscal" type="text" required="true" maxlength="500">
+                                                    </div>
+                                                </div>
+                                                <div class='col-lg-6'>
+                                                    <div class='form-group'>
+                                                        <label class="required">7. Tipo de negocio</label>
+                                                        <input class="form-control m-input" value="" id="tipo_negocio" name="tipo_negocio" type="text" required="true" maxlength="200">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='row contentDetail'>
+                                                <div class='col-lg-3'>
+                                                    <div class='form-group'>
+                                                        <label class="required">8. Teléfono</label>
+                                                        <input class="form-control m-input" value="" id="telefono" name="telefono" type="text" maxlength="200" required="true">
+                                                    </div>
+                                                </div>
+                                                <div class='col-lg-3'>
+                                                    <div class='form-group'>
+                                                        <label>9. Email</label>
+                                                        <input class="form-control m-input" id="email" name="email" aria-describedby="emailHelp" type="email" maxlength="320">
+                                                    </div>
+                                                </div>
+                                                <div class='col-lg-3'>
+                                                    <div class='form-group'>
+                                                        <label>10. Cumpleaños de contacto</label>
+                                                        <input type="date" class="form-control m-input" id="cumpleanios_contacto" name="cumpleanios_contacto">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='row contentDetail'>
+                                                <div class='col-lg-12'>
+                                                    <div class='form-group'>
+                                                        <label class="">11. Observaciones</label>
+                                                        <input class="form-control m-input" value="" id="observaciones" name="observaciones" type="text" maxlength="1000">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='row contentDetail'>
+                                                <div class='col-lg-12'>
+                                                    <div class='form-group'>
+                                                        <label class="required">12. Nombre del Vendedor</label>
+                                                        <input class="form-control m-input" value="" id="nombre_vendedor" name="nombre_vendedor" type="text" maxlength="100" required="true">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='row contentDetail'>
+                                            <div class='col-lg-6 form-input-file'>
+                                                <h5 class="title">13. RTU: registro tributario unificado
+                                                    <small style="font-weight: bold; color:#dc3545;" id="rtuRequired">
+                                                        *campo obligatorio
+                                                    </small>
+                                                </h5>
+                                                <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                                                    <div class="fileinput-new text-danger"><b>Este es un campo obligatorio, suba su RTU.</b></div>
+                                                    <div class="fileinput-exists fileinput-filename"></div>
+                                                    <div>
+                                                        <span class="btn btn-round btn-rose btn-file">
+                                                            <span class="fileinput-new">Subir RTU</span>
+                                                            <span class="fileinput-exists">Cambiar RTU</span>
+                                                            <input type="file" id="rtu" name="rtu" accept="image/*, .pdf, .doc, .docx" required="true" value=""/>
+                                                        </span>
+                                                        <br />
+                                                        <a href="#rtu" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput">
+                                                            <i class="fa fa-times"></i> Quitar el RTU
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='col-lg-6 form-input-file'>
+                                                <h5 class="title">14. DPI: documento personal de identificación (fotocopia)
+                                                    <small style="font-weight: bold; color:#dc3545;" id="patenteRequired">
+                                                        *campo obligatorio
+                                                    </small>
+                                                </h5>
+                                                <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                                                    <div class="fileinput-new text-danger"><b>Este es un campo obligatorio, suba su DPI.</b></div>
+                                                    <div class="fileinput-exists fileinput-filename"></div>
+                                                    <div class="">
+                                                        <span class="btn btn-round btn-rose btn-file">
+                                                            <span class="fileinput-new">Subir DPI</span>
+                                                            <span class="fileinput-exists">Cambiar DPI</span>
+                                                            <input type="file" id="dpi" name="dpi" accept="image/*, .pdf, .doc, .docx" required="true"/>
+                                                        </span>
+                                                        <br />
+                                                        <a href="#patente" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput">
+                                                            <i class="fa fa-times"></i> Quitar DPI
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col col-12 text-center'>
+                                                <button type="submit" id="crear2" class="btn btn-outline-success">
+                                                    Enviar Datos
+                                                </button>
+                                                <button type="button" id='cancelar' class="btn btn-outline-secondary">
+                                                    Cancelar
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row" id='contentMsg'></div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane" id="lnkActualizar">
+                                    <form action='{% url "ventas-clientes_prospectos" %}' method='POST' id='frm_actualizar' enctype="multipart/form-data">
+                                        <input type="hidden" name="hdnAccion" value="actualizar">
+                                        {% csrf_token %}
+                                        <div class='row'>
+                                            <div class='col-md-12'>
+                                                <h3 class=''>
+                                                    Actualizar información de Cliente
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-md-12'>
+                                                <h3 class="m-form__heading-title" style="font-size:small; margin: 10px; text-align: justify;">
+                                                    Favor de llenar todos los campos cuyo título tenga un asterisco rojo o que digan "campo obligatorio".
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-lg-4'>
+                                                <div class='form-group'>
+                                                    <label class="required">1. Código de Cliente</label>
+                                                    <input class="form-control m-input" value="" id="codigo_cliente" name="codigo_cliente" type="text" required="true" maxlength="30">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id='contentSectionOne'>
+                                            <div class='row contentDetail'>
+                                                <div class='col-lg-8'>
+                                                    <div class='form-group'>
+                                                        <label class="">2. Razón Social</label>
+                                                        <input class="form-control m-input" value="" id="razon_social" name="razon_social" type="text" maxlength="300">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='row contentDetail'>
+                                                <div class='col-lg-4'>
+                                                    <div class='form-group'>
+                                                        <label class="">3. NIT</label>
+                                                        <input class="form-control m-input" value="" id="nit_update" name="nit" type="text" maxlength="15" onchange="requireRTU()" onkeypress="return validar_caracteres(event, 6);">
+                                                    </div>
+                                                </div>
+                                                <div class='col-lg-4'>
+                                                    <div class='form-group'>
+                                                        <label class="">4. Dirección Fiscal</label>
+                                                        <input class="form-control m-input" value="" id="direccion_fiscal" name="direccion_fiscal" type="text" maxlength="300">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='row contentDetail'>
+                                                <div class='col-lg-6'>
+                                                    <div class='form-group'>
+                                                        <label class="">5. Dirección de Entrega</label>
+                                                        <input class="form-control m-input" value="" id="direccion_entrega" name="direccion_entrega" type="text" maxlength="300">
+                                                    </div>
+                                                </div>
+                                                <div class='col-lg-6'>
+                                                    <div class='form-group'>
+                                                        <label class="">6. Otra Sucursal</label>
+                                                        <input class="form-control m-input" value="" id="otra_sucursal" name="otra_sucursal" type="text" maxlength="300">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='row contentDetail'>
+                                                <div class='col-lg-6'>
+                                                    <div class='form-group'>
+                                                        <label class="required">7. Vendedor</label>
+                                                        <input class="form-control m-input" value="" id="nombre_vendedor" name="nombre_vendedor" type="text" maxlength="100" required="true">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='row' id='cntFormRTU'></div>
+                                        <div class='row'>
+                                            <div class='col col-12 text-center'>
+                                                <button type="submit" id="enviar_actualizacion" class="btn btn-outline-success">
+                                                    Enviar Datos
+                                                </button>
+                                                <button type="button" id='cancelar_actualizacion' class="btn btn-outline-secondary">
+                                                    Cancelar
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row" id='contentMsg'></div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane" id="lnkDevoluciones">
+                                    <form action='{% url "ventas-clientes_prospectos" %}' method='POST' id='frm_devoluciones' enctype="multipart/form-data">
+                                        <input type="hidden" name="hdnAccion" value="devoluciones">
+                                        {% csrf_token %}
+                                        <div class='row'>
+                                            <div class='col-md-12'>
+                                                <h3 class=''>
+                                                    Devoluciones de Productos
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-md-12'>
+                                                <h3 class="m-form__heading-title" style="font-size:small; margin: 10px; text-align: justify;">
+                                                    Favor de llenar todos los campos cuyo título tenga un asterisco rojo o que digan "campo obligatorio".
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-lg-4'>
+                                                <div class='form-group'>
+                                                    <label class="required">1. Vendedor</label>
+                                                    <input class="form-control m-input" value="" id="vendedor_dev" name="vendedor_dev" type="text" required="true" maxlength="100">
+                                                </div>
+                                            </div>
+                                            <div class='col-lg-4'>
+                                                <div class='form-group'>
+                                                    <label class="required">2. Cliente</label>
+                                                    <input class="form-control m-input" value="" id="cliente_dev" name="cliente_dev" type="text" required="true" maxlength="300">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-lg-4'>
+                                                <div class='form-group'>
+                                                    <label class="required">3. Fecha de Devolución</label>
+                                                    <input class="form-control m-input" value="" id="fecha_dev" name="fecha_dev" type="date" required="true">
+                                                </div>
+                                            </div>
+                                            <div class='col-lg-4'>
+                                                <div class='form-group'>
+                                                    <label class="required">4. Producto</label>
+                                                    <input class="form-control m-input" value="" id="producto_dev" name="producto_dev" type="text" required="true" maxlength="300">
+                                                </div>
+                                            </div>
+                                            <div class='col-lg-4'>
+                                                <div class='form-group'>
+                                                    <label class="required">5. Cajas o Libras</label>
+                                                    <input class="form-control m-input" value="" id="factura_dev" name="factura_dev" type="text" required="true" maxlength="50">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-lg-12'>
+                                                <div class='form-group'>
+                                                    <label class="required">6. Motivo</label>
+                                                    <div class="col-sm-12 checkbox-radios">
+                                                        <div class="form-check form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="radio" name="motivo_dev" value="VENDEDOR" required="true"> Error Vendedor
+                                                                <span class="circle">
+                                                                    <span class="check"></span>
+                                                                </span>
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="radio" name="motivo_dev" value="CLIENTE" required="true"> Error Cliente
+                                                                <span class="circle">
+                                                                    <span class="check"></span>
+                                                                </span>
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="radio" name="motivo_dev" value="PRESENTACION" required="true"> Presentación del Producto
+                                                                <span class="circle">
+                                                                    <span class="check"></span>
+                                                                </span>
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="radio" name="motivo_dev" value="OTRO" required="true"> Otro
+                                                                <span class="circle">
+                                                                    <span class="check"></span>
+                                                                </span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-lg-12'>
+                                                <div class='form-group'>
+                                                    <label class="required">7. Explicación/motivo de la devolución:</label>
+                                                    <input class="form-control m-input" value="" id="otro_motivo_dev" required="true" name="otro_motivo_dev" type="text" maxlength="100">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col col-12 text-center'>
+                                                <button type="submit" id="enviar_devolucion" class="btn btn-outline-success">
+                                                    Enviar Devolución
+                                                </button>
+                                                <button type="button" id='cancelar_devolucion' class="btn btn-outline-secondary">
+                                                    Cancelar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+<script src="/static/assets/js/plugins/jasny-bootstrap.min.js"></script>
+
+<script>
+    const valCSRF = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+    let boolExisteFirma = false;
+
+    const boolGlobalBlockValidateLogin = true;
+
+    const drawRequireRTU = async (boolShow) => {
+        const cnt = document.getElementById('cntFormRTU');
+        if(typeof cnt === 'object') {
+            if(!boolShow)
+                cnt.innerHTML = '';
+            else
+                cnt.innerHTML = `   <div class='col-lg-6 form-input-file'>
+                                        <h5 class="title">13. RTU: registro tributario unificado
+                                            <small style="font-weight: bold; color:#dc3545;" id="rtuRequired">
+                                                *campo obligatorio
+                                            </small>
+                                        </h5>
+                                        <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                                            <div class="fileinput-new text-danger"><b>Este es un campo obligatorio, suba su RTU.</b></div>
+                                            <div class="fileinput-exists fileinput-filename"></div>
+                                            <div>
+                                                <span class="btn btn-round btn-rose btn-file">
+                                                    <span class="fileinput-new">Subir RTU</span>
+                                                    <span class="fileinput-exists">Cambiar RTU</span>
+                                                    <input type="file" id="rtu" name="rtu" accept="image/*, .pdf, .doc, .docx" required="true" value=""/>
+                                                </span>
+                                                <br />
+                                                <a href="#rtu" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput">
+                                                    <i class="fa fa-times"></i> Quitar el RTU
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class='col-lg-6 form-input-file'>
+                                        <h5 class="title">14. DPI: documento personal de identificación (fotocopia)
+                                            <small style="font-weight: bold; color:#dc3545;" id="patenteRequired">
+                                                *campo obligatorio
+                                            </small>
+                                        </h5>
+                                        <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                                            <div class="fileinput-new text-danger"><b>Este es un campo obligatorio, suba su DPI.</b></div>
+                                            <div class="fileinput-exists fileinput-filename"></div>
+                                            <div class="">
+                                                <span class="btn btn-round btn-rose btn-file">
+                                                    <span class="fileinput-new">Subir DPI</span>
+                                                    <span class="fileinput-exists">Cambiar DPI</span>
+                                                    <input type="file" id="dpi" name="dpi" accept="image/*, .pdf, .doc, .docx" required="true"/>
+                                                </span>
+                                                <br />
+                                                <a href="#patente" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput">
+                                                    <i class="fa fa-times"></i> Quitar DPI
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>`;
+        }
+    };
+
+    const requireRTU = async () => {
+        let nit = document.getElementById('nit_update');
+        if(typeof nit === 'object') {
+            let valNit = nit.value,
+                boolShow = false;
+            valNit = valNit.trim();
+            if(valNit !== '')
+                boolShow = true;
+            drawRequireRTU(boolShow);
+        }
+    };
+
+    function selectTipoProveedor(strSelected) {
+        if( strSelected === "otros" ){
+            document.getElementById('descripcion_prod_servs').required = true;
+        }
+        else{
+            document.getElementById('descripcion_prod_servs').required = false;
+        }
+    }
+
+    document.getElementById('cancelar').addEventListener('click', () => {
+        window.location.reload();
+    });
+
+    document.getElementById('cancelar_actualizacion').addEventListener('click', () => {
+        window.location.reload();
+    });
+
+    document.getElementById('cancelar_devolucion').addEventListener('click', () => {
+        window.location.reload();
+    });
+
+    function setFormValidation(id) {
+        $(id).validate({
+            highlight: function(element) {
+                $(element).closest('.form-group').removeClass('has-success').addClass('has-danger');
+                $(element).closest('.form-check').removeClass('has-success').addClass('has-danger');
+                $(element).closest('.form-input-file').removeClass('has-success').addClass('has-danger');
+            },
+            success: function(element) {
+                $(element).closest('.form-group').removeClass('has-danger').addClass('has-success');
+                $(element).closest('.form-check').removeClass('has-danger').addClass('has-success');
+                $(element).closest('.form-input-file').removeClass('has-danger').addClass('has-success');
+            },
+            errorPlacement: function(error, element) {
+                //console.log(error);
+                $(element).closest('.form-group').append(error);
+                $(element).closest('.form-check').append(error);
+                $(element).closest('.form-input-file').append(error);
+            },
+            submitHandler: function (form) {
+                open_loading();
+                form.submit();
+            }
+        });
+    }
+
+    const fntCambioMotivo = () => {
+        let objChecked = document.querySelector("input[name='motivo_dev']:checked");
+
+        if( typeof(objChecked) !== "undefined" ){
+            if( objChecked.value === "OTRO" ){
+                document.getElementById("divOtroMotivo").classList.remove("d-none");
+                return true;
+            }
+        }
+
+        console.log(document.getElementById("divOtroMotivo").classList, "classList");
+        console.log(document.getElementById("divOtroMotivo").classList.contains("d-none"), "contains");
+        if( !document.getElementById("divOtroMotivo").classList.contains("d-none") ){
+            document.getElementById("divOtroMotivo").classList.add("d-none");
+        }
+
+        return false
+
+    }
+
+    $(document).ready(function() {
+        setFormValidation('#frm_ingreso');
+        setFormValidation('#frm_actualizar');
+        setFormValidation('#frm_devoluciones');
+
+    });
+</script>
+
+{% endblock javascripts %}

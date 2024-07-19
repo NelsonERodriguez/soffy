@@ -1,0 +1,111 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Anular Cotización {% endblock title %}
+
+{% block stylesheets %} {% endblock stylesheets %}
+
+{% block content %}
+
+    {% csrf_token %}
+    {% load humanize %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">signal_cellular_no_sim</i>
+                        </div>
+                        <h4 class="card-title">Anular Cotización</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <b>Empresa:</b> {{ cotizacion.RazonSocial }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <b>No. Cotización:</b> {{ cotizacion.NoDocumento }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <b>Cliente:</b> {{ cotizacion.Nombre }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <b>Fecha:</b> {{ cotizacion.Fecha|date:'d/m/Y' }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <b>Total:</b> Q {{ cotizacion.Total|intcomma }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead class=" text-primary">
+                                            <tr>
+                                                <th>Línea</th>
+                                                <th>Descripcion</th>
+                                                <th>Cantidad</th>
+                                                <th>Precio</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for detalle in detalles %}
+                                                <tr>
+                                                    <td>{{ detalle.Linea }}</td>
+                                                    <td>{{ detalle.Descripcion }}</td>
+                                                    <td>{{ detalle.Cantidad|floatformat:2 }}</td>
+                                                    <td>{{ detalle.VUnitario|floatformat:2 }}</td>
+                                                    <td>{{ detalle.Total|intcomma }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-fill btn-outline-info" id="btnCancelar" onclick="redireccionar('{% url 'ventas-anular_cotizaciones' %}');">
+                                        <span class="material-icons">arrow_back</span>
+                                        Cancelar
+                                    </button>
+                                    <button type="button" class="btn btn-fill btn-outline-danger" id="btnAnular" onclick="dialogConfirm(redireccionar, '{% url 'ventas-anular_cotizaciones_anular' cotizacion.NoCotizacion %}' )">
+                                        <span class="material-icons">clear</span>
+                                        Anular
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+            $("#btnCancelar").click(function(){
+                
+            });
+        });
+
+        function redireccionar(strUrl) {
+            window.location.href = strUrl;
+        }
+    </script>
+{% endblock javascripts %}

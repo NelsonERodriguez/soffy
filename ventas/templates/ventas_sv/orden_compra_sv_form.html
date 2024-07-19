@@ -1,0 +1,256 @@
+{% load static %}
+{% load humanize %}
+<div class="row">
+    <div class="offset-md-1 col-md-10">
+        <div class="card pb-3">
+            <div class="card-header card-header-primary card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons">receipt</i>
+                </div>
+                <h4 class="card-title">
+                    Registrar | Órden de Compra SV
+                    {% if not orden_compra %}
+                        <button class="btn btn-fill btn-outline-primary float-sm-right" onclick='fntGuardar();'>
+                            <span class="material-icons">save</span> Guardar
+                        </button>
+                    {% endif %}
+
+                    &nbsp;
+                    <button class="btn btn-fill btn-outline-danger float-sm-right" type="button" onclick="fntPreguntaRegresar();">
+                        <span class="material-icons">arrow_back</span> Regresar
+                    </button>
+                </h4>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label for="txtFechaOC" class="required">Fecha de Orden de Compra</label>
+                                            {% if orden_compra %}
+                                                <span class="form-control-plaintext font-little-heavy" id="txtFechaOC">{{ orden_compra.fecha|date:"d/m/Y" }}</span>
+                                            {% else %}
+                                                <input type="date" class="form-control" id="txtFechaOC" name="txtFechaOC" value="{{ hoy }}" max="{{ hoy }}">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label for="sltTipoProducto" class="required">Cliente</label>
+                                            {% if orden_compra %}
+                                                <span class="form-control-plaintext font-little-heavy" id="txtFechaOC">{{ orden_compra.cliente_sv.codigo_cliente }} - {{ orden_compra.cliente_sv.cliente }}</span>
+                                            {% else %}
+                                                <select class="form-control" name="sltCliente" id="sltCliente">
+                                                    <option value="0">Seleccione una opción...</option>
+                                                    {% for cliente in clientes %}
+                                                        <option value="{{ cliente.id }}" data-direccion="{{ cliente.direccion_fiscal }}" data-codigo="{{ cliente.codigo_cliente }}" data-nombre="{{ cliente.cliente }}" data-tel="{{ cliente.telefono }}">{{ cliente.codigo_cliente }} - {{ cliente.cliente }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="txtCodigoCliente">Código de Cliente</label>
+                                            <span class="form-control-plaintext font-little-heavy" id="txtCodigoCliente">{% if orden_compra %}{{ orden_compra.cliente_sv.codigo_cliente }}{% endif %}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="txtNombreCliente">Nombre del Cliente</label>
+                                            <span class="form-control-plaintext font-little-heavy" id="txtNombreCliente">{% if orden_compra %}{{ orden_compra.cliente_sv.cliente }}{% endif %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="txtTelefonoCliente">Teléfono del Cliente</label>
+                                            <span class="form-control-plaintext font-little-heavy" id="txtTelefonoCliente">{% if orden_compra %}{{ orden_compra.cliente_sv.telefono }}{% endif %}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="txtDireccionCliente">Dirección Fiscal del Cliente</label>
+                                            <span class="form-control-plaintext font-little-heavy" id="txtDireccionCliente">{% if orden_compra %}{{ orden_compra.cliente_sv.direccion_fiscal }}{% endif %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label for="filFactura" class="required">Factura</label>
+                                        {% if orden_compra %}
+                                            <div>
+                                                <a href="/media/orden_compra_sv/{{ orden_compra.path_factura|default_if_none:"" }}" target="_blank"><i class="fas fa-eye"></i>&nbsp;Visualizar la Factura</a>
+                                            </div>
+                                        {% else %}
+                                            <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                                <div class="form-control" data-trigger="fileinput">
+                                                    <span class="fileinput-filename"></span>
+                                                </div>
+                                                <span class="input-group-append row">
+                                                    <span class="input-group-text fileinput-exists" data-dismiss="fileinput">
+                                                        Quitar factura
+                                                    </span>
+                                                    <span class="input-group-text btn-file">
+                                                        <span class="fileinput-new">Seleccionar factura</span>
+                                                        <span class="fileinput-exists">Cambiar factura</span>
+                                                        <input type="file" name="filFactura" id="filFactura" accept="image/*, .pdf, .doc, .docx">
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label for="filRecibo" class="required">Recibo</label>
+                                        {% if orden_compra %}
+                                            <div>
+                                                <a href="/media/orden_compra_sv/{{ orden_compra.path_recibo|default_if_none:"" }}" target="_blank"><i class="fas fa-eye"></i>&nbsp;Visualizar el Recibo</a>
+                                            </div>
+                                        {% else %}
+                                            <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                                <div class="form-control" data-trigger="fileinput">
+                                                    <span class="fileinput-filename"></span>
+                                                </div>
+                                                <span class="input-group-append row">
+                                                    <span class="input-group-text fileinput-exists" data-dismiss="fileinput">
+                                                        Quitar recibo
+                                                    </span>
+
+                                                    <span class="input-group-text btn-file">
+                                                        <span class="fileinput-new">Seleccionar recibo</span>
+                                                        <span class="fileinput-exists">Cambiar recibo</span>
+                                                        <input type="file" name="filRecibo" id="filRecibo" accept="image/*, .pdf, .doc, .docx">
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label for="filTransferencia" class="required">Transferencia</label>
+                                        {% if orden_compra %}
+                                            <div>
+                                                <a href="/media/orden_compra_sv/{{ orden_compra.path_transferencia|default_if_none:"" }}" target="_blank"><i class="fas fa-eye"></i>&nbsp;Visualizar el Comprobante</a>
+                                            </div>
+                                        {% else %}
+                                            <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                                <div class="form-control" data-trigger="fileinput">
+                                                    <span class="fileinput-filename"></span>
+                                                </div>
+                                                <span class="input-group-append row">
+                                                    <span class="input-group-text fileinput-exists" data-dismiss="fileinput">
+                                                        Quitar comprobante
+                                                    </span>
+
+                                                    <span class="input-group-text btn-file">
+                                                        <span class="fileinput-new">Seleccionar comprobante</span>
+                                                        <span class="fileinput-exists">Cambiar comprobante</span>
+                                                        <input type="file" name="filTransferencia" id="filTransferencia" accept="image/*, .pdf, .doc, .docx">
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h3 class="mt-1 mb-1" style="font-weight: bold;">
+                                            Total: <span id="spnTotal">{% if orden_compra %}{{ orden_compra.total|floatformat:2|intcomma }}{% else %}0.00{% endif %}</span>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                {% if not orden_compra %}
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <button class="btn btn-fill btn-outline-success float-sm-right" type="button" onclick="fntAgregarFila();">
+                                                <span class="material-icons">add</span> Agregar Producto
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="row">
+                                    <div class="col-12 table-responsive">
+                                        <table class="table table-bordered" id="tblDetalles">
+                                            <thead class="table-info">
+                                                <tr>
+                                                    <th class="col-3">
+                                                        Producto
+                                                    </th>
+                                                    <th class="col-2">
+                                                        Precio
+                                                    </th>
+                                                    <th class="col-2">
+                                                        Cantidad
+                                                    </th>
+                                                    <th class="col-3">
+                                                        Total
+                                                    </th>
+                                                    {% if not orden_compra %}
+                                                        <th class="col-2">
+                                                            Acciones
+                                                        </th>
+                                                    {% endif %}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for detalle in orden_compra_detalle %}
+                                                    <tr>
+                                                        <td>
+                                                            {{ detalle.producto_sv.codigo_producto }} - {{ detalle.producto_sv.producto }}
+                                                        </td>
+                                                        <td>
+                                                            {{ detalle.precio|floatformat:4|intcomma }}
+                                                        </td>
+                                                        <td>
+                                                            {{ detalle.cantidad|floatformat:2|intcomma }}
+                                                        </td>
+                                                        <td>
+                                                            {{ detalle.total|floatformat:2|intcomma }}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

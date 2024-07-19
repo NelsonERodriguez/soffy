@@ -1,0 +1,569 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Planeación de la Demanda Cuadriles {% endblock title %}
+
+{% load static humanize %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+    <style>
+        .ui-front {
+            z-index: 1060;
+        }
+
+        table thead tr th {
+            background: white;
+            padding: 5px;
+            text-align: center;
+            font-weight: bold !important;
+            font-size: 15px !important;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        table tbody tr td {
+            padding: 2px 5px !important;
+        }
+
+        @-webkit-keyframes rotating /* Safari and Chrome */ {
+            0% {
+                -ms-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -webkit-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            25% {
+                -ms-transform: rotate(15deg);
+                -moz-transform: rotate(15deg);
+                -webkit-transform: rotate(15deg);
+                -o-transform: rotate(15deg);
+                transform: rotate(15deg);
+            }
+
+            50% {
+                -ms-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -webkit-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            75% {
+                -ms-transform: rotate(-15deg);
+                -moz-transform: rotate(-15deg);
+                -webkit-transform: rotate(-15deg);
+                -o-transform: rotate(-15deg);
+                transform: rotate(-15deg);
+            }
+
+            100% {
+                -ms-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -webkit-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+        }
+
+        @keyframes rotating {
+            0% {
+                -ms-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -webkit-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            25% {
+                -ms-transform: rotate(15deg);
+                -moz-transform: rotate(15deg);
+                -webkit-transform: rotate(15deg);
+                -o-transform: rotate(15deg);
+                transform: rotate(15deg);
+            }
+
+            50% {
+                -ms-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -webkit-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            75% {
+                -ms-transform: rotate(-15deg);
+                -moz-transform: rotate(-15deg);
+                -webkit-transform: rotate(-15deg);
+                -o-transform: rotate(-15deg);
+                transform: rotate(-15deg);
+            }
+
+            100% {
+                -ms-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -webkit-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+        }
+
+        .rotating:hover {
+            -webkit-animation: rotating 2s linear infinite;
+            -moz-animation: rotating 2s linear infinite;
+            -ms-animation: rotating 2s linear infinite;
+            -o-animation: rotating 2s linear infinite;
+            animation: rotating 2s linear infinite;
+            cursor: pointer;
+        }
+
+        .animation-wrapper{
+            background: #ace5ee;
+            bottom: 0;
+            left: 0;
+            position: relative;
+            height: 300px;
+            right: 0;
+            top: 0;
+        }
+
+        .water{
+            bottom: 0;
+            left: 0;
+            position: relative;
+            width: 100%;
+        }
+
+        .water ul.waves{
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .water ul.waves li{
+            background-repeat: repeat-x;
+        }
+
+        .water ul.waves li.wave-one{
+            animation: wave 8.7s linear infinite;
+            -webkit-animation-fill-mode: forwards;
+            -o-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+            bottom: -323px;
+            height: 50px;
+            left: 0;
+            position: absolute;
+            right: 0;
+            z-index: 10;
+        }
+
+        .water ul.waves li.wave-two{
+            -webkit-animation-fill-mode: forwards;
+            -o-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+            animation: wave 10s linear infinite;
+            bottom: -323px;
+            height: 84px;
+            left: 0;
+            position: absolute;
+            right: 0;
+            z-index: 9;
+        }
+
+        .water ul.waves li.wave-three{
+            -webkit-animation-fill-mode: forwards;
+            -o-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+            animation: wave 25s linear infinite;
+            bottom: -329px;
+            height: 190px;
+            left: 0;
+            position: absolute;
+            right: 0;
+            z-index: 8;
+        }
+
+        .water ul.waves li.wave-four{
+            -webkit-animation-fill-mode: forwards;
+            -o-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+            animation: wave 25s linear infinite;
+            bottom: -330px;
+            height: 205px;
+            left: 0;
+            position: absolute;
+            right: 0;
+        }
+
+        .boat{
+            animation: boat 3s linear infinite;
+            background-repeat: no-repeat;
+            height: 145px;
+            left: 50%;
+            position: absolute;
+            width: 250px;
+            bottom: 130px;
+        }
+
+        .boat_cerrar {
+            animation: navegar 3s linear normal;
+            left: -20%;
+        }
+
+        @keyframes navegar {
+            0% {
+                left: 50%;
+            }
+            25% {
+                left: 25%;
+            }
+            50% {
+                left: 5%;
+            }
+            75% {
+                left: -15%;
+            }
+            100% {
+                left: -20%;
+            }
+        }
+
+        @keyframes wave{
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 1920px 0;
+            }
+        }
+
+        @keyframes boat{
+            0%{
+                transform: rotate(0);
+            }
+
+            50%{
+                transform: rotate(-3deg);
+            }
+
+            100%{
+                transform: rotate(0);
+            }
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+
+
+    <div class="modal fade" tabindex="-1" id="mdlProducto" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ingreso</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-12">
+                            <div class="form-group bmd-form-group is-filled">
+                                <label for="producto_ingreso">Producto</label>
+                                <input type="text" name="producto_ingreso" id="producto_ingreso" class="form-control">
+                                <input type="hidden" name="nivel3" id="nivel3">
+                                <input type="hidden" name="noproducto_ingreso" id="noproducto_ingreso">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group bmd-form-group is-filled">
+                                <label for="cantidad_ingreso">Cantidad</label>
+                                <input type="number" name="cantidad_ingreso" id="cantidad_ingreso" step="1" onkeypress="return validar_caracteres(event, 2);" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group bmd-form-group is-filled">
+                                <label for="descripcion_ingreso">Observación</label>
+                                <textarea name="descripcion_ingreso" id="descripcion_ingreso" class="form-control" style="height: auto;" rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardarPlaneacion">Agregar Producto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" tabindex="-1" id="mdlInventarioTransito" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Inventario Transito</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-12" id="divTransito"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="mdlInventarioTransito_sku" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Inventario Transito</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-12" id="divTransito_sku"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" tabindex="-1" id="mdlInventarioPedido" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Inventario Pedido</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-12" id="divPedido"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" tabindex="-1" id="mdlInventarioExistencia" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Inventario Existencia</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-12" id="divExistencia"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" tabindex="-1" id="mdlInventarioDisponible" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Inventario Disponible</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-12" id="divInventarioDisponible"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">query_stats</i>
+                        </div>
+                        <h4 class="card-title">Planeación de la Demanda Cuadriles</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-12">
+                                <table style="width: 100%; background: white">
+                                    <tr>
+                                        <td>
+                                            <div class="row" style="margin-bottom: 35px;">
+                                            <div class="col-12">
+
+                                                <div class="row">
+                                                    <div class="col-12 text-right">
+                                                        <button class="btn btn-outline-primary" type="button" id="btnAgregar" style="margin-bottom: 15px;">
+                                                            <span class="material-icons">add</span> Agregar
+                                                        </button>
+
+                                                        <button class="btn btn-outline-success" type="button" id="btnCerrar" style="margin-bottom: 15px; display: {% if not detalles %}none{% endif %};">
+                                                            <span class="material-icons">save</span> Cerrar
+                                                        </button>
+
+                                                        <button class="btn btn-outline-info" type="button" id="btnExcel" style="margin-bottom: 15px;">
+                                                            <i class="fa fa-download"></i> Descargar Excel
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row" id="contenedorPlaneacion">
+                                                    {% for detalle in detalles %}
+                                                        <div id="divProducto_{{ detalle.NoProducto }}" class="col-2 text-center">
+                                                            <div class="row" style="height: 75px; border: 1px solid rgb(210, 210, 210); position: relative; margin: 15px; padding: 0 5px; border-radius: 3px; background: white;">
+                                                                <div class="col-12" style="font-size: 10px;">
+                                                                    {{ detalle.producto }} <br> {{ detalle.cantidad|floatformat:0|intcomma }} <br>
+                                                                    <input type="hidden" name="producto[]" value="Cuadril 4x10 Gold Leaf">
+                                                                    <input type="hidden" name="no_producto[]" value="{{ detalle.NoProducto }}">
+                                                                    <input type="hidden" name="cantidad[]" value="{{ detalle.cantidad }}">
+                                                                    <input type="hidden" name="descripcion[]" value="{{ detalle.descripcion }}">
+                                                                    <i class="material-icons" onclick="dialogConfirm(borrarDetalle, {{ detalle.NoProducto }}, '¿Estás seguro?', '¡No podrás revertir esto!', 'warning', 'Aceptar',  'Cancelar', 'divProducto_{{ detalle.NoProducto }}');" style="position: absolute; top: 0; right: 0; cursor: pointer; color: red; font-size: 17px;">delete</i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <table class="table" border="1">
+                                                        <thead>
+                                                            <tr>
+                                                                <th></th>
+                                                                <th>Cod</th>
+                                                                <th style="background: #c4a9f1;">Producto</th>
+                                                                <th>{{ month_1 }}</th>
+                                                                <th>{{ month }}</th>
+                                                                <th>Guatemala</th>
+                                                                <th>Tránsito</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for key, productos in planeacion_sku.items %}
+                                                                <tr>
+                                                                    <td>
+                                                                        {% if productos.Nivel1 == "CARNE DE CERDO" %}
+                                                                            <i class="fa fa-2x fa-pig rotating" data-number="{{ forloop.counter }}" data-type="sku"></i>
+                                                                        {% elif productos.Nivel1 == "RES" %}
+                                                                            <i class="fa fa-2x fa-cow rotating" data-number="{{ forloop.counter }}" data-type="sku"></i>
+                                                                        {% elif productos.Nivel1 == "EMBUTIDOS" %}
+                                                                            <i class="fa fa-2x fa-sausage rotating" data-number="{{ forloop.counter }}" data-type="sku"></i>
+                                                                        {% elif productos.Nivel1 == "MIXTO POLLO" %}
+                                                                            <i class="fa fa-2x fa-turkey rotating" data-number="{{ forloop.counter }}" data-type="sku"></i>
+                                                                        {% elif productos.Nivel1 == "PAVO" %}
+                                                                            <i class="fa fa-2x fa-meat rotating" data-number="{{ forloop.counter }}" data-type="sku"></i>
+                                                                        {% elif productos.Nivel1 == "PATO" %}
+                                                                            <i class="fa fa-2x fa-duck rotating" data-number="{{ forloop.counter }}" data-type="sku"></i>
+                                                                        {% elif productos.Nivel1 == "CUADRIL" %}
+                                                                            <i class="fa fa-2x fa-drumstick rotating" data-number="{{ forloop.counter }}" data-type="sku"></i>
+                                                                        {% elif productos.Nivel1 == "MARISCOS" %}
+                                                                            <i class="fa fa-2x fa-fish rotating" data-number="{{ forloop.counter }}" data-type="sku"></i>
+                                                                        {% elif productos.Nivel1 == "PAPAS" %}
+                                                                            <i class="fa fa-2x fa-french-fries rotating" data-number="{{ forloop.counter }}" data-type="sku"></i>
+                                                                        {% elif productos.Nivel1 == "SERVICIOS" %}
+                                                                            <i class="fa fa-2x fa-cheese rotating" data-number="{{ forloop.counter }}" data-type="sku"></i>
+                                                                        {% endif %}
+
+                                                                        <input type="hidden" name="nivel3_sku_{{ forloop.counter }}" id="nivel3_sku_{{ forloop.counter }}" value="{{ productos.Nivel3 }}" data-noproducto="{{ productos.NoProducto }}" data-producto="{{ productos.Descripcion }}">
+                                                                    </td>
+                                                                    <td>{{ productos.CodigoProducto }}</td>
+                                                                    <td>{{ productos.Descripcion }}</td>
+                                                                    <td class="text-right" style="background: #f1f1f1; font-weight: bold;">{% if productos.Libras_Mes_1 %}{{ productos.Libras_Mes_1|floatformat:0|intcomma }}{% endif %}</td>
+                                                                    <td class="text-right" style="background: #f1f1f1; font-weight: bold;">{% if productos.Libras_Mes_A %}{{ productos.Libras_Mes_A|floatformat:0|intcomma }}{% endif %}</td>
+                                                                    <td class="text-right" style="background: #f1f1f1; font-weight: bold; {% if productos.Existencia %}cursor:pointer;{% endif %}" onclick="
+                                                                        {% if productos.Existencia %}
+                                                                            getInventarioDisponible({{ productos.NoProducto }});
+                                                                        {% endif %} ">
+                                                                        {% if productos.Existencia %}{{ productos.Existencia|floatformat:0|intcomma }}{% endif %}
+                                                                    </td>
+                                                                    <td class="text-right" style="{% if productos.Inventario_Transito %}cursor:pointer;{% endif %} background: #f1f1f1; font-weight: bold;"
+                                                                    {% if productos.Inventario_Transito %}onclick="getReporteAgua('Transito_sku', '{{ productos.Fecha_Arribo|date:"Ymd" }}', '{{ productos.NoProducto }}');" {% endif %}>
+                                                                        {% if productos.Inventario_Transito %}{{ productos.Inventario_Transito|floatformat:0|intcomma }}{% endif %}
+                                                                    </td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                            <tr>
+                                                                <td class="text-center" style="background: #f1f1f1; font-weight: bold;" colspan='3'>Totales</td>
+                                                                <td class="text-right" style="background: #f1f1f1; font-weight: bold;">{{total_prev_month|floatformat:0|intcomma}}</td>
+                                                                <td class="text-right" style="background: #f1f1f1; font-weight: bold;">{{total_month|floatformat:0|intcomma}}</td>
+                                                                <td class="text-right" style="background: #f1f1f1; font-weight: bold;">{{total_gt|floatformat:0|intcomma}}</td>
+                                                                <td class="text-right" style="background: #f1f1f1; font-weight: bold;">{{total_embarqued|floatformat:0|intcomma}}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div id='cntTableDownload'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script src=" {% static 'assets/js/core/jquery-ui.min.js' %}"></script>
+    <script>
+        const strUrlGetProductos = "{% url 'ventas-planeacion_demanda_cuadriles_get_productos' %}",
+            strUrlGetReporte = "{% url 'ventas-planeacion_demanda_cuadriles_get_inventario_transito_pedido' %}",
+            strUrlSaveDetalle = "{% url 'ventas-planeacion_demanda_cuadriles_save_planeacion_detalle' %}",
+            strUrlDeleteDetalle = "{% url 'ventas-planeacion_demanda_cuadriles_delete_planeacion_detalle' %}",
+            strUrlInventarioDisponible = "{% url 'ventas-planeacion_demanda_cuadriles_get_inventario_existencia' %}",
+            strUrlCerrarPlaneacion = "{% url 'ventas-planeacion_demanda_cuadriles_cerrar_planeacion' %}",
+            objHeadersDownload = [
+                "Cod",
+                "Producto",
+                "{{ month_1 }}",
+                "{{ month }}",
+                "Inventario Disponible",
+                "Inventario en Tránsito",
+                "Fecha de arribo"
+            ];
+        let objDataSku = {{info_excel|safe}};
+    </script>
+    <script src="{% static 'modules/ventas/planeacion_demanda/planeacion_demanda.js' %}" async defer></script>
+
+{% endblock javascripts %}

@@ -1,0 +1,103 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Planificación De Vacaciones {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+    <style>
+        .cursorPointer {
+            cursor: pointer;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">date_range</i>
+                        </div>
+                        <h4 class="card-title">Planificación de Vacaciones</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" style="margin-top: 50px;">
+                            <div class="col-3">
+                                <div class="form-group bmd-form-group is-filled">
+                                    <label for="base" class="bmd-label-floating">Nomina</label>
+                                    <select name="base" id="base" class="form-control">
+                                        <option value="NominaGB">General</option>
+                                        <option value="NominaGBF">Facturación</option>
+                                        <option value="NominaGBV">Ventas</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="empresa" class="bmd-label-floating">Empresa</label>
+                                    <input type="text" name="empresa" id="empresa" class="form-control">
+                                    <input type="hidden" name="empresa_id" id="empresa_id">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="empleado" class="bmd-label-floating">Empleado</label>
+                                    <input type="text" name="empleado" id="empleado" class="form-control">
+                                    <input type="hidden" name="empleado_id" id="empleado_id">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div id="divPuesto"></div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 25px 0;">
+                            <div class="col-12">
+                                <div id="divDiasDisponibles"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">date_range</i>
+                        </div>
+                        <h4 class="card-title">Calendario</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" style="margin: 25px 0;">
+                            <div class="col-12">
+                                <div id="calendar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="{% static 'assets/js/core/jquery-ui.min.js' %}"></script>
+    <script>
+        const strUrlGetEmpresas = "{% url 'rrhh-planificacion_vacaciones_get_empresas' %}",
+            strUrlGetEmpleados = "{% url 'rrhh-planificacion_vacaciones_get_empleados' %}",
+            strUrlGetDiasDisponibles = "{% url 'rrhh-planificacion_vacaciones_get_dias_disponibles' %}",
+            strUrlGetVacaciones = "{% url 'rrhh-planificacion_vacaciones_get_vacaciones' %}",
+            strUrlSavePlanificaion = "{% url 'rrhh-planificacion_vacaciones_save_vacaciones' %}",
+            strUrlDeletePlanificaion = "{% url 'rrhh-planificacion_vacaciones_delete_vacaciones' %}";
+        let intTotalDiasDisponibles = 0,
+            intTotalDiasOcupados = 0;
+    </script>
+    <script src="{% static 'assets/js/plugins/fullcalendar.min.js' %}"></script>
+    <script src="{% static 'modules/rrhh/planificacion_vacaciones/planificacion_vacaciones.js' %}" async defer></script>
+    <script src="{% static 'assets/js/plugins/locales/locale-all.js' %}"></script>
+
+{% endblock javascripts %}

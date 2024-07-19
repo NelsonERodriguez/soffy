@@ -1,0 +1,233 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% load humanize %}
+
+{% block title %} Ficha Empleados {% endblock title %}
+
+{% block stylesheets %}
+    <style>
+        .cntAllInfo {
+            margin-top: 35px;
+        }
+        .tblDetail > tr > th {
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: bold !important;
+        }
+        .img-circle {
+            width: 200px;
+            height: 200px;
+            max-width: 200px;
+            min-width: 200px;
+            max-height: 200px;
+            min-height: 200px;
+            background-color: #fafafa;
+            border: 1px solid #dee2e6;
+            border-radius: 50% !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.075);
+        }
+        .cntTitleEmployee {
+            font-weight: bold;
+            text-align: right;
+            padding-right: 10px;
+        }
+        .cntTitleEmployee, .cntDetailEmployee {
+            font-size: 0.8vw;
+            margin-top: 5px;
+        }
+        .cntAllDetailsEmployee {
+            margin-top: 20px;
+        }
+        .trComplete > td {
+            background: #B9F6CA;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">badge</i>
+                        </div>
+                        <h4 class="card-title">Ficha Empleados</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col text-center">
+                                <button type='button' class='btn btn-outline-danger'
+                                    onclick="simple_redireccion('{% url 'rrhh-ficha_empleados' %}');">
+                                    <span class="material-icons">arrow_back</span> Regresar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row cntAllInfo">
+                            <div class='col-12 col-md-4'>
+                                <div class='row'>
+                                    <div class='col text-center'>
+                                        <img src="https://nova.ffinter.com/{% if avatar %}{{ avatar }}{% else %}{% static 'assets/img/default-avatar.png' %}{% endif %}"
+                                            alt="Mi Fotografía" class="img-responsive img-circle"/>
+                                    </div>
+                                </div>
+                                <div class='row cntAllDetailsEmployee'>
+                                    <div class='col-12 col-md-6 cntTitleEmployee'>
+                                        Nombre:
+                                    </div>
+                                    <div class='col-12 col-md-6 cntDetailEmployee'>
+                                        {{info_employee.Nombres}} {{info_employee.Apellidos}}
+                                    </div>
+                                    <div class='col-12 col-md-6 cntTitleEmployee'>
+                                        Fecha Alta:
+                                    </div>
+                                    <div class='col-12 col-md-6 cntDetailEmployee'>
+                                        {{info_employee.Fecha_Alta|date:'d-m-Y'}}
+                                    </div>
+                                    <div class='col-12 col-md-6 cntTitleEmployee'>
+                                        Empresa:
+                                    </div>
+                                    <div class='col-12 col-md-6 cntDetailEmployee'>
+                                        {{info_employee.empresa}}
+                                    </div>
+                                    <div class='col-12 col-md-6 cntTitleEmployee'>
+                                        Edad:
+                                    </div>
+                                    <div class='col-12 col-md-6 cntDetailEmployee'>
+                                        {{info_employee.edad}} años
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-12 col-md-8'>
+                                <div class='row'>
+                                    <div class='col-1 col-md-3'>
+                                        <ul id='cntHeaderTabs' class="nav nav-pills nav-pills-info nav-pills-icons 
+                                            justify-content-center
+                                            flex-column" role="tablist">
+                                            {% if bool_vacaciones %}
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" data-toggle="tab" href="#vacaciones" role="tablist">
+                                                        <i class="fas fa-umbrella-beach"></i> Vacaciones
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                            {% if bool_pasivos %}
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#pasivos" role="tablist">
+                                                        <i class="fas fa-wallet"></i> Pasivos
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                            {% if bool_anticipos %}
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#anticipos" role="tablist">
+                                                        <i class="fas fa-search-dollar"></i> Anticipos
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                            {% if bool_beneficios %}
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#beneficios" role="tablist">
+                                                        <i class="fal fa-ballot-check"></i> Beneficios
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                    <div class='col-11 col-md-9'>
+                                        <div id='cntBodyTabs' class="tab-content tab-space tab-subcategories">
+                                            {% if bool_vacaciones %}
+                                                <div class="tab-pane active" id="vacaciones">
+                                                    <table class='table table-bordered'>
+                                                        <thead class='table-info tblDetail'>
+                                                            <tr>
+                                                                <th>Período</th>
+                                                                <th>Dias Gozados</th>
+                                                                <th>Dias Pendientes</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for d in vacaciones %}
+                                                                <tr {% if d.DiasGozados >= 15 %} class='trComplete' {% endif %}>
+                                                                    <td>{{d.Periodo}}</td>
+                                                                    <td>{{d.DiasGozados}}</td>
+                                                                    <td>{{d.DiasPendientes}}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            {% endif %}
+                                            {% if bool_pasivos %}
+                                                <div class="tab-pane" id="pasivos">
+                                                    <table class='table table-bordered'>
+                                                        <thead class='table-info tblDetail'>
+                                                            <tr>
+                                                                <th>Período</th>
+                                                                <th>Inicio</th>
+                                                                <th>Fin</th>
+                                                                <th>Estado</th>
+                                                                <th>Cálculo</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for d in pasivos %}
+                                                                <tr>
+                                                                    <td>{{d.Periodo}}</td>
+                                                                    <td>{{d.Inicio}}</td>
+                                                                    <td>{{d.Fin}}</td>
+                                                                    <td>{{d.Status}}</td>
+                                                                    <td>{{d.Calculo}}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            {% endif %}
+                                            {% if bool_anticipos %}
+                                                <div class="tab-pane" id="anticipos">
+                                                    <table class='table table-bordered'>
+                                                        <thead class='table-info tblDetail'>
+                                                            <tr>
+                                                                <th>Nómina</th>
+                                                                <th>Empresa</th>
+                                                                <th>Prestación</th>
+                                                                <th>Motivo</th>
+                                                                <th>Total</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for d in anticipos %}
+                                                                <tr>
+                                                                    <td>{{d.nomina}}</td>
+                                                                    <td>{{d.empresa}}</td>
+                                                                    <td>{{d.prestacion}}</td>
+                                                                    <td>{{d.motivo}}</td>
+                                                                    <td>Q {{d.total|floatformat:2|intcomma}}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            {% endif %}
+                                            {% if bool_beneficios %}
+                                                <div class="tab-pane" id="beneficios"></div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script></script>
+{% endblock javascripts %}

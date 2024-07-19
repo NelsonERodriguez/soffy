@@ -1,0 +1,100 @@
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.table-success, .table-danger{ cursor: pointer; }
+.btnFooter { margin: 0px 15px !important; }
+.noShow { display: none; }
+.showElement { display: block; }
+.fila-activa {
+    background: #b8ecf3 !important;
+    cursor: pointer;
+}
+.fila-activa > td {
+    background: #b8ecf3 !important;
+    cursor: pointer;
+}
+.tr-titles { height: 75px; }
+.excel-ya-procesado { background: #d9d9d9; }
+.disabled { cursor: default; }
+.semaforo-colores {
+    margin-top: 3em;
+    margin-bottom: 2em;
+    border: 0.5px solid #d9d9d9;
+    border-radius: 8px;
+    padding: 2em 10px;
+    box-shadow: 8px 3px 3px #d9d9d9;
+}
+table { border-collapse: collapse; width: 100%; }
+th, td { padding: 8px 16px; }
+th {
+    color: #fafafa;
+    background-color: #212529;
+}
+.tableFixHead          { overflow: auto; height: 35em; }
+.tableFixHead thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    color: #fafafa;
+    background-color: #212529;
+}
+.files input {
+    outline: 2px dashed #92b0b3;
+    outline-offset: -10px;
+    -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    padding: 50px 0px 50px 35%;
+    text-align: center !important;
+    margin: 0;
+    width: 100% !important;
+}
+.files input:focus{
+    outline: 2px dashed #92b0b3;  outline-offset: -10px;
+    -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    transition: outline-offset .15s ease-in-out, background-color .15s linear; border:1px solid #92b0b3;
+ }
+.files{ position:relative; }
+.color input{ background-color:#f1f1f1; }
+.files:before {
+    position: absolute;
+    bottom: 10px;
+    left: 0;  pointer-events: none;
+    width: 100%;
+    right: 0;
+    content: " sube o arrastra tu archivo. ";
+    display: block;
+    color: #2ea591;
+    font-weight: 600;
+    text-transform: capitalize;
+    text-align: center;
+}
+.done-conciliacion, .bad-conciliacion {
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+.done-conciliacion { background: #479f76; }
+.bad-conciliacion { background: #dc3545; }
+.inputCheckCustomize { height: 20px !important; }
+.inputCheckAll {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+    margin-left: 20px;
+}
+#btnGetMovEncabezado, #contentExistente, #contentArchivo, #searchBySheet, #contentCirculacion, #contentCobrados { margin-top: 20px; }
+.tbl-detail-resume-modal > tbody > tr {
+    cursor: pointer;
+}
+.tbl-detail-resume-modal > tbody > tr:hover {
+    background: #d9d9d9;
+}
+@media(max-width: 992px) {
+    #contentExistente, #contentArchivo, #contentCirculacion, #contentCobrados { margin-top: 55px; }
+}

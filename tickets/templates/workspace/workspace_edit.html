@@ -1,0 +1,107 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Administración de Workspaces | {{ texto_titulo }} {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <style>
+        .required:after {
+            content:" *";
+            color:red;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8 offset-sm-2">
+                <form action="{% url 'tickets-workspace_save' id %}" method="POST" name="frm_interfaz" id="frm_interfaz">
+                    {% csrf_token %}
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">workspace</i>
+                            </div>
+                            <h4 class="card-title">Administración de Workspaces | {{ texto_titulo }}</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="nombre" class="bmd-label-floating required">Nombre</label>
+                                        <input type="text" class="form-control" id="nombre" name="nombre" value="{% if workspace  %}{{ workspace.nombre }}{% endif %}" onkeypress="return validar_caracteres(event, 4);" maxLength="15">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="color" class="bmd-label-floating required">Color</label>
+                                        <input type="color" class="form-control" id="color" name="color" value="{% if workspace  %}{{ workspace.color }}{% endif %}" maxLength="7">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group bmd-form-group is-filled">
+                                        <label for="departamento" class="bmd-label-floating required">Departamento</label>
+                                        <select name="departamento" id="departamento" class="form-control">
+                                            {% for departamento in departamentos %}
+                                                <option value="{{ departamento.id }}" {% if workspace and workspace.departamento_id == departamento.id %}selected{% endif %}>{{ departamento.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="orden" class="bmd-label-floating required">Orden</label>
+                                        <input type="number" class="form-control" id="orden" name="orden" value="{% if workspace  %}{{ workspace.orden }}{% endif %}" max="99" onkeypress="return validar_caracteres(event, 2);">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class='col-md-6'>
+                                    <label class="required">Habilitada</label>
+                                    <div class="m-checkbox-inline">
+                                        <label class="m-checkbox">
+                                            <input type="radio" name='activo' value='1' required="true" {% if workspace  %} {% if workspace.activo %} checked {% endif %}  {% else %} checked {% endif %}> Si
+                                            <span></span>
+                                        </label>
+                                        <label class="m-checkbox">
+                                            <input type="radio" name='activo' value='0' required="true" {% if workspace  %} {% if not workspace.activo %} checked {% endif %} {% endif %}> No
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 text-center">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-fill btn-outline-success" id="btnSave">
+                                            <span class="material-icons">save</span>
+                                            Guardar
+                                        </button>
+                                        <button type="button" class="btn btn-fill btn-outline-danger" id="btnRegresar">
+                                            <span class="material-icons">arrow_back</span>
+                                            Regresar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        const strUrlIndex = "{% url 'tickets-workspace' %}";
+    </script>
+    <script src="{% static 'modules/tickets/workspace/workspace.js' %}" async defer></script>
+
+{% endblock javascripts %}

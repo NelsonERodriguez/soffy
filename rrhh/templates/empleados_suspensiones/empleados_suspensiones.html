@@ -1,0 +1,86 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Usuarios Suspensiones {% endblock title %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">dns</i>
+                        </div>
+                        <h4 class="card-title">Usuarios Suspensiones</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="material-datatables table-hover">
+                            <table class="table table-striped" id="dtDefault">
+                                <thead>
+                                    <tr>
+                                        <th>Codigo</th>
+                                        <th>Empleado</th>
+                                        <th>Empresa</th>
+                                        <th>Departamento</th>
+                                        <th>Estado del Empleado</th>
+                                        <th class="disabled-sorting">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                    <tr>
+                                        <td>{{ user.codigo }}</td>
+                                        <td>{{ user.empleado }}</td>
+                                        <td>{{ user.empresa }}</td>
+                                        <td>{{ user.departamento }}</td>
+                                        <td>
+                                            {% if user.estado == 'disponible' %}
+                                            <div class="timeline-heading">
+                                                <span class="badge badge-pill badge-success">Disponible</span>
+                                            </div>
+                                            {% else %}
+                                            <div class="timeline-heading">
+                                                <span class="badge badge-pill badge-warning">
+                                                    {{ user.estado }}
+                                                </span>
+                                            </div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a type="button" rel="tooltip" class="btn btn-link btn-success" data-original-title="Editar" href="{% url 'rrhh-empleados_suspensiones_edit' user.codigo %}">
+                                                <i class="material-icons">edit</i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Codigo</th>
+                                        <th>Empleado</th>
+                                        <th>Empresa</th>
+                                        <th>Departamento</th>
+                                        <th>Estado del Empleado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+  <script>
+    $(document).ready(function() {
+        makeDataTableDefault(true, true, {'order': [[1, 'asc']]});
+    });
+  </script>
+
+{% endblock javascripts %}

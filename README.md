@@ -1,7 +1,7 @@
 - **Nombre del Proyecto**: Soffybiz
 - **Descripción**: Proyecto basado en core Soffy y diseño de Dessibyte para venta de software robusto, rapido y confiable.
 - **Contribución**: --
-- **Autores**: Rony, Pineda Solares, Pedro Humberto; Rodriguez Matul, Nelson Estuardo
+- **Autores**: Rodriguez Matul, Nelson Estuardo
 - **Agradecimientos**: --
 - **Licencia**: MIT
 - **Enlace de Autor**: https://github.com/
@@ -167,7 +167,6 @@ $
 
 > Desarrollado por:
 
-- Pineda Solares, Pedro Humberto
 - Rodriguez Matul, Nelson Estuardo
 
 <br />

@@ -1,0 +1,160 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Ingresos a Bodega {% endblock title %}
+
+{% block stylesheets %} {% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-md-1 col-md-10">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">publish</i>
+                        </div>
+                        <h4 class="card-title">
+                            Listado de Ingresos a Bodega
+                            <button class="btn btn-fill btn-outline-primary float-sm-right" onclick='fntRedirect();'>
+                                <span class="material-icons">add</span> Realizar Ingreso a Bodega
+                            </button>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <label class="btn btn-outline-primary active">
+                                        <input type="radio" name="optTipo" id="optLibreria" checked value="lib" onchange="fntGetProductos();"> Librería
+                                    </label>
+                                    <label class="btn btn-outline-primary">
+                                        <input type="radio" name="optTipo" id="optLimpieza" value="lim" onchange="fntGetProductos();"> Limpieza
+                                    </label>
+                                    <label class="btn btn-outline-primary">
+                                        <input type="radio" name="optTipo" id="optFarmacia" value="far" onchange="fntGetProductos();"> Farmacia
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table table-striped table-hover" id="tblProductos">
+                            <thead>
+                                <tr>
+                                    <th width="100px">Número</th>
+                                    <th width="200px">Orden de Compra</th>
+                                    <th>Usuario</th>
+                                    <th>Fecha</th>
+                                    <th width="300px">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const strUrlGetProductos = "{% url 'rrhh-libreria_ingreso_bodega_listado' %}",
+            strUrlForm = "{% url 'rrhh-libreria_ingreso_bodega_form' %}";
+        let intCorrelativo = 1, objDataTable = null;
+
+        const fntCreateDatatable = () => {
+            objDataTable = $('#tblProductos').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "Todos"]
+                ],
+                language: objLenguajeDataTable,
+            });
+            $('[rel="tooltip"]').tooltip();
+        };
+
+        const fntGetProductos = () => {
+            const data = new FormData();
+            data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+            let strTipo = "";
+            if( document.getElementById("optLimpieza").checked ){
+                strTipo = "lim";
+            }
+            else if( document.getElementById("optLibreria").checked ){
+                strTipo = "lib";
+            }
+            else if( document.getElementById("optFarmacia").checked ){
+                strTipo = "far";
+            }
+
+            data.append('tipo', strTipo);
+
+            open_loading();
+            fetch(strUrlGetProductos, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(data => {
+                let strHtml = '';
+                if(data.status){
+                    //alert_nova.showNotification(`${data.msj}`, "add_alert", "success");
+
+                    data.productos.forEach((value)=>{
+                        let fechaIngreso = new Date(value.created_at);
+                        let fechaIngresoGt = dateTimeGTFormat.format(fechaIngreso);
+
+                        strHtml += `
+                            <tr>
+                                <td class="text-left" width="100px">${value.id}</td>
+                                <td class="text-left" width="200px">${value.orden_compra__no_documento}</td>
+                                <td class="text-left">${value.user__name}</td>
+                                <td class="text-left">${fechaIngresoGt}</td>
+                                <td class="text-left" width="300px">
+                                    <a class="btn btn-sm btn-outline-primary" href="#" onclick="fntImprimirIngreso(${value.id});" rel="tooltip" title="Imprimir" position="right">
+                                        <i class="far fa-print fa-2x"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                    if( objDataTable !== null ) {
+                        objDataTable.clear().destroy();
+                    }
+
+                    $("#tblProductos tbody").html(strHtml);
+
+                    fntCreateDatatable();
+                }
+                else{
+                    alert_nova.showNotification(`${data.msj}`, "warning", "danger");
+                }
+                close_loading();
+            })
+            .catch(error => {
+                alert_nova.showNotification(`Ocurrió un error inesperado. Revise su conexión a internet o contacte a TI.`, "warning", "danger");
+                console.error(error);
+                close_loading();
+            });
+        };
+
+        const fntRedirect = () => {
+            document.location = strUrlForm;
+        }
+
+        const fntImprimirIngreso = (intIdIngreso) => {
+            let strUrl = "{% url 'rrhh-libreria_ingreso_bodega_imprimir' 1 %}";
+            strUrl = strUrl.replace(1, intIdIngreso);
+            window.open(strUrl);
+        }
+
+        $(document).ready(function(){
+            fntGetProductos();
+        });
+    </script>
+{% endblock javascripts %}

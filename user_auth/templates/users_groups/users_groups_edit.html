@@ -1,0 +1,169 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Roles de usuario {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+            <form action="{% url 'user-users_groups_edit' id %}" method="POST" name="frm_users_roles">
+                {% csrf_token %}
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">dns</i>
+                        </div>
+                        <h4 class="card-title">Roles de usuario</h4>
+                    </div>
+                    <div class="card-body">
+                            <div class="row" style="margin-bottom: 25px;">
+                                <div class="col-12 text-right">
+                                    <button type="button" class="btn btn-outline-danger"
+                                            onclick="simple_redireccion('{% url 'user-users_groups' %}');">
+                                        <span class="material-icons">arrow_back</span> Regresar
+                                    </button>
+                                </div>
+                            </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <b>{{ user.get_full_name }}</b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="autocomplete" class="bmd-label-floating">Role</label>
+                                    <input type="text" class="form-control" id="autocomplete" name="autocomplete">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 25px;">
+                            <div class="col-sm-12">
+                                <div class="material-datatables">
+                                    <table class="table" id="table_user_roles">
+                                        <thead class=" text-primary">
+                                            <th>Asignados</th>
+                                            <th></th>
+                                        </thead>
+                                        <tbody id="tbody_user_roles">
+
+                                        {% for role in roles %}
+
+                                            <tr>
+                                                <td>
+                                                    {{ role.name }}
+                                                    <input type="hidden" name="roles[]" id="role_{{ role.id }}" value="{{ role.id }}">
+                                                </td>
+                                                <td class="text-right">
+                                                    <button type="button" rel="tooltip" class="btn btn-outline-danger" data-original-title="Eliminar" onclick="dialogConfirm(delete_row, 'role_{{ role.id }}', '¿Desea eliminar?', '¡No podrás revertir esto!', 'error');">
+                                                        <i class="material-icons">delete_outline</i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-fill btn-outline-success" id="btnSave">
+                                        <span class="material-icons">save</span>
+                                        Actualizar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="{% static 'assets/js/core/jquery-ui.min.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            $( "#autocomplete" ).autocomplete({
+                minLength: 2,
+                source: function( request, response ) {
+
+                    let strUrl = "{% url 'user-users_groups_get_group' 'search' %}";
+                    strUrl = strUrl.replace('search', request.term);
+                    const data = new FormData();
+                    data.append('csrfmiddlewaretoken', document.getElementsByName('csrfmiddlewaretoken')[0].value);
+
+                    fetch(strUrl, {
+                      method: 'POST',
+                      body: data,
+                    })
+                      .then(response => response.json())
+                      .then( (data) => {
+                          response($.map(data, function (item) {
+                            return {
+                                label: item.name,
+                                value: item.id
+                            }
+                        }))
+                      })
+                      .catch((error) => {
+                          console.error(error);
+                      });
+                },
+                select: function( event, ui ) {
+                    event.preventDefault();
+                    const strRole = ui.item.label;
+                    const intRole = ui.item.value * 1;
+                    let boolAdd = true;
+
+                    document.querySelectorAll('input[name="roles[]"]').forEach( element => {
+                       const intRoleTMP = element.value * 1
+                        if (intRole === intRoleTMP) {
+                            alert_nova.showNotification("El role seleccionado ya esta asignado.", "warning", "danger");
+                            boolAdd = false;
+                        }
+                    });
+
+                    if (boolAdd) {
+                        const table = document.getElementById("tbody_user_roles");
+
+                        const row = table.insertRow(-1);
+
+                        const cell1 = row.insertCell(0);
+                        const cell2 = row.insertCell(1);
+
+                        cell1.innerHTML = `${strRole}<input type="hidden" name="roles[]" id="role_${intRole}" value="${intRole}">`;
+
+                        cell2.innerHTML = `<button type="button" rel="tooltip" class="btn btn-outline-danger" data-original-title="Eliminar" onclick="dialogConfirm(delete_row, 'role_${intRole}', '¿Desea eliminar?', '¡No podrás revertir esto!', 'error');"><i class="material-icons">delete_outline</i></button>`;
+                        cell2.className = "text-right";
+                    }
+
+                    this.value = '';
+                }
+            });
+        });
+
+        document.getElementById('btnSave').addEventListener('click', () => {
+            dialogConfirm(simple_submit, 'frm_users_roles')
+        });
+
+        function delete_row(id) {
+            document.getElementById(id).parentElement.parentElement.remove();
+        }
+    </script>
+{% endblock javascripts %}

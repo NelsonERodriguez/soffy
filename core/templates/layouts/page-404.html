@@ -1,0 +1,30 @@
+{% extends "layouts/base-full-screen.html" %}
+
+{% block title %} Error 404 {% endblock title %}
+
+{% load static %}
+{% block stylesheets %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="page-header error-page header-filter" style="background-image: url('/static/assets/img/clint-mckoy.jpg')">
+        <div class="content-center">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="title">404</h1>
+                    <h2>Page not found :(</h2>
+                    <h4>Ooooups! Looks like you got lost.</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function() {
+            md.checkFullPageBackgroundImage();
+        });
+    </script>
+{% endblock javascripts %}

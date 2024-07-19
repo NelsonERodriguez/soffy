@@ -1,0 +1,87 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Interfaces {% endblock title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">settings</i>
+                        </div>
+                        <h4 class="card-title">Interfaces</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <div class="col-12 text-right">
+                                <button type="button" class="btn btn-outline-info" onclick="simple_redireccion('{% url 'core-interfaces_create' %}');">
+                                    <i class="material-icons">add</i> Agregar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="material-datatables table-hover">
+                            <table id="datatables" class="table" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Modulo interno</th>
+                                        <th>Ventana interna</th>
+                                        <th>Nombre modulo</th>
+                                        <th>Nombre sub modulo</th>
+                                        <th>Nombre ventana</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Modulo interno</th>
+                                        <th>Ventana interna</th>
+                                        <th>Nombre modulo</th>
+                                        <th>Nombre sub modulo</th>
+                                        <th>Nombre ventana</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                    {% for interfaz in interfaces %}
+                                        <tr style="cursor:pointer;" onclick="simple_redireccion('{% url 'core-interfaces_edit' interfaz.id %}');">
+                                            <td>{{ interfaz.app_label }}</td>
+                                            <td>{{ interfaz.model }}</td>
+                                            <td>{{ interfaz.modulo }}</td>
+                                            <td>{{ interfaz.sub_modulo }}</td>
+                                            <td>{{ interfaz.ventana }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                      </div>
+                    </div>
+                    <!-- end content-->
+                  </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+  
+  <script>
+    $(document).ready(function() {
+        $('#datatables').DataTable({
+            "pagingType": "full_numbers",
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            responsive: true,
+            language: objLenguajeDataTable,
+        });
+    });
+  </script>
+
+{% endblock javascripts %}

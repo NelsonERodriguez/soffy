@@ -1,0 +1,180 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Confirmar Datos {% endblock title %}
+
+{% block stylesheets %}
+    <style>
+        .input-numerico {
+            text-align: right;
+        }
+        .required:after {
+            content:" *";
+            color:red;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">fact_check</i>
+                        </div>
+                        <h4 class="card-title">Confirmar Datos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-striped table-hover" id="tblDatos">
+                                    <thead>
+                                        <tr>
+                                            <th>Acciones</th>
+                                            <th>Nombres</th>
+                                            <th>Apellidos</th>
+                                            <th>DPI</th>
+                                            <th>Departamento</th>
+                                            <th>Municipio</th>
+                                            <th>Estado Civil</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in datos %}
+                                            <tr>
+                                                <td class="text-right">
+                                                    <a href="#" class="save-datos" data-id="{{ row.id }}"><i class="far fa-save"></i></a>
+                                                </td>
+                                                <td class="text-left">
+                                                    {{ row.nombres }}
+                                                </td>
+                                                <td class="text-left">
+                                                    {{ row.apellidos }}
+                                                </td>
+                                                <td class="text-right">
+                                                    {{ row.dpi }}
+                                                </td>
+                                                <td class="text-left">
+                                                    {{ row.departamento_dpi }}
+                                                </td>
+                                                <td class="text-left">
+                                                    {{ row.municipio_dpi }}
+                                                </td>
+                                                <td class="text-left">
+                                                    {{ row.EstadoCivil }}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12" id="divContenido">
+                &nbsp;
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" id="mdlConfirmar">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmar los datos</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-striped table-hover dataTable no-footer table-bordered">
+                                    <thead class="text-primary">
+                                        <tr>
+                                            <th width="50%">
+                                                Información Antigua
+                                            </th>
+                                            <th width="50%">
+                                                Información Nueva
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="2" class="text-center">Nombres</td>
+                                        </tr>
+                                        <tr>
+                                            <td id="tdNombresA"></td>
+                                            <td id="tdNombresN"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="text-center">Apellidos</td>
+                                        </tr>
+                                        <tr>
+                                            <td id="tdApellidosA"></td>
+                                            <td id="tdApellidosN"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="text-center">DPI</td>
+                                        </tr>
+                                        <tr>
+                                            <td id="tdDpiA"></td>
+                                            <td id="tdDpiN"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="text-center">Departamento (Extensión del DPI)</td>
+                                        </tr>
+                                        <tr>
+                                            <td id="tdDepartamentoA"></td>
+                                            <td id="tdDepartamentoN"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="text-center">Municipio (Extensión del DPI)</td>
+                                        </tr>
+                                        <tr>
+                                            <td id="tdMunicipioA"></td>
+                                            <td id="tdMunicipioN"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="text-center">Dirección</td>
+                                        </tr>
+                                        <tr>
+                                            <td id="tdDireccionA"></td>
+                                            <td id="tdDireccionN"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="text-center">Estado Civil</td>
+                                        </tr>
+                                        <tr>
+                                            <td id="tdEstadoA"></td>
+                                            <td id="tdEstadoN"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="btnGuardar">Confirmar Datos</button>
+                    </div>
+                </div>
+            </div>
+          </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const strUrlGetInfo = "{% url 'rrhh-confirmar_datos_get_info' %}",
+            strUrlGuardar = "{% url 'rrhh-confirmar_datos_save' %}",
+            valCSRF = getCookie('csrftoken');
+    </script>
+    <script src="/static/modules/rrhh/confirmar_datos/confirmar_datos.js" type="text/javascript" async defer></script>
+
+{% endblock javascripts %}

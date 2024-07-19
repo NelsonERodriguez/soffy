@@ -1,0 +1,194 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Reporte de Movimientos {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/daterangepicker.css' %}">
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-md-2 col-md-8">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">move_up</i>
+                        </div>
+                        <h4 class="card-title">
+                            Reporte de Movimientos
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <label class="btn btn-outline-primary active">
+                                        <input type="radio" name="optTipo" id="optLibreria" checked value="lib" onchange="fntGetHistorial();"> Librería
+                                    </label>
+                                    <label class="btn btn-outline-primary">
+                                        <input type="radio" name="optTipo" id="optLimpieza" value="lim" onchange="fntGetHistorial();"> Limpieza
+                                    </label>
+                                    <label class="btn btn-outline-primary">
+                                        <input type="radio" name="optTipo" id="optFarmacia" value="far" onchange="fntGetHistorial();"> Farmacia
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="txtRangoDias" class="bmd-label-floating">Rango de Días</label>
+                                <input type="text" class="daterange form-control" id="txtRangoDias" name="txtRangoDias">
+                            </div>
+                        </div>
+                        <div class="row">
+                        </div>
+                        <table class="table table-striped table-hover" id="tblProductos">
+                            <thead>
+                                <tr>
+                                    <th width="20%">Fecha</th>
+                                    <th width="10%">Código</th>
+                                    <th width="20%">Producto</th>
+                                    <th width="20%">Tipo de Movimiento</th>
+                                    <th width="10%">Cantidad</th>
+                                    <th width="20%">Empleado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="/static/assets/js/plugins/locales/locale-all.js"></script>
+    <script src="{% static 'assets/js/plugins/daterangepicker.js' %}"></script>
+
+    <script>
+        const strUrlGetMovimientos = "{% url 'rrhh-libreria_reporte_movimientos_listado' %}";
+        let intCorrelativo = 1, objDataTable = null, strFechaInicial = "", strFechaFinal = "";
+
+        const fntCreateDatatable = () => {
+            objDataTable = $('#tblProductos').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "Todos"]
+                ],
+                language: objLenguajeDataTable,
+                dom: 'lBfrtip',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        text: 'Excel',
+                        className: 'btn btn-default'
+                    }
+                ]
+            });
+        };
+
+        const fntGetHistorial = () => {
+            const data = new FormData();
+            data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+            let strTipo = "";
+            if( document.getElementById("optLimpieza").checked ){
+                strTipo = "lim";
+            }
+            else if( document.getElementById("optLibreria").checked ){
+                strTipo = "lib";
+            }
+            else if( document.getElementById("optFarmacia").checked ){
+                strTipo = "far";
+            }
+
+            data.append('fecha_inicial', strFechaInicial);
+            data.append('fecha_final', strFechaFinal);
+            data.append('tipo', strTipo);
+
+            open_loading();
+            fetch(strUrlGetMovimientos, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(data => {
+                let strHtml = '';
+                if(data.status){
+                    data.movimientos.forEach((value)=>{
+                        let strCodigo = value.producto__codigo === null ? "" : value.producto__codigo;
+                        let strTipoMovimiento = value.tipo_movimiento === "I" ? "Ingreso" : "Egreso";
+                        let fechaFactura = new Date(value.created_at);
+                        let strFechaMovimiento = dateTimeGTFormat.format(fechaFactura);
+
+                        strHtml += `
+                            <tr>
+                                <td class="text-left">${strFechaMovimiento}</td>
+                                <td class="text-left">${strCodigo}</td>
+                                <td class="text-left">${value.producto__producto}</td>
+                                <td class="text-left">${strTipoMovimiento}</td>
+                                <td class="text-left">${value.cantidad}</td>
+                                <td class="text-left">${value.user__name}</td>
+                            </tr>
+                        `;
+                    });
+
+                    if( objDataTable !== null ) {
+                        objDataTable.clear().destroy();
+                    }
+
+                    $("#tblProductos tbody").html(strHtml);
+
+                    fntCreateDatatable();
+                }
+                else{
+                    alert_nova.showNotification(`${data.msj}`, "warning", "danger");
+                }
+                close_loading();
+            })
+            .catch(error => {
+                alert_nova.showNotification(`Ocurrió un error inesperado. Revise su conexión a internet o contacte a TI.`, "warning", "danger");
+                console.error(error);
+                close_loading();
+            });
+        };
+
+        $(document).ready(function(){
+            fntGetHistorial('','');
+
+            $(".daterange").daterangepicker({
+                "locale": {
+                    "format": "DD/MM/YYYY",
+                    "fromLabel": "Desde",
+                    "toLabel": "A",
+                    "customRangeLabel": "Personalizada",
+                    "weekLabel": "S",
+                    "daysOfWeek": [
+                        "Do",
+                        "Lu",
+                        "Ma",
+                        "Mi",
+                        "Ju",
+                        "Vi",
+                        "Sa"
+                    ],
+                    "monthNames": monthNamesSpanish,
+                    "firstDay": 1,
+                },
+                timePicker: false,
+                //autoUpdateInput: false,
+            }, function(start, end, label) {
+                //console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+                strFechaInicial = start.format('YYYY-MM-DD');
+                strFechaFinal = end.format('YYYY-MM-DD');
+                fntGetHistorial();
+            });
+        });
+
+    </script>
+{% endblock javascripts %}

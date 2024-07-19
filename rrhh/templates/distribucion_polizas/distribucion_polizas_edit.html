@@ -1,0 +1,125 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block title %} Distribución Pólizas | Editar {% endblock title %}
+
+{% block stylesheets %}
+    <style>
+        .cntDescriptions {
+            margin-top: 25px;
+        }
+        .strTitleEmployee {
+            font-size: 1.2vw;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            margin: 3px;
+        }
+        .strDescEmployee {
+            font-size: 0.8vw;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .strTitleEmployee {
+                font-size: 4vw;
+            }
+            .strDescEmployee {
+                font-size: 3vw;
+                text-align: center;
+            }
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">analytics</i>
+                        </div>
+                        <h4 class="card-title">Distribución Pólizas | Editar</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col text-center">
+                                <button type="button" class="btn btn-outline-danger"
+                                        onclick="simple_redireccion('{% url 'rrhh-distribucion_polizas' %}');">
+                                    <span class="material-icons">arrow_back</span> Regresar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row cntDescriptions">
+                            <div class="col-12 col-md-6">
+                                <div class="row">
+                                    <div class="col-12 col-md-9">
+                                        <p class="strTitleEmployee">Empleado:</p>
+                                        <p class="strDescEmployee">{{empleado.No_Empleado}} | {{empleado.Empleado}}</p>
+                                    </div>
+                                    <div class="col-12 col-md-3">
+                                        <div class="form-group">
+                                            <label for="area">Área:</label>
+                                            <input id='area' 
+                                                list="list_area"
+                                                oninput="setOptionsRow(this.value, 'area')"
+                                                class='form-control' autocomplete='off' />
+                                            <datalist id="list_area"></datalist>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="row">
+                                    <div class="col-12 col-md-3">
+                                        <div class="form-group">
+                                            <label for="percentage">Porcentaje:</label>
+                                            <input id='percentage' class='form-control' type="number" min="0" max="100" value="{{empleado.porcentaje}}" />
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group">
+                                            <label for="nomenclatura">Nomenclatura:</label>
+                                            <input id='nomenclatura' 
+                                                list="list_nomenclatura"
+                                                oninput="setOptionsRow(this.value, 'nomenclatura')"
+                                                class='form-control' autocomplete='off' />
+                                            <datalist id="list_nomenclatura"></datalist>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-3 text-center">
+                                        <button type="button" id="btnSave" class="btn btn-outline-success" ondblclick="errorDblClick()">
+                                            <i class="fa fa-save"></i>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script async defer>
+        const strUrlGetData = "{% url 'rrhh-distribucion_polizas_get_data' %}",
+            urlGetNomenclaturas = "{% url 'rrhh-distribucion_polizas_get_nomenclaturas' %}",
+            urlSaveData = "{% url 'rrhh-distribucion_polizas_save' %}",
+            urlGetAreas = "{% url 'rrhh-distribucion_polizas_get_areas' %}",
+            intCodigoArea = "{{empleado.CodigoArea}}",
+            strDescripcionArea = "{{empleado.DescripcionArea}}",
+            intNomenclatura = "{{empleado.NoNomenclatura}}",
+            strNomenclatura = "{{empleado.DescNomenclatura}}",
+            intEmpleado = "{{empleado.No_Empleado}}",
+            valCSRF = getCookie('csrftoken');
+        let urlEditPolizaEmpleado = "{% url 'rrhh-distribucion_polizas_edit_poliza_empleado' 0 %}";
+    </script>
+    <script src="{% static 'modules/rrhh/distribucion_polizas/distribucion_polizas_edit.js' %}" async></script>
+{% endblock javascripts %}

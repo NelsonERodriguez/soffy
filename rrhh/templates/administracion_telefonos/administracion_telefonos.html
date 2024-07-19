@@ -1,0 +1,117 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Administración de Teléfonos {% endblock title %}
+
+{% load humanize %}
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/static/assets/css/jquery-ui.min.css">
+    <style>
+        .input-numerico {
+            text-align: right;
+        }
+        .required:after {
+            content:" *";
+            color:red;
+        }
+
+        input[type="file"] {
+            -webkit-appearance: listbox; }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid" id="divContentIndex">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">call</i>
+                        </div>
+                        <h4 class="card-title">
+                            Administración Teléfonos
+                            <button type="button" class="btn btn-outline-success pull-right" onclick="fntEdit(this, 0);">
+                                <span class="material-icons">add</span>
+                                Nuevo
+                            </button>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group bmd-form-group is-filled">
+                                    <label for="sltActivos" class="bmd-label-floating">Activos</label>
+                                    <select name="sltActivos" id="sltActivos" class="form-control" onchange="fntGetData();">
+                                        <option value="1" selected>Si</option>
+                                        <option value="0">No</option>
+                                        <option value="">Ambos</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-striped table-hover" id="tblMatriz">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Número</th>
+                                            <th class="text-center">Empleado</th>
+                                            <th class="text-center">Subsidio</th>
+                                            <th class="text-center">Cuenta Subsidio</th>
+                                            <th class="text-center">Cuenta Descuento</th>
+                                            <th class="text-center">Activo</th>
+                                            <th class="text-center">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in datos %}
+                                            <tr>
+                                                <td>{{ row.numero }}</td>
+                                                <td>{{ row.subsidio|floatformat:2|intcomma|default_if_none:"--" }}</td>
+                                                <td>{{ row.cuenta_subsidio|default_if_none:"--" }}</td>
+                                                <td>{{ row.cuenta_descuento|default_if_none:"--" }}</td>
+                                                <td>{{ row.user.name|default_if_none:"N/A" }}</td>
+                                                <td>
+                                                    <a class="btn btn-sm btn-outline-primary" href="#" onclick="//fntImprimirIngreso(${value.id});" rel="tooltip" title="Editar" position="right">
+                                                        <i class="fas fa-pencil fa-2x"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" style="display: none;" id="divContentEdit">
+
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="/static/assets/js/core/jquery-ui.min.js"></script>
+    <script src="/static/assets/js/plugins/jasny-bootstrap.min.js"></script>
+
+    <script>
+        const strUrlGetInfo = "{% url 'rrhh-confirmar_datos_get_info' %}",
+            strUrlGetData = "{% url 'rrhh-telefonos_administracion_telefonos_get_telefonos' %}",
+            strUrlEdit = "{% url 'rrhh-telefonos_administracion_telefonos_edit' %}",
+            strUrlBuscarUsuarios = "{% url 'rrhh-telefonos_administracion_telefonos_get_usuarios' 'search' %}",
+            strUrlBuscarCuentas = "{% url 'rrhh-telefonos_administracion_telefonos_get_cuentas' 'search' %}",
+            strUrlSave = "{% url 'rrhh-telefonos_administracion_telefonos_save' %}",
+            valCSRF = getCookie('csrftoken');
+        let objTblTelefonos = null;
+    </script>
+
+    <script src="{% static 'modules/rrhh/administracion_telefonos/administracion_telefonos.js' %}" async defer></script>
+
+{% endblock javascripts %}

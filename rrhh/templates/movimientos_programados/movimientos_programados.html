@@ -1,0 +1,62 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Movimientos Programados {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">alarm_on</i>
+                        </div>
+                        <h4 class="card-title">Movimientos Programados</h4>
+                    </div>
+                    <div class="card-body">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12 col-md-4 col-lg-3">
+                                <label style="margin-bottom: 0;">Selecciona Contabilidad</label>
+                                <select name="slt_nomina" id="slt_nomina" class="form-control" onchange="searchMovements()">
+                                    {% for nomina in nominas %}
+                                        <option value="{{nomina.str_for_query}}">{{nomina.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <div class="row text-center">
+                                    <button class="btn btn-outline-primary" type="button" id="btnAddNewMovement" data-original-title="Crear Movimiento" onclick="simple_redireccion('{% url 'rrhh-movimientos_programados_create'  %}')">
+                                        <i class="fal fa-plus"></i>
+                                        Crear Movimiento
+                                    </button>
+                                    <button class="btn btn-outline-danger" type="button" id="btnDeleteMovement" data-original-title="Borrar Movimientos" onclick="simple_redireccion('{% url 'rrhh-movimientos_programados_delete'  %}')">
+                                        <i class="fal fa-trash"></i>
+                                        Borrar Movimiento
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12" id="contentTableMovements"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="{% static 'modules/rrhh/movimientos_programados/movimientos_programados.js' %}" async defer></script>
+    <script async defer>
+        const urlGetInfo = "{% url 'rrhh-movimientos_programados_get_employees' %}",
+            valCSRF = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+    </script>
+{% endblock javascripts %}

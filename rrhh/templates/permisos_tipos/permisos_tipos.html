@@ -1,0 +1,110 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Tipos de permisos {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-sm-2 col-sm-8">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">edit_note</i>
+                        </div>
+                        <h4 class="card-title">Tipos de permisos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 text-right">
+                                <button type="button" class="btn btn-outline-primary" onclick="showModal(true);">
+                                    <span class="material-icons">add</span> Agregar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="material-datatables table-hover">
+                                    <table id="datatablesTipos" class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Tipo</th>
+                                            <th>Dias permitidos</th>
+                                            <th>Activo</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tfoot>
+                                        <tr>
+                                            <th></th>
+                                            <th>Tipo</th>
+                                            <th>Dias permitidos</th>
+                                            <th>Activo</th>
+                                            <th></th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_tipo" tabindex="-1" role="dialog" aria-labelledby="modal_TipoLabel"
+         aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Tipo</h4>
+                    <button type="button" class="close" id="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal_body_tipo">
+                    <form name="formTipo" id="formTipo">
+                        <input type="hidden" id="id" name="id">
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="nombre">Nombre *</label>
+                                <input type="text" class="form-control" name="nombre" id="nombre">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="dias_permitidos">Días permitidos</label>
+                                <input type="number" class="form-control" name="dias_permitidos" id="dias_permitidos" value="1">
+                            </div>
+                            <div class="col-6 text-center">
+                                <label for="activo">Activo <input type="checkbox" class="form-control" name="activo" id="activo" checked></label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-success" onclick="dialogConfirm(saveTipo);">
+                        <span class="material-icons">save</span> Grabar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const strUrlGetTipos = "{% url 'rrhh-permisos_tipos_get_tipos' %}",
+            strUrlGetTipo = "{% url 'rrhh-permisos_tipos_get_tipo' %}",
+            strUrlSaveTipo = "{% url 'rrhh-permisos_tipos_save_tipo' %}";
+    </script>
+    <script src="{% static 'modules/rrhh/permisos_tipos/permisos_tipos.js' %}" async defer></script>
+{% endblock javascripts %}

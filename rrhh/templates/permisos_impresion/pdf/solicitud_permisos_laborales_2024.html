@@ -1,0 +1,137 @@
+{% load static %}
+
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <title>Solicitud de Vacaciones</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        strong {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div style="display: flex; flex-wrap: wrap;padding: 20px 0;">
+    <div style="position: relative;display: block;margin: 20px auto; width: 100%;text-align: justify;">
+
+        <div style="display: flex;">
+            <div style="display: block; position:relative; width: 60%;">
+                <p><strong>SOLICITUD DE PERMISO LABORAL</strong></p>
+            </div>
+            <div style="display: block; position:relative; width: 40%;">
+                <img src="{{ IMAGEN_GB }}" alt="No se puedo cargar imagen" style="width: 100%" width="100%%">
+            </div>
+        </div>
+
+        <div style="display: flex;">
+            <div style="display: block; position:relative; width: 12%;">
+                <p>Nombre:</p>
+            </div>
+            <div style="display: block; position:relative; width: 88%;">
+                <p style="width: 100%; border-bottom: black solid 1px; text-align: center;">{{ empleado.nombre }}</p>
+            </div>
+        </div>
+
+        <div style="display: flex;">
+            <div style="display: block; position:relative; width: 12%;">
+                <p>Fecha:</p>
+            </div>
+            <div style="display: block; position:relative; width: 28%;">
+                <p style="width: 100%; border-bottom: black solid 1px; text-align: center;">{{ fecha|date:"d/m/Y" }}</p>
+            </div>
+            <div style="display: block; position:relative; width: 12%; margin-left: 2%;">
+                <p>Empresa:</p>
+            </div>
+            <div style="display: block; position:relative; width: 46%;">
+                <p style="width: 100%; border-bottom: black solid 1px; text-align: center;">{{ empresa.razon_social }}</p>
+            </div>
+        </div>
+
+        <div style="display: flex;">
+            <div style="display: block; position:relative; width: 30%;">
+                <p>Puesto que desempeña:</p>
+            </div>
+            <div style="display: block; position:relative; width: 70%;">
+                <p style="width: 100%; border-bottom: black solid 1px; text-align: center;">{{ puesto.descripcion }}</p>
+            </div>
+        </div>
+
+        <div style="display: flex;">
+            <div style="display: block; position:relative; width: 20%;">
+                <p>Jefe:</p>
+            </div>
+            <div style="display: block; position:relative; width: 80%;">
+                <p style="width: 100%; border-bottom: black solid 1px; text-align: center;">{{ nombre_encargado }}</p>
+            </div>
+        </div>
+
+        <br><br><br>
+        <p><strong>INDIQUE LA RAZÓN DEL PERMISO:</strong></p>
+
+        <br>
+        <p>{{ solicitud.tipo.nombre }}</p>
+
+        <br>
+
+        <div style="display: flex;">
+            <div style="display: block; position:relative; width: 20%;">
+                <p>Observaciones:</p>
+            </div>
+            <div style="display: block; position:relative; width: 80%;">
+                {% if solicitud.observacion %}
+                    <p style="width: 100%; border-bottom: black solid 1px; text-align: center;">{{ solicitud.observacion }}</p>{% endif %}
+            </div>
+        </div>
+
+        <br><br><br>
+        <p><strong>HORARIO AUTORIZADO DEL PERMISO:</strong></p>
+        <br>
+
+
+        <div style="display: flex;">
+            <div style="display: block; position:relative; width: 6%;">
+                <p><strong>De:</strong></p>
+            </div>
+            <div style="display: block; position:relative; width: 28%;">
+                <p style="width: 100%; border-bottom: black solid 1px; text-align: center;">{{ solicitud.fecha_inicio|date:"d/m/Y H:i A" }}</p>
+            </div>
+            <div style="display: block; position:relative; width: 10%; margin-left: 2%;">
+                <p><strong>Hasta:</strong></p>
+            </div>
+            <div style="display: block; position:relative; width: 46%;">
+                <p style="width: 100%; border-bottom: black solid 1px; text-align: center;">{{ solicitud.fecha_fin|date:"d/m/Y H:i A" }}</p>
+            </div>
+        </div>
+
+    </div>
+    <div style="position: relative;display: block; width: 100%;margin-top: 0;">
+
+        {% for key, periodo in fechas_solicitadas.items %}
+            Correspondientes al periodo {{ periodo.periodo }}
+            <ul>
+                {% for fecha_pedida in periodo.fechas %}
+                    <li>{{ fecha_pedida|date:"d/m/Y" }}</li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+
+        <br>
+
+    </div>
+
+
+    <div style="position: relative;display: block;text-align: center; width: 100%;margin-top: 20px;">
+        <p>{{ empleado.nombre }} {{ empleado.apellido }}</p>
+        <br>
+        <p>_______________________________</p>
+    </div>
+</div>
+
+</body>
+</html>

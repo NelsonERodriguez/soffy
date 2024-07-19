@@ -1,0 +1,147 @@
+{% extends "layouts/base.html" %}
+
+{% load humanize %}
+{% load static %}
+
+{% block title %} Préstamos Bancarios {% endblock title %}
+
+{% block stylesheets %}
+    <style>
+        .required:after {
+            content:" *";
+            color:red;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">account_balance</i>
+                        </div>
+                        <h4 class="card-title">Consulta Nómina</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="#" method="POST" name="frm_empresas" id="frm_empresas">
+                            {% csrf_token %}
+                            <div class="row justify-content-center">
+                                <div class="col col-4">
+                                    <label for="nomina">Selecciona la Nómina...</label>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col col-4">
+                                    <select name="nomina" id="nomina" class="form-control" onchange="fntBuscarEmpresas();">
+                                        <option value="general" selected>General</option>
+                                        <option value="facturacion">Facturación</option>
+                                        <option value="vendedores">Vendedores</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col col-4">
+                                    <label for="empresa">Empresa</label>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col col-4">
+                                    <select name="empresa" id="empresa" style="width: 100%;" onchange="fntBuscarPeriodos();">
+                                        <option value="0">Seleccione una empresa...</option>
+                                        {% for empresa in empresas %}
+                                            <option value="{{ empresa.No_Empresa }}">{{ empresa.RazonSocial }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col col-4">
+                                    <label for="periodo">Periodos</label>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col col-4">
+                                    <select name="periodo" id="periodo" style="width: 100%;" onchange="fntHabilitarPdf();">
+                                        <option value="0">Seleccione un periodo...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 text-center">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-fill btn-outline-info" onclick="fntBuscar();">
+                                            <span class="material-icons">search</span>
+                                            Buscar
+                                        </button>
+                                        <button type="button" class="btn btn-fill btn-outline-danger" id="btnPdf" onclick="fntMakePdf();" disabled>
+                                            <span class="material-icons">picture_as_pdf</span>
+                                            PDF
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12" id="div_tabla">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover" id="tblNomina">
+                                            <thead>
+                                                <tr>
+                                                    <th>&nbsp;</th>
+                                                    <th>DATOS DEL EMPLEADO</th>
+                                                    <th>SUELDO ORDINARIO</th>
+                                                    <th>BONIFICACIÓN PRODUCTIVIDAD</th>
+                                                    <th>OTROS INGRESOS</th>
+                                                    <th>BONIFICACIÓN</th>
+                                                    <th>HORAS EXTRAS</th>
+                                                    <th>VACACIONES</th>
+                                                    <th>TOTAL DEVENGADO</th>
+                                                    <th>I.G.S.S.</th>
+                                                    <th>I.S.R.</th>
+                                                    <th>CRÉDITOS</th>
+                                                    <th>PRÉSTAMO</th>
+                                                    <th>CELULAR</th>
+                                                    <th>OTROS DESCUENTOS</th>
+                                                    <th>LÍQUIDO</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                            <tfoot>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form action="{% url 'rrhh-consulta_nomina_get_impresion' %}" method="POST" name="frm_impresion" id="frm_impresion" target="_blank">
+        {% csrf_token %}
+        <input type="hidden" name="hdnNomina" id="hdnNomina" value="">
+        <input type="hidden" name="hdnEmpresa" id="hdnEmpresa" value="">
+        <input type="hidden" name="hdnPeriodo" id="hdnPeriodo" value="">
+    </form>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        const valCSRF = document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            strUrlGetEmpresas = "{% url 'rrhh-consulta_nomina_empresas' %}",
+            strUrlGetPeriodos = "{% url 'rrhh-consulta_nomina_periodos' %}",
+            strUrlGetNomina = "{% url 'rrhh-consulta_nomina_get_nomina' %}",
+            strUrlGetBoleta = "{% url 'rrhh-boletas_get_boleta' %}";
+        let tblNomina;
+
+
+    </script>
+
+    <script src="{% static 'modules/rrhh/consulta_nomina/consulta_nomina.js' %}" async defer></script>
+{% endblock javascripts %}

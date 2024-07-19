@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>Orden {{ orden.no_documento }}</title>
+        <style>
+            html {
+                font-size: 12px;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                border-spacing: 0;
+                margin-bottom: 15px;
+                border-bottom: solid black 1px;
+            }
+            tr {
+                page-break-inside: avoid;
+            }
+            thead {
+                border: #0087C3 solid 1px;
+            }
+            table thead th {
+                margin-top: 15px;
+                padding: 5px 0 1px 0;
+                white-space: nowrap;
+                font-weight: normal;
+                border: #0087C3 solid 1px;
+                background-color: #0087C3;
+                color: #FFFFFF;
+            }
+            table tbody td {
+                padding: 4px;
+                text-align: left;
+                border-bottom: #0087C3 solid 1px;
+            }
+            table tfoot th {
+                padding: 4px;
+            }
+            .divProveedor {
+                border-bottom: solid black 1px;
+                margin-bottom: 15px;
+            }
+            .total {
+                width: 100%;
+                margin-top: 15px;
+            }
+            .total span {
+                border-top: 1px solid #0087C3;
+                text-align: right;
+                float: right;
+                {#color: #0087C3;#}
+                font-size: 1.4em;
+            }
+            #notices{
+              margin-top: 20px;
+              padding-left: 6px;
+              {#border-left: 6px solid #0087C3;#}
+            }
+        </style>
+    </head>
+    <body style="margin:0; padding:0;">
+        <div class="divProveedor">
+            <b>PROVEEDOR</b>: <br>
+            <span style="font-size: 1.5em">{{ cotizacion.proveedor.nombre }}</span> {{ cotizacion.proveedor.codigo }} <br>
+            {{ cotizacion.proveedor.nit }} <br>
+            {{ cotizacion.proveedor.direccion }} <br>
+        </div>
+        <div class="divOrden" style="width: 100%; text-align: right;">
+            <b>Orden No</b>: {{ orden.no_documento }} <br>
+            {{ solicitud.created_at }}
+{#            {{ dia }}#}
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>CÓDIGO</th>
+                    <th>PRODUCTO</th>
+                    <th>CANTIDAD</th>
+                    <th>PRECIO</th>
+                    <th>TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% load humanize %}
+                {% for detalle in detalles %}
+                    <tr>
+                    <td>{{ detalle.solicitud_detalle.producto.codigo }}</td>
+                    <td>{{ detalle.solicitud_detalle.producto.nombre }}</td>
+                    <td style="text-align: right;">{{ detalle.cantidad }}</td>
+                    <td style="text-align: right;">{{ detalle.cotizacion.moneda.simbolo }}{{ detalle.get_precio|intcomma }}</td>
+                    <td style="text-align: right;">{{ detalle.cotizacion.moneda.simbolo }}{{ detalle.get_total|intcomma }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <th colspan="5" style="text-align: right;">TOTAL COMPRA {{ orden.cotizacion.moneda.simbolo }}{{ orden.get_total|intcomma }}</th>
+            </tr>
+            </tfoot>
+        </table>
+        <div id="notices">
+            <div class="notice">
+                Aprobada por: Coordinador De Compras <br>
+                Generada por: {{ solicitud.usuario.get_full_name }} <br>
+                Departamento: {{ solicitud.departamento.nombre }} <br><br>
+                Facturar a nombre de: {{ orden.empresa.nombre }} <br>
+                NIT: {{ orden.empresa.nit }} <br>
+                Dirección: {{ orden.empresa.direccion }} <br>
+                Observaciones: {{ solicitud.observacion }}
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,158 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Encuestas {% endblock title %}
+
+{% block stylesheets %}
+    <style>
+        @keyframes resaltar {
+            from { transform: none; }
+            50% { transform: scale(.8); }
+            to { transform: none; }
+        }
+
+        @keyframes salir {
+            from {
+                transform: none;
+            }
+            50% {
+                transform: scale(2);
+            }
+            to {
+                transform: none;
+            }
+        }
+
+        .emojis {
+            display: inline-block;
+            font-size: 150px;
+            animation: resaltar 4s infinite;
+            transform-origin: center;
+            margin: 100px 0 20px;
+            cursor: pointer;
+        }
+
+        .hideEmoji {
+            display: inline-block;
+            font-size: 150px;
+            animation: salir 1s;
+            transform-origin: center;
+            margin: 100px 0 20px;
+            cursor: pointer;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <form class="form-horizontal" id="frmEncuesta">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">trending_up</i>
+                            </div>
+                            <h4 class="card-title">Encuestas</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h3>1. ¿La persona que le atendió, le ofreció todos los productos?</h3>
+                                    <input type="hidden" id="hdnOfrecio" name="hdnOfrecio" value="">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">
+                                    <i class="far fa-check-circle emojis" style="color: #2323b6;" data-value="True" data-objeto="hdnOfrecio" data-color="#2323b6" id="iconPre_1_1"></i>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <i class="far fa-times-circle emojis" style="color: #2323b6" data-value="False" data-objeto="hdnOfrecio" data-color="#2323b6" id="iconPre_1_2"></i>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h3>2. ¿Como calificaría nuestro servicio?</h3>
+                                    <input type="hidden" id="hdnValor" name="hdnValor" value="">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3 text-center">
+                                    <i class="fas fa-grin emojis" style="color: #066434;" data-color="#066434" data-objeto="hdnValor" id="iconPre_2_0" data-value="0"></i>
+                                    <h4>Excelente</h4>
+                                </div>
+                                <div class="col-3 text-center">
+                                    <i class="fas fa-smile emojis" style="color: #36b749;" data-color="#36b749" data-objeto="hdnValor" id="iconPre_2_1" data-value="1"></i>
+                                    <h4>Bueno</h4>
+                                </div>
+                                <div class="col-3 text-center">
+                                    <i class="fas fa-meh emojis" style="color: yellow;" data-color="yellow" data-objeto="hdnValor" id="iconPre_2_2" data-value="2"></i>
+                                    <h4>Regular</h4>
+                                </div>
+                                <div class="col-3 text-center">
+                                    <i class="fas fa-frown emojis" style="color: red;" data-color="red" data-objeto="hdnValor" id="iconPre_2_3" data-value="3"></i>
+                                    <h4>Malo</h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h3>3. ¿Encontró lo que necesitaba?</h3>
+                                    <input type="hidden" id="hdnEncontro" name="hdnEncontro" value="">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">
+                                    <i class="far fa-check-circle emojis" style="color: #2323b6;" data-value="True" data-objeto="hdnEncontro" data-color="#2323b6" id="iconPre_3_1"></i>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <i class="far fa-times-circle emojis" style="color: #2323b6" data-value="False" data-objeto="hdnEncontro" data-color="#2323b6" id="iconPre_3_2"></i>
+                                </div>
+                            </div>
+                            <div class="row d-none" id="divPorque3">
+                                <div class="col-12 text-center">
+                                    <h3>¿Por qué?</h3>
+                                    <input class="form-control" type="text" name="txtObservacion">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h3>4. ¿Nos recomendaría con sus familiares y amigos?</h3>
+                                    <input type="hidden" id="hdnRecomendar" name="hdnRecomendar" value="">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">
+                                    <i class="far fa-check-circle emojis" style="color: #2323b6;" data-value="True" data-objeto="hdnRecomendar" data-color="#2323b6" id="iconPre_4_1"></i>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <i class="far fa-times-circle emojis" style="color: #2323b6" data-value="False" data-objeto="hdnRecomendar" data-color="#2323b6" id="iconPre_4_2"></i>
+                                </div>
+                            </div>
+                            <div class="row d-none" id="divPorque4">
+                                <div class="col-12 text-center">
+                                    <h3>¿Por qué?</h3>
+                                    <input class="form-control" type="text" name="txtObservacionRecomendar">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <button type="submit" id="btnEnviarEncuesta" class="btn btn-outline-primary btn-lg">Enviar Encuesta</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        const strUrlSetValor = "{% url 'ventas-encuestas_set_valor' %}";
+    </script>
+    <script src="/static/modules/ventas/encuestas/encuestas.js?v=1.1.0" type="text/javascript" async defer></script>
+
+{% endblock javascripts %}

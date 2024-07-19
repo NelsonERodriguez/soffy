@@ -1,0 +1,85 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block title %} Órdenes de Compra SV {% endblock title %}
+
+{% block stylesheets %}
+    <link href="{% static 'assets/css/components/jasny-bootstrap.min.css' %}" rel="stylesheet" />
+    <style>
+        .required:after {
+            content:" *";
+            color:red;
+        }
+
+        .font-little-heavy {
+            font-weight: 400;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid" id="div_content_1">
+        <div class="row">
+            <div class="offset-md-1 col-md-10">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">receipt</i>
+                        </div>
+                        <h4 class="card-title">
+                            Órdenes de Compra SV
+                            {% if bool_todo %}
+                                <button class="btn btn-fill btn-outline-primary float-sm-right" onclick='fntAgregar();'>
+                                    <span class="material-icons">add</span> Ingresar Orden de Compra
+                                </button>
+                            {% endif %}
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover" id="tblOrdenes">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-2">No.</th>
+                                                <th class="col-2">Fecha</th>
+                                                <th class="col-2">Cliente</th>
+                                                <th class="col-2">Total</th>
+                                                <th class="col-2">Anulada</th>
+                                                <th class="col-2">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" id="div_content_2" style="display: none;"></div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="{% static 'assets/js/plugins/jasny-bootstrap.min.js' %}"></script>
+
+    <script>
+        const strUrlGetListado = "{% url 'ventas-orden_compra_sv_listado' %}",
+            strUrlGetForm = "{% url 'ventas-orden_compra_sv_get_form' %}",
+            strUrlGuardar = "{% url 'ventas-orden_compra_sv_guardar' %}",
+            strUrlAnular = "{% url 'ventas-orden_compra_sv_anular' %}";
+        let objDataTable = null, objProductos = null, intCorrelativo = 1;
+        const boolTodo = "{% if bool_todo %}true{% else %}false{% endif %}" === "true";
+
+    </script>
+
+    <script src="{% static 'modules/ventas/ventas_sv/orden_compra_sv.js' %}" async defer></script>
+{% endblock javascripts %}

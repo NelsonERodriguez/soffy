@@ -1,0 +1,93 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Administración de Estados {% endblock title %}
+
+{% load static %}
+{% load humanize %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+    <style>
+
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">rule</i>
+                        </div>
+                        <h4 class="card-title">Administración de Estados</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <div class="col-12 text-right">
+                                <button type="button" rel="tooltip" class="btn btn-info" data-original-title="Agregar" onclick="simple_redireccion('{% url 'tickets-estados_edit' 0 %}');">
+                                    <i class="material-icons">add</i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="material-datatables table-hover">
+                            <table id="datatables" class="table" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Orden</th>
+                                        <th>Habilitado</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Orden</th>
+                                        <th>Habilitado</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                    {% for estado in estados %}
+                                        <tr style="cursor:pointer;" onclick="simple_redireccion('{% url 'tickets-estados_edit' estado.id %}');">
+                                            <td>{{ estado.nombre }}</td>
+                                            <td>{{ estado.orden }}</td>
+                                            <td>
+                                                {% if estado.activo %}
+                                                    Si
+                                                {% else %}
+                                                    No
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script>
+        $(document).ready(function() {
+            $('#datatables').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "Todos"]
+                ],
+                responsive: true,
+                order: [[1, 'asc']],
+                language: objLenguajeDataTable,
+            });
+        });
+    </script>
+
+{% endblock javascripts %}
