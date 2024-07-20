@@ -27,6 +27,7 @@ urlpatterns = [
     path('tickets/', include('tickets.urls')),
     path('quiniela/', include('quiniela.urls')),
     path('mantenimiento/', include('mantenimiento.urls')),
+    path('contabilidad/', include('contabilidad.urls')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

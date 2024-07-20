@@ -1,0 +1,207 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Nomenclatura Contable {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">groups</i>
+                        </div>
+                        <h4 class="card-title">Nomenclatura Contable</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar text-right">
+                            <a href="{% url 'contabilidad-nomenclatura_contable' %}"
+                               class="btn btn-gradient-danger text-right">
+                                <i class="material-icons">arrow_back</i>
+                                Regresar
+                            </a>
+                        </div>
+                        <div class="col-12">
+
+                            <form action="{% url 'contabilidad-nomenclatura_contable_create' %}" method="POST">
+                                {% csrf_token %}
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.grupo.errors %}has-danger{% endif %}">
+                                            <select name="grupo" id="grupo" class="selectpicker {% if form.grupo.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.grupo.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %} " title="Grupo">
+                                                {% for grupo in form.grupo %}
+                                                    {{ grupo }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.grupo.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.ctapadre.errors %}has-danger{% endif %}">
+                                            <select name="ctapadre" id="ctapadre" class="selectpicker {% if form.ctapadre.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.ctapadre.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}" title="Cuenta Padre">
+                                                {% for ctapadre in form.ctapadre %}
+                                                    {{ ctapadre }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.ctapadre.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.efecto.errors %}has-danger{% endif %}">
+                                            <select name="efecto" id="efecto" class="selectpicker {% if form.efecto.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.efecto.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}" title="Efecto">
+                                                {% for efecto in form.efecto %}
+                                                    {{ efecto }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.efecto.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.nivel.errors %}has-danger{% endif %}">
+                                            <select name="nivel" id="nivel" class="selectpicker {% if form.nivel.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.nivel.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}" title="Nivel">
+                                                {% for nivel in form.nivel %}
+                                                    {{ nivel }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.nivel.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.moneda.errors %}has-danger{% endif %}">
+                                            <select name="moneda" id="moneda" class="selectpicker {% if form.moneda.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.moneda.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}" title="Moneda">
+                                                {% for moneda in form.moneda %}
+                                                    {{ moneda }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.moneda.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.mccos.errors %}has-danger{% endif %}">
+                                            <select name="mccos" id="mccos" class="selectpicker {% if form.mccos.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.mccos.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %} " title="Centro Costo">
+                                                {% for mccos in form.mccos %}
+                                                    {{ mccos }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.mccos.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.ctacontable.errors %}has-danger{% endif %}">
+                                            <label for="ctacontable" class="bmd-label-floating">Cuenta Contable</label>
+                                            <input type="text" name="ctacontable" id="ctacontable"
+                                                   class="form-control {% if form.ctacontable.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.ctacontable.value %}{{ form.ctacontable.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.ctacontable.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.ctanombre.errors %}has-danger{% endif %}">
+                                            <label for="ctanombre" class="bmd-label-floating">Nombre</label>
+                                            <input type="text" name="ctanombre" id="ctanombre"
+                                                   class="form-control {% if form.ctanombre.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.ctanombre.value %}{{ form.ctanombre.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.ctanombre.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.referencia.errors %}has-danger{% endif %}">
+                                            <label for="referencia" class="bmd-label-floating">Referencia</label>
+                                            <input type="text" name="referencia" id="referencia"
+                                                   class="form-control {% if form.referencia.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.referencia.value %}{{ form.referencia.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.referencia.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" name="activo" id="activo">
+                                                <span class="toggle"></span>
+                                                Activo
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-gradient-success">
+                                            <i class="material-icons">save</i>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

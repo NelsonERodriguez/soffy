@@ -1,0 +1,228 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Grupos {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">groups</i>
+                        </div>
+                        <h4 class="card-title">Grupos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar text-right">
+                            <a href="{% url 'contabilidad-grupos' %}"
+                               class="btn btn-gradient-danger text-right">
+                                <i class="material-icons">arrow_back</i>
+                                Regresar
+                            </a>
+                        </div>
+                        <div class="col-12">
+
+                            <form action="{% url 'contabilidad-grupos_create' %}" method="POST">
+                                {% csrf_token %}
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.codigogrupo.errors %}has-danger{% endif %}">
+                                            <label for="codigogrupo" class="bmd-label-floating">Codigo Grupo</label>
+                                            <input type="text" name="codigogrupo" id="codigogrupo"
+                                                   class="form-control {% if form.codigogrupo.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.codigogrupo.value %}{{ form.codigogrupo.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.codigogrupo.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.grupo.errors %}has-danger{% endif %}">
+                                            <label for="grupo" class="bmd-label-floating">Grupo</label>
+                                            <input type="text" name="grupo" id="grupo"
+                                                   class="form-control {% if form.grupo.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.grupo.value %}{{ form.grupo.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.grupo.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.ctaingresos.errors %}has-danger{% endif %}">
+                                            <select name="ctaingresos" id="ctaingresos" class="selectpicker {% if form.ctaingresos.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.ctaingresos.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %} " title="Cta Ingresos">
+                                                {% for ctaingresos in form.ctaingresos %}
+                                                    {{ ctaingresos }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.ctaingresos.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.ctainventario.errors %}has-danger{% endif %}">
+                                            <select name="ctainventario" id="ctainventario" class="selectpicker {% if form.ctainventario.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.ctainventario.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %} " title="Cta Inventario">
+                                                {% for ctainventario in form.ctainventario %}
+                                                    {{ ctainventario }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.ctainventario.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.ctainventariorp.errors %}has-danger{% endif %}">
+                                            <select name="ctainventariorp" id="ctainventariorp" class="selectpicker {% if form.ctainventariorp.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.ctainventariorp.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %} " title="Cta Inventario RP">
+                                                {% for ctainventariorp in form.ctainventariorp %}
+                                                    {{ ctainventariorp }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.ctainventariorp.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.ctacostovta.errors %}has-danger{% endif %}">
+                                            <select name="ctacostovta" id="ctacostovta" class="selectpicker {% if form.ctacostovta.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.ctacostovta.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %} " title="Cta Costo Vta">
+                                                {% for ctacostovta in form.ctacostovta %}
+                                                    {{ ctacostovta }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.ctacostovta.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.ctaennofac.errors %}has-danger{% endif %}">
+                                            <select name="ctaennofac" id="ctaennofac" class="selectpicker {% if form.ctaennofac.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.ctaennofac.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %} " title="Cta Enno Fac">
+                                                {% for ctaennofac in form.ctaennofac %}
+                                                    {{ ctaennofac }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.ctaennofac.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.ctadevinv.errors %}has-danger{% endif %}">
+                                            <select name="ctadevinv" id="ctadevinv" class="selectpicker {% if form.ctadevinv.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.ctadevinv.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %} " title="Cta Dev Inv">
+                                                {% for ctadevinv in form.ctadevinv %}
+                                                    {{ ctadevinv }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.ctadevinv.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.ctadevventa.errors %}has-danger{% endif %}">
+                                            <select name="ctadevventa" id="ctadevventa" class="selectpicker {% if form.ctadevventa.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.ctadevventa.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %} " title="Cta Dev Inv">
+                                                {% for ctadevventa in form.ctadevventa %}
+                                                    {{ ctadevventa }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.ctadevventa.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.almacen.errors %}has-danger{% endif %}">
+                                            <label for="almacen" class="bmd-label-floating">Almacen</label>
+                                            <input type="number" name="almacen" id="almacen"
+                                                   class="form-control {% if form.almacen.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.almacen.value %}{{ form.almacen.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.almacen.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" name="activo" id="activo" {% if form.activo.value %}checked{% endif %}>
+                                                <span class="toggle"></span>
+                                                Activo
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-gradient-success">
+                                            <i class="material-icons">save</i>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,127 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Centros de costo {% endblock title %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-md-2 col-md-8">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">groups</i>
+                        </div>
+                        <h4 class="card-title">Centros de costo</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar text-right">
+                            <a href="{% url 'contabilidad-centros_costo' %}" class="btn btn-gradient-danger text-right">
+                                <i class="material-icons">arrow_back</i>
+                                Regresar
+                            </a>
+                        </div>
+                        <div class="col-12">
+
+                            <form action="{% url 'contabilidad-centros_costo_edit' id %}" method="POST">
+                                {% csrf_token %}
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.idccos.errors %}has-danger{% endif %}">
+                                            <label for="idccos" class="bmd-label-floating">IdCcos</label>
+                                            <input type="text" name="idccos" id="idccos"
+                                                   class="form-control {% if form.idccos.errors %}is-invalid{% endif %}"
+                                                   value="{% if not form.idccos.errors and not form.idccos.value and form.idccos %}{{ form.idccos }}{% else %}{{ form.idccos.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.idccos.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.ccosnombre.errors %}has-danger{% endif %}">
+                                            <label for="ccosnombre" class="bmd-label-floating">CcosNombre</label>
+                                            <input type="text" name="ccosnombre" id="ccosnombre"
+                                                   class="form-control {% if form.ccosnombre.errors %}is-invalid{% endif %}"
+                                                   value="{% if not form.ccosnombre.errors and not form.ccosnombre.value and form.ccosnombre %}{{ form.ccosnombre }}{% else %}{{ form.ccosnombre.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.ccosnombre.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.codccos.errors %}has-danger{% endif %}">
+                                            <label for="codccos" class="bmd-label-floating">CodCcos</label>
+                                            <input type="text" name="codccos" id="codccos"
+                                                   class="form-control {% if form.codccos.errors %}is-invalid{% endif %}"
+                                                   value="{% if not form.codccos.errors and not form.codccos.value and form.codccos %}{{ form.codccos }}{% else %}{{ form.codccos.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.codccos.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.dim.errors %}has-danger{% endif %}">
+                                            <label for="dim" class="bmd-label-floating">Dimensión</label>
+                                            <input type="number" name="dim" id="dim"
+                                                   class="form-control {% if form.dim.errors %}is-invalid{% endif %}"
+                                                   value="{% if not form.dim.errors and not form.dim.value and form.dim %}{{ form.dim }}{% else %}{{ form.dim.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.dim.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" name="activo" id="activo" {% if form.activo %}checked{% endif %}>
+                                                <span class="toggle"></span>
+                                                Activo
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-gradient-success">
+                                            <i class="material-icons">save</i>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script async defer>
+    </script>
+
+{% endblock javascripts %}

@@ -18,6 +18,7 @@ APPS = [
     'durin',
     'api_bridge',
     'mantenimiento',
+    'contabilidad',
     # 'clientes', #robar de termino
     # 'ventas', #robar de termino
     # 'dashboard', #robar de termino
