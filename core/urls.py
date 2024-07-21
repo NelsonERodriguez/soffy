@@ -1,20 +1,23 @@
-from django.urls import path, re_path
+from django.urls import path
 from core import views
 from core.controllers.interfaces import interfaces
 from core.controllers.empresas import empresas
 from core.controllers.localidades import localidades
 from core.controllers.notifications import birthday, football
 from core.controllers.app_ventas_privacidad import app_ventas_privacidad
+from core.controllers.paises import paises
+from core.controllers.departamentos import departamentos
+from core.controllers.municipios import municipios
+from core.controllers.crear_ventanas import crear_ventanas
 from core import functions
 
 
 urlpatterns = [
     path('', views.pages, name='home_pages'),
     path('index/', views.index, name='home_core'),
-    path('index/primera_carga', views.primera_carga, name='home_core-primera_carga'),
+    path('index/primera_carga', views.primera_carga, name='home_primera_carga'),
     path('index_dashboard/', views.index_dashboard, name='core-dashboard'),
     path('login/', views.login, name="login"),
-    path('register/', views.index, name="register"),
     path("logout/", views.logoutRequest, name="logout"),
     path("core/interfaces/", interfaces.index, name="core-interfaces"),
     path("core/interfaces/get_links/<int:pk>", interfaces.get_links, name="core-get_links"),
@@ -33,14 +36,7 @@ urlpatterns = [
     path("core/notificaciones/football", football.index, name='core-notifications_football'),
     path("core/notificaciones/done-football", football.mark_as_done, name='core-notifications_football_done'),
     path("core/buscador", functions.buscador, name='core-buscador'),
-    # path("powerbi/powerbi-ventas", views.power_bi_ventas, name='powerbi-ventas'),
-    # path("powerbi/powerbi-financiero", views.power_bi_financiero, name='powerbi-indicadores'),
-    # path("powerbi/powerbi-intercompañia", views.power_bi_inter_compa, name='powerbi-intercompañia'),
-    # path("powerbi/powerbi-auditorias", views.power_bi_auditorias, name='powerbi-auditorias'),
-    path("core/get_horas_foxcore/", functions.get_horas_foxcore, name='core-get_horas_foxcore'),
-    path("core/get_data_facturas/", views.get_data_facturas, name='core-get_data_facturas'),
-    path("core/get_data_vacaciones/", views.get_data_vacaciones, name='core-get_data_vacaciones'),
-    # path("core/get_data_tickets/", views.get_data_tickets, name='core-get_data_tickets'),
+    
     path("core/get_styles_custom", views.get_styles_custom, name='core-get_styles_custom'),
     path("core/save_custom_styles", views.save_custom_styles, name='core-save_custom_styles'),
     path("core/validate_login/", views.validate_login, name='core-validate_login'),
@@ -53,4 +49,21 @@ urlpatterns = [
     path('core/emulate_login/', views.emulate_login, name='core-emulate_login'),
     path('core/get_asistencias/', views.get_asistencias, name='core-get_asistencias'),
 
+    path("core/paises/", paises.index, name="core-paises"),
+    path("core/paises/create", paises.create, name="core-paises_create"),
+    path("core/paises/edit/<int:pk>", paises.edit, name="core-paises_edit"),
+    path("core/paises/delete/<int:pk>", paises.delete, name="core-paises_delete"),
+
+    path("core/departamentos/", departamentos.index, name="core-departamentos"),
+    path("core/departamentos/create", departamentos.create, name="core-departamentos_create"),
+    path("core/departamentos/edit/<int:pk>", departamentos.edit, name="core-departamentos_edit"),
+    path("core/departamentos/delete/<int:pk>", departamentos.delete, name="core-departamentos_delete"),
+
+    path("core/municipios/", municipios.index, name="core-municipios"),
+    path("core/municipios/create", municipios.create, name="core-municipios_create"),
+    path("core/municipios/edit/<int:pk>", municipios.edit, name="core-municipios_edit"),
+    path("core/municipios/delete/<int:pk>", municipios.delete, name="core-municipios_delete"),
+
+    path("core/crear_ventanas/", crear_ventanas.index, name="core-crear_ventanas"),
+    path("core/crear_ventanas/edit/<int:pk>", crear_ventanas.edit, name="core-crear_ventanas_edit"),
 ]

@@ -2,7 +2,6 @@
 
 {% block title %} Empresas {% endblock title %}
 
-<!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
@@ -11,24 +10,28 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header card-header-primary card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">domain</i>
-                        </div>
-                        <h4 class="card-title">Empresa</h4>
+                    <div class="card-header">
+                        <h4 class="card-title">Empresas - Editar</h4>
                     </div>
                     <div class="card-body">
                         <div class="toolbar">
-                        <!--        Here you can write extra buttons/actions for the toolbar              -->
+                            <div class="row">
+                                <div class="col-12 text-right">
+                                    <button type="button" class="btn btn-gradient-info"
+                                            onclick="simple_redireccion('{% url 'core-empresas' %}');">
+                                        <i class="fas fa-chevron-left"></i>
+                                        Regresar
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <form action="{% url 'core-empresas_edit' form.id %}" method="POST" name="frm_empresas">
                             {% csrf_token %}
-
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group {% if form.nombre.errors %}has-danger{% endif %}">
                                         <label for="nombre" class="bmd-label-floating">Nombre</label>
-                                        <input type="text" class="form-control {% if form.nombre.errors %}is-invalid{% endif %}" id="nombre" name="nombre" value="{% if form.nombre %}{{ form.nombre }}{% endif %}">
+                                        <input type="text" class="form-control {% if form.nombre.errors %}is-invalid{% endif %}" id="nombre" name="nombre" value="{% if form.nombre %}{{ form.nombre }}{% endif %}" autocomplete="off">
                                         <div class="invalid-feedback">
                                             {% for error in form.nombre.errors %}
                                                 {{ error }}
@@ -39,7 +42,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group {% if form.codigo.errors %}has-danger{% endif %}">
                                         <label for="codigo" class="bmd-label-floating">Código</label>
-                                        <input type="text" class="form-control {% if form.codigo.errors %}is-invalid{% endif %}" id="codigo" name="codigo" value="{% if form.codigo %}{{ form.codigo }}{% endif %}" min="0">
+                                        <input type="text" class="form-control {% if form.codigo.errors %}is-invalid{% endif %}" id="codigo" name="codigo" value="{% if form.codigo %}{{ form.codigo }}{% endif %}" min="0" autocomplete="off">
                                         <div class="invalid-feedback">
                                             {% for error in form.codigo.errors %}
                                                 {{ error }}
@@ -52,7 +55,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group {% if form.nit.errors %}has-danger{% endif %}">
                                         <label for="nit" class="bmd-label-floating">Nit</label>
-                                        <input type="text" class="form-control {% if form.nit.errors %}is-invalid{% endif %}" id="nit" name="nit" value="{% if form.nit %}{{ form.nit }}{% endif %}">
+                                        <input type="text" class="form-control {% if form.nit.errors %}is-invalid{% endif %}" id="nit" name="nit" value="{% if form.nit %}{{ form.nit }}{% endif %}" autocomplete="off">
                                         <div class="invalid-feedback">
                                             {% for error in form.nit.errors %}
                                                 {{ error }}
@@ -63,7 +66,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group {% if form.short_name.errors %}has-danger{% endif %}">
                                         <label for="short_name" class="bmd-label-floating">Nombre Corto</label>
-                                        <input type="text" class="form-control {% if form.short_name.errors %}is-invalid{% endif %}" id="short_name" name="short_name" value="{% if form.short_name %}{{ form.short_name }}{% endif %}">
+                                        <input type="text" class="form-control {% if form.short_name.errors %}is-invalid{% endif %}" id="short_name" name="short_name" value="{% if form.short_name %}{{ form.short_name }}{% endif %}" autocomplete="off">
                                         <div class="invalid-feedback">
                                             {% for error in form.short_name.errors %}
                                                 {{ error }}
@@ -76,7 +79,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group {% if form.direccion.errors %}has-danger{% endif %}">
                                         <label for="direccion" class="bmd-label-floating">Dirección</label>
-                                        <input type="text" class="form-control {% if form.direccion.errors %}is-invalid{% endif %}" id="direccion" name="direccion" value="{% if form.direccion %}{{ form.direccion }}{% endif %}">
+                                        <input type="text" class="form-control {% if form.direccion.errors %}is-invalid{% endif %}" id="direccion" name="direccion" value="{% if form.direccion %}{{ form.direccion }}{% endif %}" autocomplete="off">
                                         <div class="invalid-feedback">
                                             {% for error in form.direccion.errors %}
                                                 {{ error }}
@@ -87,7 +90,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group {% if form.telefono.errors %}has-danger{% endif %}">
                                         <label for="telefono" class="bmd-label-floating">Teléfono</label>
-                                        <input type="tel" class="form-control {% if form.telefono.errors %}is-invalid{% endif %}" id="telefono" name="telefono" value="{% if form.telefono %}{{ form.telefono }}{% endif %}">
+                                        <input type="tel" class="form-control {% if form.telefono.errors %}is-invalid{% endif %}" id="telefono" name="telefono" value="{% if form.telefono %}{{ form.telefono }}{% endif %}" autocomplete="off">
                                         <div class="invalid-feedback">
                                             {% for error in form.telefono.errors %}
                                                 {{ error }}
@@ -100,7 +103,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
                                         <label for="email" class="bmd-label-floating">E-Mail</label>
-                                        <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" id="email" name="email" value="{% if form.email %}{{ form.email }}{% endif %}">
+                                        <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" id="email" name="email" value="{% if form.email %}{{ form.email }}{% endif %}" autocomplete="off">
                                         <div class="invalid-feedback">
                                             {% for error in form.email.errors %}
                                                 {{ error }}
@@ -111,7 +114,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group {% if form.nombre_comercial.errors %}has-danger{% endif %}">
                                         <label for="nombre_comercial" class="bmd-label-floating">Nombre comercial</label>
-                                        <input type="text" class="form-control {% if form.nombre_comercial.errors %}is-invalid{% endif %}" id="nombre_comercial" name="nombre_comercial" value="{% if form.nombre_comercial %}{{ form.nombre_comercial }}{% endif %}">
+                                        <input type="text" class="form-control {% if form.nombre_comercial.errors %}is-invalid{% endif %}" id="nombre_comercial" name="nombre_comercial" value="{% if form.nombre_comercial %}{{ form.nombre_comercial }}{% endif %}" autocomplete="off">
                                         <div class="invalid-feedback">
                                             {% for error in form.nombre_comercial.errors %}
                                                 {{ error }}
@@ -124,7 +127,7 @@
                                 <div class="col-sm-12">
                                     <div class="form-group {% if form.direccion_comercial.errors %}has-danger{% endif %}">
                                         <label for="direccion_comercial" class="bmd-label-floating">Dirección comercial</label>
-                                        <input type="text" class="form-control {% if form.direccion_comercial.errors %}is-invalid{% endif %}" id="direccion_comercial" name="direccion_comercial" value="{% if form.direccion_comercial %}{{ form.direccion_comercial }}{% endif %}">
+                                        <input type="text" class="form-control {% if form.direccion_comercial.errors %}is-invalid{% endif %}" id="direccion_comercial" name="direccion_comercial" value="{% if form.direccion_comercial %}{{ form.direccion_comercial }}{% endif %}" autocomplete="off">
                                         <div class="invalid-feedback">
                                             {% for error in form.direccion_comercial.errors %}
                                                 {{ error }}
@@ -168,8 +171,8 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group {% if form.usuario.errors %}has-danger{% endif %}">
-                                        <label for="usuario" class="bmd-label-floating">Usuario</label>
-                                        <input type="text" class="form-control {% if form.usuario.errors %}is-invalid{% endif %}" id="usuario" name="usuario" value="{% if form.usuario %}{{ form.usuario }}{% endif %}">
+                                        <label for="usuario" class="bmd-label-floating">Usuario FEL</label>
+                                        <input type="text" class="form-control {% if form.usuario.errors %}is-invalid{% endif %}" id="usuario" name="usuario" value="{% if form.usuario %}{{ form.usuario }}{% endif %}" autocomplete="off">
                                         <div class="invalid-feedback">
                                             {% for error in form.usuario.errors %}
                                                 {{ error }}
@@ -180,7 +183,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group {% if form.apikey.errors %}has-danger{% endif %}">
                                         <label for="apikey" class="bmd-label-floating">Api Key</label>
-                                        <input type="text" class="form-control {% if form.apikey.errors %}is-invalid{% endif %}" id="apikey" name="apikey" value="{% if form.apikey %}{{ form.apikey }}{% endif %}">
+                                        <input type="text" class="form-control {% if form.apikey.errors %}is-invalid{% endif %}" id="apikey" name="apikey" value="{% if form.apikey %}{{ form.apikey }}{% endif %}" autocomplete="off">
                                         <div class="invalid-feedback">
                                             {% for error in form.apikey.errors %}
                                                 {{ error }}
@@ -193,14 +196,14 @@
                                 <div class="col-sm-12 text-center">
                                     <div class="form-group {% if form.nombre.errors %}has-danger{% endif %}">
                                         {% if bool_change %}
-                                            <button type="button" class="btn btn-fill btn-outline-success" id="btnSave">
-                                                <span class="material-icons">save</span>
-                                                Actualizar
+                                            <button type="button" class="btn btn-gradient-success" id="btnSave">
+                                                <i class="fa fa-save"></i>
+                                                Listo
                                             </button>
                                         {% endif %}
                                         {% if bool_delete %}
-                                            <button type="button" rel="tooltip" class="btn btn-outline-danger" id="btnDelete">
-                                                <i class="material-icons">delete_outline</i>
+                                            <button type="button" rel="tooltip" class="btn btn-gradient-danger" id="btnDelete">
+                                                <i class="fa fa-trash"></i>
                                                 Eliminar
                                             </button>
                                         {% endif %}

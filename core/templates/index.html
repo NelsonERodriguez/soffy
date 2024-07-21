@@ -13,171 +13,37 @@
     <div>
         <h2>MI DASHBOARD</h2>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Ubicación Cliente</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <button type="button" class="btn btn-primary">
-                                    Primary
-                                    <i class="fa fa-search"></i>
-                                </button>
-                                <button type="button" class="btn btn-secondary">Secondary</button>
-                                <button type="button" class="btn btn-info">Info</button>
-                                <button type="button" class="btn btn-success">Success</button>
-                                <button type="button" class="btn btn-danger">Danger</button>
-                                <button type="button" class="btn btn-warning">Warning</button>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-12">
-                                    <button type="button" class="btn btn-outline-primary">Primary</button>
-                                    <button type="button" class="btn btn-outline-secondary">Secondary</button>
-                                    <button type="button" class="btn btn-outline-info">Info</button>
-                                    <button type="button" class="btn btn-outline-success">Success</button>
-                                    <button type="button" class="btn btn-outline-danger">Danger</button>
-                                    <button type="button" class="btn btn-outline-warning">Warning</button>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <button type="button" class="btn btn-gradient-primary">Primary</button>
-                                <button type="button" class="btn btn-gradient-secondary">Secondary</button>
-                                <button type="button" class="btn btn-gradient-info">Info</button>
-                                <button type="button" class="btn btn-gradient-success">Success</button>
-                                <button type="button" class="btn btn-gradient-danger">Danger</button>
-                                <button type="button" class="btn btn-gradient-warning">Warning</button>
-                                <button type="button" class="btn btn-gradient-dark">Dark</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 col-md-4">
-                    <div class="card bg-primary">
-                        <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <p class="text-white text-sm mb-0 text-uppercase font-weight-bold opacity-7">Today's
-                                            Trip
-                                        </p>
-                                        <h5 class="text-white font-weight-bolder mb-0">
-                                            145 Km
-                                        </h5>
-                                    </div>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <div class="icon icon-shape bg-white shadow text-center rounded-circle">
-                                        <i class="ni ni-money-coins text-dark text-lg opacity-10" aria-hidden="true"></i>
+        {% if not user.is_superuser %}
+            {% if user.pedir_empleado %}
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 col-md-4 offset-md-4">
+                            <div class="card bg-primary">
+                                <div class="card-body p-3">
+                                    <div class="row">
+                                        <div class="col-12 text-center">
+                                            <h5 class="text-white font-weight-bolder mb-0">
+                                                Bienvenido a Soffybiz
+                                            </h5>
+                                            <p class="text-white text-sm mb-0 text-uppercase font-weight-bold opacity-7">
+                                                Ayúdanos a Completar tu información
+                                            </p>
+                                        </div>
+                                        <div class="col-12 text-center">
+                                            <button class="btn btn-info" type="button"
+                                                onclick="simple_redireccion('{% url 'rh-usuario_llena_ficha' user.id %}');">
+                                                Haz Click Aquí
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-4">
-                    <div class="card bg-info">
-                        <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <p class="text-white text-sm mb-0 text-uppercase font-weight-bold opacity-7">Today's
-                                            Trip
-                                        </p>
-                                        <h5 class="text-white font-weight-bolder mb-0">
-                                            145 Km
-                                        </h5>
-                                    </div>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <div class="icon icon-shape bg-white shadow text-center rounded-circle">
-                                        <i class="ni ni-money-coins text-dark text-lg opacity-10" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4">
-                    <div class="card bg-success">
-                        <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <p class="text-white text-sm mb-0 text-uppercase font-weight-bold opacity-7">Today's
-                                            Trip
-                                        </p>
-                                        <h5 class="text-white font-weight-bolder mb-0">
-                                            145 Km
-                                        </h5>
-                                    </div>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <div class="icon icon-shape bg-white shadow text-center rounded-circle">
-                                        <i class="ni ni-money-coins text-dark text-lg opacity-10" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4">
-                    <div class="card bg-warning">
-                        <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <p class="text-white text-sm mb-0 text-uppercase font-weight-bold opacity-7">Today's
-                                            Trip
-                                        </p>
-                                        <h5 class="text-white font-weight-bolder mb-0">
-                                            145 Km
-                                        </h5>
-                                    </div>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <div class="icon icon-shape bg-white shadow text-center rounded-circle">
-                                        <i class="ni ni-money-coins text-dark text-lg opacity-10" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4">
-                    <div class="card bg-danger">
-                        <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <p class="text-white text-sm mb-0 text-uppercase font-weight-bold opacity-7">Today's
-                                            Trip
-                                        </p>
-                                        <h5 class="text-white font-weight-bolder mb-0">
-                                            145 Km
-                                        </h5>
-                                    </div>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <div class="icon icon-shape bg-white shadow text-center rounded-circle">
-                                        <i class="ni ni-money-coins text-dark text-lg opacity-10" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
+            {% endif %}
+        {% endif %}
     </div>
-    
 {% endblock content %}
 
 {% block javascripts %}

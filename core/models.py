@@ -147,3 +147,27 @@ class Token_two_factor_authentication(models.Model):
     token = models.CharField(max_length=700)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class Paises(models.Model):
+    nombre = models.CharField(max_length=100)
+    activo = models.BooleanField(default=True)
+    prefijo_telefono = models.CharField(max_length=8)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class DepartamentosPaises(models.Model):
+    nombre = models.CharField(max_length=100)
+    activo = models.BooleanField(default=True)
+    pais = models.ForeignKey(Paises, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class MunicipiosDep(models.Model):
+    nombre = models.CharField(max_length=100)
+    activo = models.BooleanField(default=True)
+    departamento = models.ForeignKey(DepartamentosPaises, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

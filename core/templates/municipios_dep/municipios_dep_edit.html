@@ -1,0 +1,112 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Municipios - Editar {% endblock title %}
+
+{% block stylesheets %}
+    <style></style>
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Municipios - Editar</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <div class="row">
+                                <div class="col-12 text-right">
+                                    <button type="button" class="btn btn-gradient-info"
+                                            onclick="simple_redireccion('{% url 'core-municipios' %}');">
+                                        <i class="fas fa-chevron-left"></i>
+                                        Regresar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <form action="{% url 'core-municipios_edit' form.id %}" method="POST" name="frmEdit" id="frmEdit">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-12 col-md-3">
+                                    <div class="form-group {% if form.nombre.errors %}has-danger{% endif %}">
+                                        <label for="nombre" class="bmd-label-floating">Nombre</label>
+                                        <input type="text" class="form-control {% if form.nombre.errors %}is-invalid{% endif %}" id="nombre" name="nombre" value="{{ form.nombre }}" autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            {% for error in form.nombre.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-2">
+                                    <div class="lleno {% if form.departamento.errors %}has-danger{% endif %}">
+                                        <label for="departamento flotando">Departamento</label>
+                                        <select class="form-control selectFlotando" name="departamento" id="departamento">
+                                            {% for d in departamentos %}
+                                                <option value="{{d.id}}" {% if d.id == form.departamento.id %} selected {% endif %} >{{d.nombre}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.departamento.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="form-check {% if form.activo.errors %}has-danger{% endif %}">
+                                        <label class="form-check-label">Activo
+                                            <input class="form-check-input {% if form.activo.errors %}is-invalid{% endif %}" type="checkbox" id="activo" name="activo" {% if form.activo %}checked{% endif %}>
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.activo.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 text-center">
+                                    <div class="form-group">
+                                        {% if bool_change %}
+                                            <button type="button" class="btn btn-gradient-success" id='btnSave'>
+                                                <i class="fa fa-save"></i>
+                                                Listo
+                                            </button>
+                                        {% endif %}
+                                        {% if bool_delete %}
+                                            <button type="button" class="btn btn-gradient-danger" id='btnDelete'>
+                                                <i class="fa fa-trash"></i>
+                                                Eliminar
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        if (btnSave && typeof btnSave === 'object')
+            btnSave.addEventListener('click', () => {
+                dialogConfirm(simple_submit, 'frmEdit', '¿Estás seguro?', '¡Esta información se actualizará!');
+            });
+
+        if (btnDelete && typeof btnDelete === "object")
+            btnDelete.addEventListener('click', () => {
+                dialogConfirm(simple_redireccion, '{% url 'core-municipios_delete' form.id %}', '¿Desea eliminar?', '¡No podrás revertir esto!', 'error');
+            });
+    </script>
+{% endblock javascripts %}

@@ -1,0 +1,78 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Países {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Países</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 text-right">
+                                <button type="button" class="btn btn-gradient-primary" onclick="simple_redireccion('{% url 'core-paises_create' %}')">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 cnt-table-responsive">
+                                <table class="table table-hover" id="tPrincipal">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Prefijo Telefónico</th>
+                                            <th>Activo</th>
+                                            <th>Opciónes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in data %}
+                                            <tr>
+                                                <td>{{ row.nombre }}</td>
+                                                <td>{{ row.prefijo_telefono }}</td>
+                                                <td>{% if row.activo %} Si {% else %} No {% endif %}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-gradient-info" onclick="simple_redireccion('{% url 'core-paises_edit' row.id %}');">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Prefijo Telefónico</th>
+                                            <th>Activo</th>
+                                            <th>Opciónes</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function() {
+            $('#tPrincipal').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [25, 50, -1],
+                    [25, 50, "All"]
+                ],
+                responsive: false,
+                language: objLenguajeDataTable,
+            });
+        });
+    </script>
+{% endblock javascripts %}

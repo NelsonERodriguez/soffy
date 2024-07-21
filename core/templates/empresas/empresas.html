@@ -2,34 +2,25 @@
 
 {% block title %} Empresas {% endblock title %}
 
-<!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header card-header-primary card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">account_box</i>
-                        </div>
+                    <div class="card-header">
                         <h4 class="card-title">Empresas</h4>
                     </div>
                     <div class="card-body">
-                        <div class="toolbar">
-                        <!--        Here you can write extra buttons/actions for the toolbar              -->
-                        </div>
                         <div class="col-12 text-right">
                             {% if bool_add %}
-                                <a type="button" rel="tooltip" class="btn btn-info" data-original-title="Agregar" href="{% url 'core-empresas_create' %}">
-                                    <i class="material-icons">add</i>
-                                    <div class="ripple-container"></div>
+                                <a type="button" rel="tooltip" class="btn btn-gradient-info" data-original-title="Agregar" href="{% url 'core-empresas_create' %}">
+                                    <i class="fa fa-plus"></i>
                                 </a>
                             {% endif %}
                         </div>
-                        <div class="material-datatables">
+                        <div class="material-datatables cnt-table-responsive">
                             <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
                                 <thead>
                                     <tr>
@@ -39,20 +30,9 @@
                                         <th>Teléfono</th>
                                         <th>Email</th>
                                         <th>Activo</th>
-                                        <th class="disabled-sorting"></th>
+                                        <th>FEL</th>
                                     </tr>
                                 </thead>
-                                <tfoot>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Código</th>
-                                        <th>Nit</th>
-                                        <th>Teléfono</th>
-                                        <th>Email</th>
-                                        <th>Activo</th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
                                 <tbody>
                                     {% for empresa in empresas %}
                                         <tr {% if bool_view %}style="cursor:pointer;" onclick="simple_redireccion('{% url 'core-empresas_edit' empresa.id %}');" {% endif %}>
@@ -62,40 +42,48 @@
                                             <td>{{ empresa.telefono }}</td>
                                             <td>{{ empresa.email }}</td>
                                             <td>{% if empresa.activo %}Si{% else %}No{% endif %}</td>
+                                            <td>{% if empresa.fel %}Si{% else %}No{% endif %}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Código</th>
+                                        <th>Nit</th>
+                                        <th>Teléfono</th>
+                                        <th>Email</th>
+                                        <th>Activo</th>
+                                        <th>FEL</th>
+                                    </tr>
+                                </tfoot>
                             </table>
-                      </div>
+                        </div>
                     </div>
-                    <!-- end content-->
-                  </div>
+                </div>
             </div>
         </div>
     </div>
-
 {% endblock content %}
 
 {% block javascripts %}
-  
-  <script>
-    function confirm_delete(strUrl) {
-        window.location.href = strUrl;
-    }
+    <script>
+        function confirm_delete(strUrl) {
+            window.location.href = strUrl;
+        }
 
-    $(document).ready(function() {
         $(document).ready(function() {
-            $('#datatables').DataTable({
-                "pagingType": "full_numbers",
-                "lengthMenu": [
-                    [10, 25, 50, -1],
-                    [10, 25, 50, "All"]
-                ],
-                responsive: true,
-                language: objLenguajeDataTable,
+            $(document).ready(function() {
+                $('#datatables').DataTable({
+                    "pagingType": "full_numbers",
+                    "lengthMenu": [
+                        [50, -1],
+                        [50, "All"]
+                    ],
+                    responsive: true,
+                    language: objLenguajeDataTable,
+                });
             });
         });
-    });
-  </script>
-
+    </script>
 {% endblock javascripts %}

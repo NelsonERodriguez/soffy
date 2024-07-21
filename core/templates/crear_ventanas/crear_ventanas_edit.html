@@ -1,0 +1,92 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Crear Ventanas - Editar {% endblock title %}
+
+{% block stylesheets %}
+    <style></style>
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Crear Ventanas - Editar</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <div class="row">
+                                <div class="col-12 text-right">
+                                    <button type="button" class="btn btn-gradient-info"
+                                            onclick="simple_redireccion('{% url 'core-crear_ventanas' %}');">
+                                        <i class="fas fa-chevron-left"></i>
+                                        Regresar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <form action="{% url 'core-crear_ventanas_edit' form.id %}" method="POST" name="frmEdit" id="frmEdit">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="modulo" class="bmd-label-floating">Módulo</label>
+                                        <input type="text" class="form-control" id="modulo" name="modulo" value="{% if form.modulo != None and form.modulo != '' %}{{ form.modulo }}{%endif%}">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="ventana" class="bmd-label-floating">Ventana</label>
+                                        <input type="text" class="form-control" id="ventana" name="ventana" value="{% if form.ventana != None and form.ventana != '' %}{{ form.ventana }}{%endif%}">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="link" class="bmd-label-floating">Link</label>
+                                        <input type="text" class="form-control" id="link" name="link" value="{% if form.link != None and form.link != '' %}{{ form.link }}{%endif%}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="icono" class="bmd-label-floating">Ícono</label>
+                                        <input type="text" class="form-control" id="icono" name="icono" value="{% if form.icono != None and form.icono != '' %}{{ form.icono }}{%endif%}">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="sub_modulo" class="bmd-label-floating">Sub Módulo</label>
+                                        <input type="text" class="form-control" id="sub_modulo" name="sub_modulo" value="{% if form.sub_modulo != None and form.sub_modulo != '' %}{{ form.sub_modulo }}{%endif%}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 text-center">
+                                    <div class="form-group">
+                                        {% if bool_change %}
+                                            <button type="button" class="btn btn-gradient-success" id='btnSave'>
+                                                <i class="fa fa-save"></i>
+                                                Listo
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        if (btnSave && typeof btnSave === 'object')
+            btnSave.addEventListener('click', () => {
+                dialogConfirm(simple_submit, 'frmEdit', '¿Estás seguro?', '¡Esta información se actualizará!');
+            });
+    </script>
+{% endblock javascripts %}

@@ -28,18 +28,18 @@
                 </form>
             </div>
             <div class="collapse navbar-collapse justify-content-end">
-                <div class="user">
-                    <div style="max-width: 20px !important; max-height: 20px !important;">
+                <div class="cntInfoUserGlobal">
+                    <div class="cntPictureProfile">
                         {% if request.user.avatar %}
-                        <img style="width: 100% !important; height: 100% !important;" src="https://soffybiz.com{{ request.user.avatar.url }}" alt="Mi Fotografía"/>
+                            <img class="imgPictureProfile" src="{{ request.user.avatar.url }}" alt="Mi Fotografía"/>
                         {% else %}
-                            <img style="width: 100% !important; height: 100% !important;" src="{% static 'assets/img/default-avatar.png' %}" alt="Mi Fotografía"/>
+                            <img class="imgPictureProfile" src="{% static 'assets/img/default-avatar.png' %}" alt="Mi Fotografía"/>
                         {% endif %}
                     </div>
                     <div class="user-info">
                         <a href="{% url 'myaccount' %}">
                             <span>
-                                {{ request.user.get_full_name }} aa
+                                {{ request.user.get_full_name }}
                             </span>
                         </a>
                     </div>
@@ -75,9 +75,6 @@
                                     </a>
                                 {% endif %}
                             {% endif %} -->
-                            <!-- <a class="dropdown-item" href="{% url 'user-change_password' %}">
-                                Cambiar contraseña
-                            </a>  -->
                         </div>
                     </li>
                 </ul>

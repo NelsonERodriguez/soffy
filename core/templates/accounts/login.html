@@ -8,7 +8,7 @@
         <div class="container">
         <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-8 ml-auto mr-auto">
-            <form role="form" method="post" action="{{ app_path }}">
+            <form id="frmLogin" role="form" method="post" action="{{ app_path }}">
                 {% csrf_token %}
                 <div class="card card-login card-hidden">
                     <div class="card-body ">
@@ -31,7 +31,7 @@
                             <span class="bmd-form-group">
                                 <div class="input-group">
                                     <div class="input-group-prepend" style='width: 100%'>
-                                        <input type="email" name='username' class="form-control" placeholder='Correo' autocomplete="new-password">
+                                        <input type="email" name='username' class="form-control" placeholder='Correo'>
                                     </div>
                                     {{ form.username }}
                                 </div>
@@ -40,7 +40,7 @@
                             <span class="bmd-form-group">
                                 <div class="input-group">
                                     <div class="input-group-prepend" style='width: 100%'>
-                                        <input type="password" name='password' class="form-control" placeholder='Contraseña' autocomplete="new-password">
+                                        <input type="password" name='password' class="form-control" placeholder='Contraseña'>
                                     </div>
                                     {{ form.password }}
                                 </div>
@@ -50,9 +50,7 @@
                     <div class="card-footer justify-content-center">
                         <button type="submit" name="login" class="btn" style="background-image: linear-gradient(310deg, #2dce89, #2dcecc);" id="btnLogin">Ingresar</button>
                     </div>
-        
                     <br />
-        
                 </div>
             </form>
 
@@ -69,11 +67,12 @@
 {% block javascripts %}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('input').forEach( node => node.addEventListener('keypress', e => {
-                if (e.keyCode == 13) {
-                    e.preventDefault();
+            document.getElementById('frmLogin').addEventListener('keydown', (event) => {
+                if(event.key === 'Enter') {
+                    event.preventDefault();
+                    document.getElementById('frmLogin').submit();
                 }
-            }))
+            });
         });
 
         $(document).ready(function() {

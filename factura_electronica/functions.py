@@ -3,7 +3,7 @@ from django.db import transaction
 from django.http import JsonResponse
 from core.functions import get_query, insert_query, get_json_response_xml, get_convert_json_response_xml, \
     execute_query, send_email
-from core.inventario_models import FacturasInventario
+# from core.inventario_models import FacturasInventario
 from soffybiz.debug import DEBUG
 from soffybiz.settings import FEL_AMBIENT
 from .models import cola_facturacion, cola_facturacion_detalle
@@ -452,7 +452,8 @@ def update_factura(arr_datos):
         # factura.nodocumento = arr_datos['NoDocumento']
         # factura.save()
 
-        factura_inventario = FacturasInventario.objects.get(nofactura=arr_datos['NoFactura'])
+        # factura_inventario = FacturasInventario.objects.get(nofactura=arr_datos['NoFactura'])
+        factura_inventario = []
         factura_inventario.serie = arr_datos['Serie']
         factura_inventario.nodocumento = arr_datos['NoDocumento']
         factura_inventario.save()
@@ -940,7 +941,8 @@ def anulate_invoice_local(int_user, arr_invoice_data, bool_anula_movimiento=True
                 # factura.nomovimientoingreso = 0
                 # factura.save()
 
-                factura_inventario = FacturasInventario.objects.get(nofactura=arr_invoice_data['factura_id'])
+                # factura_inventario = FacturasInventario.objects.get(nofactura=arr_invoice_data['factura_id'])
+                factura_inventario = []
                 factura_inventario.noestado = 3
                 factura_inventario.anulado = True
                 factura_inventario.nomovimientoingreso = 0
@@ -950,8 +952,9 @@ def anulate_invoice_local(int_user, arr_invoice_data, bool_anula_movimiento=True
                 if not execute_query(sql="EXEC [Inventario]..[AnulaMovimiento] %s, %s, 'Anulación de factura', 0",
                                      params=(arr_invoice_data['NoMovimientoEgreso'], int_user)):
                     raise Exception("No se pudo correr el proceso de anulación, contacta con soporte")
+    except ValueError as e:
 
-    except FacturasInventario.DoesNotExist:
+    # except FacturasInventario.DoesNotExist:
         arr_return = {
             "status": False,
             "msj": "Factura no encontrada",

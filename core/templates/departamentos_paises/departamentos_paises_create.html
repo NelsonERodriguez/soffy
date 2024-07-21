@@ -1,0 +1,89 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Departamentos - Crear {% endblock title %}
+
+{% load static %}
+
+{% block stylesheets %}
+    <style></style>
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Departamentos - Crear</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 text-right">
+                                <button type="button" class="btn btn-gradient-info"
+                                        onclick="simple_redireccion('{% url 'core-departamentos' %}');">
+                                    <i class="fas fa-chevron-left"></i>
+                                    Regresar
+                                </button>
+                            </div>
+                        </div>
+                        <form action="{% url 'core-departamentos_create' %}" method="POST" name="frmSave" id="frmSave">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-12 col-md-3">
+                                    <div class="form-group {% if form.nombre.errors %}has-danger{% endif %}">
+                                        <label for="nombre" class="bmd-label-floating">Nombre</label>
+                                        <input type="text" class="form-control {% if form.nombre.errors %}is-invalid{% endif %}" id="nombre" name="nombre" value="{% if form.nombre.value %}{{ form.nombre.value }}{% endif %}" autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            {% for error in form.nombre.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-2">
+                                    <div class="lleno {% if form.pais.errors %}has-danger{% endif %}">
+                                        <label for="pais flotando">País</label>
+                                        <select class="form-control selectFlotando" name="pais" id="pais">
+                                            {% if solo_uno %}
+                                                {% for d in paises %}
+                                                    <option value="{{d.id}}" selected>{{d.nombre}}</option>
+                                                {% endfor %}
+                                            {% else %}
+                                                <option value="0" selected>Selecciona uno</option>
+                                                {% for d in paises %}
+                                                    <option value="{{d.id}}">{{d.nombre}}</option>
+                                                {% endfor %}
+                                            {% endif %}                                            
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.pais.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="form-group {% if form.activo.errors %}has-danger{% endif %}">
+                                        <label for="activo" class="bmd-label-floating">Activo</label>
+                                        <input type="checkbox" class="form-control" id="activo" name="activo" checked>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn btn-gradient-success" id="btnSave">
+                                        <i class="fa fa-save"></i> Listo
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script></script>
+{% endblock javascripts %}

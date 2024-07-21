@@ -1,0 +1,83 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Crear Ventanas {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Crear Ventanas</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 cnt-table-responsive">
+                                <table class="table table-hover" id="tPrincipal">
+                                    <thead>
+                                        <tr>
+                                            <th>App</th>
+                                            <th>Model</th>
+                                            <th>Módulo</th>
+                                            <th>Ventana</th>
+                                            <th>Link</th>
+                                            <th>Ícono</th>
+                                            <th>Submódulo</th>
+                                            <th>Opciónes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in data %}
+                                            <tr>
+                                                <td>{{ row.app_label }}</td>
+                                                <td>{{ row.model }}</td>
+                                                <td>{{ row.modulo }}</td>
+                                                <td>{{ row.ventana }}</td>
+                                                <td>{{ row.link }}</td>
+                                                <td>{{ row.icono }}</td>
+                                                <td>{{ row.sub_modulo }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-gradient-info" onclick="simple_redireccion('{% url 'core-crear_ventanas_edit' row.id %}');">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>App</th>
+                                            <th>Model</th>
+                                            <th>Módulo</th>
+                                            <th>Ventana</th>
+                                            <th>Link</th>
+                                            <th>Ícono</th>
+                                            <th>Submódulo</th>
+                                            <th>Opciónes</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function() {
+            $('#tPrincipal').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [25, 50, -1],
+                    [25, 50, "All"]
+                ],
+                responsive: false,
+                language: objLenguajeDataTable,
+            });
+        });
+    </script>
+{% endblock javascripts %}

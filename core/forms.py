@@ -1,5 +1,5 @@
 from django import forms
-from .models import Empresas
+from .models import Empresas, Paises, DepartamentosPaises
 
 
 class InterfazForm(forms.Form):
@@ -29,9 +29,27 @@ class EmpresasForm(forms.Form):
 
 
 class LocalidadesForm(forms.Form):
-    empresa = forms.ModelChoiceField(queryset=Empresas.objects.filter(activo=True), to_field_name='id', required=True)
+    empresa = forms.ModelChoiceField(queryset=Empresas.objects.filter(activo=True))
     codigo = forms.CharField(max_length=50, required=False)
     nombre = forms.CharField(max_length=255, required=True)
     direccion = forms.CharField(max_length=255, required=False)
     telefono = forms.CharField(max_length=255, required=False)
     activo = forms.BooleanField(required=False)
+
+
+class PaisesForm(forms.Form):
+    nombre = forms.CharField(max_length=100, required=True)
+    activo = forms.BooleanField(required=False)
+    prefijo_telefono = forms.CharField(max_length=8)
+
+
+class DepartamentosPaisesForm(forms.Form):
+    nombre = forms.CharField(max_length=100)
+    activo = forms.BooleanField(required=False)
+    pais = forms.ModelChoiceField(queryset=Paises.objects.filter(activo=True))
+
+
+class MunicipiosDepForm(forms.Form):
+    nombre = forms.CharField(max_length=100)
+    activo = forms.BooleanField(required=False)
+    departamento = forms.ModelChoiceField(queryset=DepartamentosPaises.objects.filter(activo=True))
