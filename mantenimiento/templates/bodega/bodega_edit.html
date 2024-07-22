@@ -1,0 +1,142 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Bodega {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">groups</i>
+                        </div>
+                        <h4 class="card-title">Bodega</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar text-right">
+                            <a href="{% url 'mantenimiento-bodega' %}"
+                               class="btn btn-gradient-danger text-right">
+                                <i class="material-icons">arrow_back</i>
+                                Regresar
+                            </a>
+                        </div>
+                        <div class="col-12">
+
+                            <form action="{% url 'mantenimiento-bodega_edit' id %}" method="POST">
+                                {% csrf_token %}
+
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.ctacontable.errors %}has-danger{% endif %}">
+                                            <select name="ctacontable" id="ctacontable" class="selectpicker {% if form.ctacontable.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.ctacontable.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}" title="Cuenta Padre">
+                                                {% for ctacontable in form.ctacontable %}
+                                                    {{ ctacontable }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.ctacontable.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.cencos.errors %}has-danger{% endif %}">
+                                            <select name="cencos" id="cencos" class="selectpicker {% if form.cencos.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.cencos.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %} " title="Centro Costo">
+                                                {% for cencos in form.cencos %}
+                                                    {{ cencos }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.cencos.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.nbodega.errors %}has-danger{% endif %}">
+                                            <label for="nbodega" class="bmd-label-floating">NBodega</label>
+                                            <input type="text" name="nbodega" id="nbodega"
+                                                   class="form-control {% if form.nbodega.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.nbodega.value %}{{ form.nbodega.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.nbodega.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.ubicacion.errors %}has-danger{% endif %}">
+                                            <label for="ubicacion" class="bmd-label-floating">Ubicación</label>
+                                            <input type="text" name="ubicacion" id="ubicacion"
+                                                   class="form-control {% if form.ubicacion.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.ubicacion.value %}{{ form.ubicacion.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.ubicacion.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-4">
+
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" name="predet" id="predet" {% if form.predet.value %}checked{% endif %}>
+                                                <span class="toggle"></span>
+                                                Predet
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" name="activo" id="activo" {% if form.activo.value %}checked{% endif %}>
+                                                <span class="toggle"></span>
+                                                Activo
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-gradient-success">
+                                            <i class="material-icons">save</i>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

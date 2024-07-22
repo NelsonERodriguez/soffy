@@ -1,13 +1,21 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+# from faker import Faker
+
 from mantenimiento.models import mempresa
 from mantenimiento.forms import mempresaForm
-from core.functions import set_notification
-from django.http import JsonResponse
 
 
 @login_required(login_url="/login/")
 def index(request):
+    # fake = Faker()
+    # list_to_insert = []
+    # for _ in range(30):
+    #     list_to_insert.append(mempresa(
+    #         nombreempresa=fake.name(),
+    #         direccion=fake.address(),
+    #     ))
+    # mempresa.objects.bulk_create(list_to_insert)
     arr_empresas = mempresa.objects.all()
 
     data = {

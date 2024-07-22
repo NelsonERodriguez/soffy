@@ -1,0 +1,204 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Bancos {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">groups</i>
+                        </div>
+                        <h4 class="card-title">Bancos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar text-right">
+                            <a href="{% url 'mantenimiento-bancos' %}"
+                               class="btn btn-gradient-danger text-right">
+                                <i class="material-icons">arrow_back</i>
+                                Regresar
+                            </a>
+                        </div>
+                        <div class="col-12">
+
+                            <form action="{% url 'mantenimiento-bancos_edit' id %}" method="POST">
+                                {% csrf_token %}
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.cueban.errors %}has-danger{% endif %}">
+                                            <label for="cueban" class="bmd-label-floating">Cuenta banco</label>
+                                            <input type="text" name="cueban" id="cueban"
+                                                   class="form-control {% if form.cueban.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.cueban.value %}{{ form.cueban.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.cueban.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.nomban.errors %}has-danger{% endif %}">
+                                            <label for="nomban" class="bmd-label-floating">Nombre banco</label>
+                                            <input type="text" name="nomban" id="nomban"
+                                                   class="form-control {% if form.nomban.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.nomban.value %}{{ form.nomban.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.nomban.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.chequesigue.errors %}has-danger{% endif %}">
+                                            <label for="chequesigue" class="bmd-label-floating">ChequeSigue</label>
+                                            <input type="text" name="chequesigue" id="chequesigue"
+                                                   class="form-control {% if form.chequesigue.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.chequesigue.value %}{{ form.chequesigue.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.chequesigue.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.ctacon.errors %}has-danger{% endif %}">
+                                            <select name="ctacon" id="ctacon" class="selectpicker {% if form.ctacon.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.ctacon.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}" title="Cuenta Contable">
+                                                {% for ctacon in form.ctacon %}
+                                                    {{ ctacon }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.ctacon.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.piecheq.errors %}has-danger{% endif %}">
+                                            <label for="piecheq" class="bmd-label-floating">PieCheq</label>
+                                            <input type="text" name="piecheq" id="piecheq"
+                                                   class="form-control {% if form.piecheq.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.piecheq.value %}{{ form.piecheq.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.piecheq.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.moneda.errors %}has-danger{% endif %}">
+                                            <label for="moneda" class="bmd-label-floating">Moneda</label>
+                                            <input type="text" name="moneda" id="moneda"
+                                                   class="form-control {% if form.moneda.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.moneda.value %}{{ form.moneda.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.moneda.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.saldoinicial.errors %}has-danger{% endif %}">
+                                            <label for="saldoinicial" class="bmd-label-floating">Saldo Inicial</label>
+                                            <input type="number" name="saldoinicial" id="saldoinicial"
+                                                   class="form-control {% if form.saldoinicial.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.saldoinicial.value %}{{ form.saldoinicial.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.saldoinicial.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.fechainicial.errors %}has-danger{% endif %}">
+                                            <label for="fechainicial">Fecha inicial</label>
+                                            <input type="date" name="fechainicial" id="fechainicial"
+                                                   class="form-control {% if form.fechainicial.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.fechainicial.value %}{{ form.fechainicial.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.fechainicial.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" name="sobregiro" id="sobregiro" {% if form.sobregiro.value %}checked{% endif %}>
+                                                <span class="toggle"></span>
+                                                SobreGiro
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" name="bloqueado" id="bloqueado" {% if form.bloqueado.value %}checked{% endif %}>
+                                                <span class="toggle"></span>
+                                                Bloqueado
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-gradient-success">
+                                            <i class="material-icons">save</i>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

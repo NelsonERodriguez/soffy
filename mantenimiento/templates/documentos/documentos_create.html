@@ -1,0 +1,240 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Documento {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">groups</i>
+                        </div>
+                        <h4 class="card-title">Documento</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar text-right">
+                            <a href="{% url 'mantenimiento-documentos' %}"
+                               class="btn btn-gradient-danger text-right">
+                                <i class="material-icons">arrow_back</i>
+                                Regresar
+                            </a>
+                        </div>
+                        <div class="col-12">
+
+                            <form action="{% url 'mantenimiento-documentos_create' %}" method="POST">
+                                {% csrf_token %}
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.tipodocumento.errors %}has-danger{% endif %}">
+                                            <label for="tipodocumento" class="bmd-label-floating">Tipo documento</label>
+                                            <input type="text" name="tipodocumento" id="tipodocumento"
+                                                   class="form-control {% if form.tipodocumento.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.tipodocumento.value %}{{ form.tipodocumento.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.tipodocumento.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group v {% if form.fechainicio.errors %}has-danger{% endif %}">
+                                            <label for="fechainicio">Fecha inicio</label>
+                                            <input type="date" name="fechainicio" id="fechainicio"
+                                                   class="form-control {% if form.fechainicio.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.fechainicio.value %}{{ form.fechainicio.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.fechainicio.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.fechavence.errors %}has-danger{% endif %}">
+                                            <label for="fechavence">Fecha fin</label>
+                                            <input type="date" name="fechavence" id="fechavence"
+                                                   class="form-control {% if form.fechavence.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.fechavence.value %}{{ form.fechavence.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.fechavence.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.serie.errors %}has-danger{% endif %}">
+                                            <label for="serie" class="bmd-label-floating">Serie</label>
+                                            <input type="text" name="serie" id="serie"
+                                                   class="form-control {% if form.serie.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.serie.value %}{{ form.serie.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.serie.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.desde.errors %}has-danger{% endif %}">
+                                            <label for="desde" class="bmd-label-floating">Desde</label>
+                                            <input type="number" name="desde" id="desde"
+                                                   class="form-control {% if form.desde.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.desde.value %}{{ form.desde.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.desde.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.hasta.errors %}has-danger{% endif %}">
+                                            <label for="hasta" class="bmd-label-floating">Hasta</label>
+                                            <input type="number" name="hasta" id="hasta"
+                                                   class="form-control {% if form.hasta.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.hasta.value %}{{ form.hasta.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.hasta.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.ultimano.errors %}has-danger{% endif %}">
+                                            <label for="ultimano" class="bmd-label-floating">Ultimo No</label>
+                                            <input type="number" name="ultimano" id="ultimano"
+                                                   class="form-control {% if form.ultimano.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.ultimano.value %}{{ form.ultimano.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.ultimano.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.resolucion.errors %}has-danger{% endif %}">
+                                            <label for="resolucion" class="bmd-label-floating">Resolución</label>
+                                            <input type="text" name="resolucion" id="resolucion"
+                                                   class="form-control {% if form.resolucion.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.resolucion.value %}{{ form.resolucion.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.resolucion.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.idsucursal.errors %}has-danger{% endif %}">
+                                            <select name="idsucursal" id="idsucursal" class="selectpicker {% if form.idsucursal.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.idsucursal.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}" title="Bodega">
+                                                {% for idsucursal in form.idsucursal %}
+                                                    {{ idsucursal }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.idsucursal.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.describedocumento.errors %}has-danger{% endif %}">
+                                            <label for="describedocumento" class="bmd-label-floating">Describe documento</label>
+                                            <input type="text" name="describedocumento" id="describedocumento"
+                                                   class="form-control {% if form.describedocumento.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.describedocumento.value %}{{ form.describedocumento.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.describedocumento.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.noestable.errors %}has-danger{% endif %}">
+                                            <label for="noestable" class="bmd-label-floating">NoEstable</label>
+                                            <input type="number" name="noestable" id="noestable"
+                                                   class="form-control {% if form.noestable.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.noestable.value %}{{ form.noestable.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.noestable.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.cortecaja.errors %}has-danger{% endif %}">
+                                            <label for="cortecaja" class="bmd-label-floating">Corte Caja</label>
+                                            <input type="text" name="cortecaja" id="cortecaja"
+                                                   class="form-control {% if form.cortecaja.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.cortecaja.value %}{{ form.cortecaja.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.cortecaja.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-gradient-success">
+                                            <i class="material-icons">save</i>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

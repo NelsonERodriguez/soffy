@@ -1,5 +1,7 @@
 from django import forms
-from mantenimiento.models import mempresa
+
+from contabilidad.forms import Mcuentas, Mccos
+from mantenimiento.models import Mbodega
 
 
 class mempresaForm(forms.Form):
@@ -58,3 +60,47 @@ class mempresaForm(forms.Form):
     certifica = forms.CharField(max_length=2, required=False)
     ctaperygan = forms.CharField(max_length=10, required=False)
 
+
+class MbodegaForm(forms.Form):
+    nbodega = forms.CharField(max_length=100, required=True)
+    ubicacion = forms.CharField(max_length=100, required=True)
+    activo = forms.BooleanField(required=False)
+    predet = forms.BooleanField(required=False)
+    ctacontable = forms.ModelChoiceField(queryset=Mcuentas.objects.filter(activo=True), to_field_name='id',
+                                         required=False,
+                                         widget=forms.Select(attrs={'class': 'form-control'}),
+                                         empty_label='Cuenta contable')
+    cencos = forms.ModelChoiceField(queryset=Mccos.objects.filter(activo=True), to_field_name='id', required=False,
+                                    widget=forms.Select(attrs={'class': 'form-control'}), empty_label='Centro de costo')
+
+
+class MdocumentosForm(forms.Form):
+    tipodocumento = forms.CharField(max_length=50, required=True)
+    fechainicio = forms.DateField(required=True)
+    fechavence = forms.DateField(required=True)
+    serie = forms.CharField(max_length=20, required=True)
+    desde = forms.IntegerField(required=True)
+    hasta = forms.IntegerField(required=True)
+    ultimano = forms.IntegerField(required=False)
+    resolucion = forms.CharField(max_length=50, required=True)
+    idsucursal = forms.ModelChoiceField(queryset=Mbodega.objects.filter(activo=True), to_field_name='id',
+                                        required=True, widget=forms.Select(attrs={'class': 'form-control'}),
+                                        empty_label='Bodega')
+    describedocumento = forms.CharField(max_length=50, required=False)
+    noestable = forms.DecimalField(max_digits=3, decimal_places=0, required=False)
+    cortecaja = forms.CharField(max_length=2, required=False)
+
+
+class MbancosForm(forms.Form):
+    cueban = forms.CharField(required=True, max_length=50)
+    nomban = forms.CharField(max_length=100, required=True)
+    chequesigue = forms.IntegerField(required=False)
+    ctacon = forms.ModelChoiceField(queryset=Mcuentas.objects.filter(activo=True), to_field_name='id',
+                                    required=False, widget=forms.Select(attrs={'class': 'form-control'}),
+                                    empty_label='Cuenta contable')
+    piecheq = forms.CharField(max_length=20, required=False)
+    sobregiro = forms.BooleanField(required=False)
+    moneda = forms.CharField(max_length=10, required=False)
+    bloqueado = forms.BooleanField(required=False)
+    saldoinicial = forms.DecimalField(max_digits=18, decimal_places=2, required=False)
+    fechainicial = forms.DateField(required=False)
