@@ -21,82 +21,89 @@
                                 Nuevo
                             </a>
                         </div>
-                        <div class="col-12">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th class="px-4 py-2">CtaContable</th>
-                                    <th class="px-4 py-2">CtaNombre</th>
-                                    <th class="px-4 py-2">Efecto</th>
-                                    <th class="px-4 py-2">Nivel</th>
-                                    <th class="px-4 py-2">Moneda</th>
-                                    <th class="px-4 py-2">Activo</th>
-                                    <th class="px-4 py-2">Acciones</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for mcuenta in page_obj %}
-                                    <tr>
-                                        <td class="border px-4 py-2">{{ mcuenta.ctacontable }}</td>
-                                        <td class="border px-4 py-2">{{ mcuenta.ctanombre }}</td>
-                                        <td class="border px-4 py-2">{{ mcuenta.efecto }}</td>
-                                        <td class="border px-4 py-2">{{ mcuenta.nivel }}</td>
-                                        <td class="border px-4 py-2">{{ mcuenta.moneda }}</td>
-                                        <td class="border px-4 py-2">
-                                            {% if mcuenta.activo %}
-                                                Si
-                                            {% else %}
-                                                No
-                                            {% endif %}
-                                        </td>
-                                        <td class="border px-4 py-2 td-actions text-left">
-                                            <a type="button" rel="tooltip"
-                                               class="btn btn-just-icon btn-link btn-success"
-                                               data-original-title="Editar"
-                                               href="{% url 'contabilidad-nomenclatura_contable_edit' mcuenta.id %}">
-                                                <i class="material-icons">edit</i>
-                                            </a>
-                                            <a type="button" rel="tooltip" class="btn btn-just-icon btn-link btn-danger"
-                                               data-original-title="Eliminar"
-                                               href="{% url 'contabilidad-nomenclatura_contable_delete' mcuenta.id %}">
-                                                <i class="material-icons">delete</i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-md-12">
 
-                            <!-- Paginación -->
-                            <div class="col-md-12">
-                                <span class="col-md-6 text-sm text-gray-700">
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th class="px-4 py-2">CtaContable</th>
+                                                <th class="px-4 py-2">CtaNombre</th>
+                                                <th class="px-4 py-2">Efecto</th>
+                                                <th class="px-4 py-2">Nivel</th>
+                                                <th class="px-4 py-2">Moneda</th>
+                                                <th class="px-4 py-2">Activo</th>
+                                                <th class="px-4 py-2">Acciones</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for mcuenta in page_obj %}
+                                                <tr>
+                                                    <td class="border px-4 py-2">{{ mcuenta.ctacontable }}</td>
+                                                    <td class="border px-4 py-2">{{ mcuenta.ctanombre }}</td>
+                                                    <td class="border px-4 py-2">{{ mcuenta.efecto }}</td>
+                                                    <td class="border px-4 py-2">{{ mcuenta.nivel }}</td>
+                                                    <td class="border px-4 py-2">{{ mcuenta.moneda }}</td>
+                                                    <td class="border px-4 py-2">
+                                                        {% if mcuenta.activo %}
+                                                            Si
+                                                        {% else %}
+                                                            No
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="border px-4 py-2 td-actions text-left">
+                                                        <a type="button" rel="tooltip"
+                                                           class="btn btn-just-icon btn-link btn-success"
+                                                           data-original-title="Editar"
+                                                           href="{% url 'contabilidad-nomenclatura_contable_edit' mcuenta.id %}">
+                                                            <i class="material-icons">edit</i>
+                                                        </a>
+                                                        <a type="button" rel="tooltip"
+                                                           class="btn btn-just-icon btn-link btn-danger"
+                                                           data-original-title="Eliminar"
+                                                           href="{% url 'contabilidad-nomenclatura_contable_delete' mcuenta.id %}">
+                                                            <i class="material-icons">delete</i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- Paginación -->
+                                <div class="row">
+                                <span class="col-md-6">
                                     Mostrando {{ page_obj.start_index }} a {{ page_obj.end_index }} de {{ page_obj.paginator.count }} resultados
                                 </span>
-                                <div class="col-md-6 inline-flex mt-2">
-                                    {% if page_obj.has_previous %}
-                                        <a href="?page=1" class="bg-blue-500 text-primary px-3 py-1 rounded-l">Primero</a>
-                                        <a href="?page={{ page_obj.previous_page_number }}"
-                                           class="bg-blue-500 text-primary px-3 py-1 ml-1">Anterior</a>
-                                    {% endif %}
-
-                                    {% for num in page_obj.paginator.page_range %}
-                                        {% if page_obj.number == num %}
-                                            <span class="bg-blue-500 text-primary px-3 py-1 ml-1">{{ num }}</span>
-                                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                            <a href="?page={{ num }}"
-                                               class="bg-blue-500 text-primary px-3 py-1 ml-1">{{ num }}</a>
+                                    <div class="col-md-6 inline-flex mt-2">
+                                        {% if page_obj.has_previous %}
+                                            <a href="?page=1" class="bg-blue-500 text-primary px-3 py-1 rounded-l">Primero</a>
+                                            <a href="?page={{ page_obj.previous_page_number }}"
+                                               class="bg-blue-500 text-primary px-3 py-1 ml-1">Anterior</a>
                                         {% endif %}
-                                    {% endfor %}
 
-                                    {% if page_obj.has_next %}
-                                        <a href="?page={{ page_obj.next_page_number }}"
-                                           class="bg-blue-500 text-primary px-3 py-1 ml-1">Siguiente</a>
-                                        <a href="?page={{ page_obj.paginator.num_pages }}"
-                                           class="bg-blue-500 text-primary px-3 py-1 rounded-r ml-1">Último</a>
-                                    {% endif %}
+                                        {% for num in page_obj.paginator.page_range %}
+                                            {% if page_obj.number == num %}
+                                                <span class="bg-blue-500 text-primary px-3 py-1 ml-1">{{ num }}</span>
+                                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                                <a href="?page={{ num }}"
+                                                   class="bg-blue-500 text-primary px-3 py-1 ml-1">{{ num }}</a>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% if page_obj.has_next %}
+                                            <a href="?page={{ page_obj.next_page_number }}"
+                                               class="bg-blue-500 text-primary px-3 py-1 ml-1">Siguiente</a>
+                                            <a href="?page={{ page_obj.paginator.num_pages }}"
+                                               class="bg-blue-500 text-primary px-3 py-1 rounded-r ml-1">Último</a>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                            </div>
 
+                            </div>
                         </div>
                     </div>
                 </div>

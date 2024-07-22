@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 
 from contabilidad.forms import McuentasForm
-from contabilidad.models import Mcuentas, Mgrupoitm, Mccos
+from contabilidad.models import Mcuentas
 from core.functions import set_notification
 
 

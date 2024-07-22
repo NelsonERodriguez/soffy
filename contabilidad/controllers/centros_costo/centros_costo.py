@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from contabilidad.forms import MccosForm

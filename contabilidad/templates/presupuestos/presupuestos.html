@@ -21,66 +21,70 @@
                                 Nuevo
                             </a>
                         </div>
-                        <div class="col-12">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th class="px-4 py-2">Id Pre</th>
-                                    <th class="px-4 py-2">Fecha</th>
-                                    <th class="px-4 py-2">Descripción</th>
-                                    <th class="px-4 py-2">Acciones</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for presupuesto in page_obj %}
-                                    <tr>
-                                        <td class="border px-4 py-2">{{ presupuesto.id }}</td>
-                                        <td class="border px-4 py-2">{{ presupuesto.fecha|date:"d/m/Y" }}</td>
-                                        <td class="border px-4 py-2">{{ presupuesto.descripcion }}</td>
-                                        <td class="border px-4 py-2 td-actions text-left">
-                                            <a type="button" rel="tooltip"
-                                               class="btn btn-just-icon btn-link btn-success"
-                                               data-original-title="Editar"
-                                               href="{% url 'contabilidad-presupuestos_edit' presupuesto.id %}">
-                                                <i class="material-icons">edit</i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-
-                            <!-- Paginación -->
-                            <div class="col-md-12">
-                                <span class="col-md-6 text-sm text-gray-700">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th class="px-4 py-2">Id Pre</th>
+                                                <th class="px-4 py-2">Fecha</th>
+                                                <th class="px-4 py-2">Descripción</th>
+                                                <th class="px-4 py-2">Acciones</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for presupuesto in page_obj %}
+                                                <tr>
+                                                    <td class="border px-4 py-2">{{ presupuesto.id }}</td>
+                                                    <td class="border px-4 py-2">{{ presupuesto.fecha|date:"d/m/Y" }}</td>
+                                                    <td class="border px-4 py-2">{{ presupuesto.descripcion }}</td>
+                                                    <td class="border px-4 py-2 td-actions text-left">
+                                                        <a type="button" rel="tooltip"
+                                                           class="btn btn-just-icon btn-link btn-success"
+                                                           data-original-title="Editar"
+                                                           href="{% url 'contabilidad-presupuestos_edit' presupuesto.id %}">
+                                                            <i class="material-icons">edit</i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- Paginación -->
+                                <div class="row">
+                                <span class="col-md-6">
                                     Mostrando {{ page_obj.start_index }} a {{ page_obj.end_index }} de {{ page_obj.paginator.count }} resultados
                                 </span>
-                                <div class="col-md-6 inline-flex mt-2">
-                                    {% if page_obj.has_previous %}
-                                        <a href="?page=1"
-                                           class="bg-blue-500 text-primary px-3 py-1 rounded-l">Primero</a>
-                                        <a href="?page={{ page_obj.previous_page_number }}"
-                                           class="bg-blue-500 text-primary px-3 py-1 ml-1">Anterior</a>
-                                    {% endif %}
-
-                                    {% for num in page_obj.paginator.page_range %}
-                                        {% if page_obj.number == num %}
-                                            <span class="bg-blue-500 text-primary px-3 py-1 ml-1">{{ num }}</span>
-                                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                            <a href="?page={{ num }}"
-                                               class="bg-blue-500 text-primary px-3 py-1 ml-1">{{ num }}</a>
+                                    <div class="col-md-6 inline-flex mt-2">
+                                        {% if page_obj.has_previous %}
+                                            <a href="?page=1"
+                                               class="bg-blue-500 text-primary px-3 py-1 rounded-l">Primero</a>
+                                            <a href="?page={{ page_obj.previous_page_number }}"
+                                               class="bg-blue-500 text-primary px-3 py-1 ml-1">Anterior</a>
                                         {% endif %}
-                                    {% endfor %}
 
-                                    {% if page_obj.has_next %}
-                                        <a href="?page={{ page_obj.next_page_number }}"
-                                           class="bg-blue-500 text-primary px-3 py-1 ml-1">Siguiente</a>
-                                        <a href="?page={{ page_obj.paginator.num_pages }}"
-                                           class="bg-blue-500 text-primary px-3 py-1 rounded-r ml-1">Último</a>
-                                    {% endif %}
+                                        {% for num in page_obj.paginator.page_range %}
+                                            {% if page_obj.number == num %}
+                                                <span class="bg-blue-500 text-primary px-3 py-1 ml-1">{{ num }}</span>
+                                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                                <a href="?page={{ num }}"
+                                                   class="bg-blue-500 text-primary px-3 py-1 ml-1">{{ num }}</a>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% if page_obj.has_next %}
+                                            <a href="?page={{ page_obj.next_page_number }}"
+                                               class="bg-blue-500 text-primary px-3 py-1 ml-1">Siguiente</a>
+                                            <a href="?page={{ page_obj.paginator.num_pages }}"
+                                               class="bg-blue-500 text-primary px-3 py-1 rounded-r ml-1">Último</a>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
