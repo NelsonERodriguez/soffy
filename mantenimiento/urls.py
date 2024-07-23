@@ -4,6 +4,7 @@ from mantenimiento.controllers.bancos import bancos
 from mantenimiento.controllers.bodega import bodega
 from mantenimiento.controllers.documentos import documentos
 from mantenimiento.controllers.empresas import empresas
+from mantenimiento.controllers.usuarios_documentos import usuarios_documentos
 
 urlpatterns = [
     path('', views.index, name='home'),
@@ -23,4 +24,10 @@ urlpatterns = [
     path('bancos/', bancos.index, name='mantenimiento-bancos'),
     path('bancos/edit/<int:_id>', bancos.edit, name='mantenimiento-bancos_edit'),
     path('bancos/create/', bancos.create, name='mantenimiento-bancos_create'),
+
+    path('usuarios_documentos/', usuarios_documentos.index, name='mantenimiento-usuarios_documentos'),
+    path('usuarios_documentos/edit/<int:_id>', usuarios_documentos.edit, name='mantenimiento-usuarios_documentos_edit'),
+    path('usuarios_documentos/delete/', usuarios_documentos.delete, name='mantenimiento-usuarios_documentos_delete'),
+    path('usuarios_documentos/create/<int:usuario_id>', usuarios_documentos.create,
+         name='mantenimiento-usuarios_documentos_create'),
 ]

@@ -1,0 +1,241 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Asignar documentos a usuarios {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">groups</i>
+                        </div>
+                        <h4 class="card-title">Asignar documentos a usuarios</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar text-right">
+                            <a href="{% url 'mantenimiento-usuarios_documentos' %}"
+                               class="btn btn-gradient-danger text-right">
+                                <i class="material-icons">arrow_back</i>
+                                Regresar
+                            </a>
+                        </div>
+                        <div class="col-12">
+
+                            <form action="{% url 'mantenimiento-usuarios_documentos_edit' id %}" method="POST">
+                                {% csrf_token %}
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <input type="hidden" name="iduser" value="{{ form.iduser.value }}">
+                                        <div class="form-group {% if form.seriepedido.errors %}has-danger{% endif %}">
+                                            <select name="seriepedido" id="seriepedido"
+                                                    class="selectpicker {% if form.seriepedido.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.seriepedido.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}"
+                                                    title="Serie Pedido">
+                                                {% for seriepedido in form.seriepedido %}
+                                                    {{ seriepedido }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.seriepedido.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.seriefactura.errors %}has-danger{% endif %}">
+                                            <select name="seriefactura" id="seriefactura"
+                                                    class="selectpicker {% if form.seriefactura.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.seriefactura.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}"
+                                                    title="Serie Factura">
+                                                {% for seriefactura in form.seriefactura %}
+                                                    {{ seriefactura }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.seriefactura.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.todas.errors %}has-danger{% endif %}">
+                                            <label for="todas" class="bmd-label-floating">Todas</label>
+                                            <input type="number" name="todas" id="todas"
+                                                   class="form-control {% if form.todas.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.todas.value %}{{ form.todas.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.todas.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" name="anulafacturas" id="anulafacturas"
+                                                       {% if form.anulafacturas.value %}checked{% endif %}>
+                                                <span class="toggle"></span>
+                                                Anula Facturas
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" name="cambiaprecios" id="cambiaprecios"
+                                                       {% if form.cambiaprecios.value %}checked{% endif %}>
+                                                <span class="toggle"></span>
+                                                Cambia precios
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="button" id="addDetalle" class="btn btn-gradient-primary">
+                                            <i class="material-icons">add</i>
+                                            Agregar
+                                        </button>
+                                        <div id="contenidoDetalles" style="height: 600px; overflow: auto;">
+                                            <table class="table table-striped" id="tableDetalles">
+                                                <thead>
+                                                <tr>
+                                                    <th>Bodega</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tbodyDetalles">
+                                                {% for detalle in detalles %}
+                                                    <tr id="row_{{ forloop.counter0 }}">
+                                                        <td>
+                                                            <input type="hidden" name="id[]"
+                                                                   id="id_{{ forloop.counter0 }}"
+                                                                   value="{{ detalle.id }}">
+                                                            <select name="idbodega[]"
+                                                                    id="idbodega_{{ forloop.counter0 }}"
+                                                                    class="selectpicker"
+                                                                    data-style="btn btn-outline-primary"
+                                                                    title="Bodega">
+                                                                <option value=""></option>
+                                                                {% for bodega in mbodegas %}
+                                                                    <option value="{{ bodega.id }}"
+                                                                            {% if detalle.idbodega_id == bodega.id %}selected{% endif %}>{{ bodega.nbodega }}-{{ bodega.ubicacion }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-gradient-danger" type="button" onclick="deleteDetalle({{ detalle.id }}, {{ forloop.counter0 }});">
+                                                                <i class="material-icons">delete</i>
+                                                                Eliminar
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-gradient-success">
+                                            <i class="material-icons">save</i>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script async defer>
+        const strUrlDelete = "{% url 'mantenimiento-usuarios_documentos_delete' %}";
+        const arrBodegas = {{ mbodegas|safe }};
+        const btnAddDetalle = document.getElementById('addDetalle');
+
+        const createRow = () => {
+            const table = document.getElementById("tableDetalles");
+
+            const row = table.insertRow(-1);
+            row.setAttribute('id', `row_${row.rowIndex}`);
+
+            const cell0 = row.insertCell(0);
+            cell0.innerHTML = `
+                <input type="hidden" name="id[]" id="id_${row.rowIndex}" value="0">
+                <select name="idbodega[]"
+                        id="idbodega_${row.rowIndex}"
+                        class="selectpicker"
+                        data-style="btn btn-outline-primary"
+                        title="Bodega">
+                    ${arrBodegas.map((bodega) => '<option value="' + bodega.id +'">' + bodega.nbodega + ' - ' + bodega.ubicacion +'</option>')}
+                </select>`;
+
+            const cell1 = row.insertCell(1);
+            cell1.innerHTML = `
+                <button class="btn btn-gradient-danger" type="button" onclick="removeRow(${row.rowIndex});">
+                    <i class="material-icons">delete</i>
+                    Eliminar
+                </button>
+            `;
+
+            $(`#idbodega_${row.rowIndex}`).selectpicker();
+        };
+
+        const removeRow = (intRow) => {
+            document.getElementById(`row_${intRow}`).remove();
+        };
+
+        const deleteDetalle = (intId, intRow) => {
+            dialogConfirm(() => {
+                const objFormData = new FormData();
+                objFormData.append('id', intId);
+                objFormData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+                const objInit = {
+                    method: 'POST',
+                    body: objFormData,
+                };
+                coreFetch(strUrlDelete, objInit, (data) => {
+                    if (data.status) removeRow(intRow);
+                }).catch(console.error);
+            });
+        };
+
+        btnAddDetalle.addEventListener('click', createRow);
+    </script>
+{% endblock %}

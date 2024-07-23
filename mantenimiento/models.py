@@ -104,17 +104,19 @@ class Musers(models.Model):
     seriefactura = models.ForeignKey(Mdocumentos, db_column='SerieFactura', max_length=20, blank=True, null=True,
                                      on_delete=models.CASCADE, related_name='seriefactura')
     todas = models.DecimalField(db_column='Todas', max_digits=1, decimal_places=0, blank=True, null=True)
-    idbodega1 = models.ForeignKey(Mbodega, db_column='IdBodega1', blank=True, null=True, on_delete=models.CASCADE,
-                                  related_name='idbodega1')
-    idbodega2 = models.ForeignKey(Mbodega, db_column='IdBodega2', blank=True, null=True, on_delete=models.CASCADE,
-                                  related_name='idbodega2')
-    idbodega3 = models.ForeignKey(Mbodega, db_column='IdBodega3', blank=True, null=True, on_delete=models.CASCADE,
-                                  related_name='idbodega3')
-    anulafacturas = models.CharField(db_column='AnulaFacturas', max_length=2, blank=True, null=True)
-    cambiaprecios = models.CharField(db_column='CambiaPrecios', max_length=2, blank=True, null=True)
+    anulafacturas = models.BooleanField(db_column='AnulaFacturas', default=False)
+    cambiaprecios = models.BooleanField(db_column='CambiaPrecios', default=False)
 
     def __str__(self):
         return self.iduser.name
+
+
+class Mbodega02(models.Model):
+    iduser = models.ForeignKey(User, db_column='IdUser', on_delete=models.CASCADE)
+    idbodega = models.ForeignKey(Mbodega, db_column='IdBodega', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.idbodega.ubicacion} - {self.iduser.name}"
 
 
 class Mbancos(models.Model):

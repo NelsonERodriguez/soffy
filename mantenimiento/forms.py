@@ -1,7 +1,8 @@
 from django import forms
 
 from contabilidad.forms import Mcuentas, Mccos
-from mantenimiento.models import Mbodega
+from mantenimiento.models import Mbodega, Mdocumentos
+from user_auth.models import User
 
 
 class mempresaForm(forms.Form):
@@ -104,3 +105,24 @@ class MbancosForm(forms.Form):
     bloqueado = forms.BooleanField(required=False)
     saldoinicial = forms.DecimalField(max_digits=18, decimal_places=2, required=False)
     fechainicial = forms.DateField(required=False)
+
+
+class MusersForm(forms.Form):
+    iduser = forms.ModelChoiceField(queryset=User.objects.all(), to_field_name='id', required=True,
+                                    widget=forms.Select(attrs={'class': 'form-control'}), empty_label='Usuario')
+    seriepedido = forms.ModelChoiceField(queryset=Mdocumentos.objects.all(), to_field_name='id',
+                                         required=True, widget=forms.Select(attrs={'class': 'form-control'}),
+                                         empty_label='Serie Pedido')
+    seriefactura = forms.ModelChoiceField(queryset=Mdocumentos.objects.all(), to_field_name='id',
+                                          required=True, widget=forms.Select(attrs={'class': 'form-control'}),
+                                          empty_label='Serie Factura')
+    todas = forms.DecimalField(max_digits=1, decimal_places=0, required=False)
+    anulafacturas = forms.BooleanField(required=False)
+    cambiaprecios = forms.BooleanField(required=False)
+
+
+class Mbodega02Form(forms.Form):
+    iduser = forms.ModelChoiceField(queryset=User.objects.all(), to_field_name='id', required=True,
+                                    widget=forms.Select(attrs={'class': 'form-control'}), empty_label='Usuario')
+    idbodega = forms.ModelChoiceField(queryset=Mbodega.objects.all(), to_field_name='id', required=True,
+                                      widget=forms.Select(attrs={'class': 'form-control'}), empty_label='Bodega')
