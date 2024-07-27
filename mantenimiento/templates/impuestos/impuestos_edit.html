@@ -1,0 +1,164 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Impuestos {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">groups</i>
+                        </div>
+                        <h4 class="card-title">Impuestos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar text-right">
+                            <a href="{% url 'mantenimiento-impuestos' %}"
+                               class="btn btn-gradient-danger text-right">
+                                <i class="material-icons">arrow_back</i>
+                                Regresar
+                            </a>
+                        </div>
+                        <div class="col-12">
+
+                            <form action="{% url 'mantenimiento-impuestos_edit' id %}" method="POST">
+                                {% csrf_token %}
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.ctaconatble.errors %}has-danger{% endif %}">
+                                            <select name="ctaconatble" id="ctaconatble"
+                                                    class="selectpicker {% if form.ctaconatble.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.ctaconatble.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}"
+                                                    title="Cuenta">
+                                                {% for ctaconatble in form.ctaconatble %}
+                                                    {{ ctaconatble }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.ctaconatble.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.nombreret.errors %}has-danger{% endif %}">
+                                            <label for="nombreret" class="bmd-label-floating">Nombre Ret</label>
+                                            <input type="text" name="nombreret" id="nombreret"
+                                                   class="form-control {% if form.nombreret.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.nombreret.value %}{{ form.nombreret.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.nombreret.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.categoria.errors %}has-danger{% endif %}">
+                                            <label for="categoria" class="bmd-label-floating">Categoría</label>
+                                            <input type="text" name="categoria" id="categoria"
+                                                   class="form-control {% if form.categoria.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.categoria.value %}{{ form.categoria.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.categoria.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.fechavalido.errors %}has-danger{% endif %}">
+                                            <label for="fechavalido" class="bmd-label-floating">Fecha Valido</label>
+                                            <input type="date" name="fechavalido" id="fechavalido"
+                                                   class="form-control {% if form.fechavalido.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.fechavalido.value %}{{ form.fechavalido.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.fechavalido.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.tarifa.errors %}has-danger{% endif %}">
+                                            <label for="tarifa" class="bmd-label-floating">Tarifa</label>
+                                            <input type="number" name="tarifa" id="tarifa"
+                                                   class="form-control {% if form.tarifa.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.tarifa.value %}{{ form.tarifa.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.tarifa.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.base.errors %}has-danger{% endif %}">
+                                            <label for="base" class="bmd-label-floating">Base</label>
+                                            <input type="text" name="base" id="base"
+                                                   class="form-control {% if form.base.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.base.value %}{{ form.base.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.base.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.prcimpbase.errors %}has-danger{% endif %}">
+                                            <label for="prcimpbase" class="bmd-label-floating">Porcentaje impuesto base</label>
+                                            <input type="number" name="prcimpbase" id="prcimpbase"
+                                                   class="form-control {% if form.prcimpbase.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.prcimpbase.value %}{{ form.prcimpbase.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.prcimpbase.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-gradient-success">
+                                            <i class="material-icons">save</i>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

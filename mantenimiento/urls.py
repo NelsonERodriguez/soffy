@@ -7,6 +7,7 @@ from mantenimiento.controllers.documentos import documentos
 from mantenimiento.controllers.empresas import empresas
 from mantenimiento.controllers.gasto_importacion import gasto_importacion
 from mantenimiento.controllers.grupo_socio import grupo_socio
+from mantenimiento.controllers.impuestos import impuestos
 from mantenimiento.controllers.usuarios_documentos import usuarios_documentos
 
 urlpatterns = [
@@ -45,5 +46,9 @@ urlpatterns = [
     path('gasto_importacion/', gasto_importacion.index, name='mantenimiento-gasto_importacion'),
     path('gasto_importacion/edit/<int:_id>', gasto_importacion.edit, name='mantenimiento-gasto_importacion_edit'),
     path('gasto_importacion/create/', gasto_importacion.create, name='mantenimiento-gasto_importacion_create'),
+
+    path('impuestos/', impuestos.index, name='mantenimiento-impuestos'),
+    path('impuestos/edit/<int:_id>', impuestos.edit, name='mantenimiento-impuestos_edit'),
+    path('impuestos/create/', impuestos.create, name='mantenimiento-impuestos_create'),
 
 ]

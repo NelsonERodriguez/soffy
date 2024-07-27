@@ -160,3 +160,17 @@ class Mgtoi(models.Model):
 
     def __str__(self):
         return self.nombregasto
+
+
+class Mimpuestos(models.Model):
+    nombreret = models.CharField(db_column='NombreRet', max_length=100, blank=True, null=True)
+    categoria = models.CharField(db_column='Categoria', max_length=10, blank=True, null=True)
+    fechavalido = models.DateField(db_column='FechaValido', blank=True, null=True)
+    tarifa = models.SmallIntegerField(db_column='Tarifa', blank=True, null=True)
+    base = models.CharField(db_column='Base', max_length=10, blank=True, null=True)
+    prcimpbase = models.DecimalField(db_column='Prcimpbase', max_digits=18, decimal_places=2, blank=True, null=True)
+    ctaconatble = models.ForeignKey(Mcuentas, db_column='CtaConatble', max_length=10, blank=True, null=True,
+                                    on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.nombreret

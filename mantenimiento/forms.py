@@ -146,3 +146,15 @@ class MgtoiForm(forms.Form):
     ctagasto = forms.ModelChoiceField(queryset=Mcuentas.objects.filter(activo=True), to_field_name='id',
                                       required=False, widget=forms.Select(attrs={'class': 'form-control'}),
                                       empty_label='Cuenta contable')
+
+
+class MimpuestosForm(forms.Form):
+    nombreret = forms.CharField(max_length=100, required=True)
+    categoria = forms.CharField(max_length=10, required=False)
+    fechavalido = forms.DateField(required=False)
+    tarifa = forms.IntegerField(required=False)
+    base = forms.CharField(max_length=10, required=False)
+    prcimpbase = forms.DecimalField(max_digits=18, decimal_places=2, required=False)
+    ctaconatble = forms.ModelChoiceField(queryset=Mcuentas.objects.filter(activo=True), to_field_name='id',
+                                         required=False, widget=forms.Select(attrs={'class': 'form-control'}),
+                                         empty_label='Cuenta contable')
