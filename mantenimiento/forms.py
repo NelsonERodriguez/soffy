@@ -116,7 +116,7 @@ class MusersForm(forms.Form):
     seriefactura = forms.ModelChoiceField(queryset=Mdocumentos.objects.all(), to_field_name='id',
                                           required=True, widget=forms.Select(attrs={'class': 'form-control'}),
                                           empty_label='Serie Factura')
-    todas = forms.DecimalField(max_digits=1, decimal_places=0, required=False)
+    todas = forms.BooleanField(required=False)
     anulafacturas = forms.BooleanField(required=False)
     cambiaprecios = forms.BooleanField(required=False)
 

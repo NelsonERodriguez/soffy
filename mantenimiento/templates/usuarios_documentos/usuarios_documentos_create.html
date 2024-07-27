@@ -65,26 +65,19 @@
 
                                 <div class="row">
 
-                                    <div class="col-md-6">
-                                        <div class="form-group {% if form.todas.errors %}has-danger{% endif %}">
-                                            <label for="todas" class="bmd-label-floating">Todas</label>
-                                            <input type="number" name="todas" id="todas"
-                                                   class="form-control {% if form.todas.errors %}is-invalid{% endif %}"
-                                                   value="{% if form.todas.value %}{{ form.todas.value }}{% endif %}">
-                                            <div class="invalid-feedback">
-                                                {% for error in form.todas.errors %}
-                                                    {{ error }}
-                                                {% endfor %}
-                                            </div>
+                                    <div class="col-md-4">
+
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" name="todas" id="todas" {% if form.todas.value %}checked{% endif %}>
+                                                <span class="toggle"></span>
+                                                Todas
+                                            </label>
                                         </div>
 
                                     </div>
 
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
 
                                         <div class="togglebutton">
                                             <label>
@@ -96,7 +89,7 @@
 
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
 
                                         <div class="togglebutton">
                                             <label>

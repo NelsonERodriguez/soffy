@@ -103,7 +103,7 @@ class Musers(models.Model):
                                     on_delete=models.CASCADE, related_name='seriepedido')
     seriefactura = models.ForeignKey(Mdocumentos, db_column='SerieFactura', max_length=20, blank=True, null=True,
                                      on_delete=models.CASCADE, related_name='seriefactura')
-    todas = models.DecimalField(db_column='Todas', max_digits=1, decimal_places=0, blank=True, null=True)
+    todas = models.BooleanField(db_column='Todas', default=False)
     anulafacturas = models.BooleanField(db_column='AnulaFacturas', default=False)
     cambiaprecios = models.BooleanField(db_column='CambiaPrecios', default=False)
 
