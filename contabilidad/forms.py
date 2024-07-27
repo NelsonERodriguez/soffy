@@ -59,7 +59,6 @@ class McuentasForm(forms.Form):
     efecto = forms.ChoiceField(choices=EFECTO_CHOICES, required=True,
                                widget=forms.Select(attrs={'class': 'form-control'}))
     NIVEL_CHOICES = (
-        ("0", "0"),
         ("1", "1"),
         ("2", "2"),
         ("3", "3"),
