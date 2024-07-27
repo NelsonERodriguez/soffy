@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Bodegas {% endblock title %}
+{% block title %} Grupo Socio {% endblock title %}
 
 {% block content %}
     <div class="container-fluid">
@@ -11,11 +11,11 @@
                         <div class="card-icon">
                             <i class="material-icons">groups</i>
                         </div>
-                        <h4 class="card-title">Bodegas</h4>
+                        <h4 class="card-title">Grupo Socio</h4>
                     </div>
                     <div class="card-body">
                         <div class="toolbar text-right">
-                            <a href="{% url 'mantenimiento-bodega_create' %}"
+                            <a href="{% url 'mantenimiento-grupo_socio_create' %}"
                                class="btn btn-gradient-success text-right">
                                 <i class="material-icons">add</i>
                                 Nuevo
@@ -29,51 +29,23 @@
                                         <table class="table table-striped">
                                             <thead>
                                             <tr>
-                                                <th class="px-4 py-2">NBodega</th>
-                                                <th class="px-4 py-2">Ubicacion</th>
-                                                <th class="px-4 py-2">Predet</th>
+                                                <th class="px-4 py-2">Grupo Socio</th>
                                                 <th class="px-4 py-2">Cuenta Contable</th>
-                                                <th class="px-4 py-2">Centro de Costo</th>
-                                                <th class="px-4 py-2">Activo</th>
                                                 <th class="px-4 py-2">Acciones</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {% for bodega in page_obj %}
+                                            {% for grupo_socio in page_obj %}
                                                 <tr>
-                                                    <td class="border px-4 py-2">{{ bodega.nbodega }}</td>
-                                                    <td class="border px-4 py-2">{{ bodega.ubicacion }}</td>
-                                                    <td class="border px-4 py-2">
-                                                        {% if bodega.predet %}
-                                                            Si
-                                                        {% else %}
-                                                            No
-                                                        {% endif %}
-                                                    </td>
-                                                    <td class="border px-4 py-2">
-                                                        {% if bodega.ctacontable %}
-                                                            {{ bodega.ctacontable }}{% endif %}</td>
-                                                    <td class="border px-4 py-2">
-                                                        {% if bodega.cencos %}{{ bodega.cencos }}{% endif %} </td>
-                                                    <td class="border px-4 py-2">
-                                                        {% if bodega.activo %}
-                                                            Si
-                                                        {% else %}
-                                                            No
-                                                        {% endif %}
-                                                    </td>
+                                                    <td class="border px-4 py-2">{{ grupo_socio.gruposocio }}</td>
+                                                    <td class="border px-4 py-2">{% if grupo_socio.ctacontable %}
+                                                        {{ grupo_socio.ctacontable }}{% endif %}</td>
                                                     <td class="border px-4 py-2 td-actions text-left">
                                                         <a type="button" rel="tooltip"
                                                            class="btn btn-just-icon btn-link btn-success"
                                                            data-original-title="Editar"
-                                                           href="{% url 'mantenimiento-bodega_edit' bodega.id %}">
+                                                           href="{% url 'mantenimiento-grupo_socio_edit' grupo_socio.id %}">
                                                             <i class="material-icons">edit</i>
-                                                        </a>
-                                                        <a type="button" rel="tooltip"
-                                                           class="btn btn-just-icon btn-link btn-danger"
-                                                           data-original-title="Eliminar"
-                                                           href="{% url 'mantenimiento-bodega_delete' bodega.id %}">
-                                                            <i class="material-icons">delete</i>
                                                         </a>
                                                     </td>
                                                 </tr>

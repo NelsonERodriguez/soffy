@@ -5,6 +5,7 @@ from mantenimiento.controllers.bodega import bodega
 from mantenimiento.controllers.canales import canales
 from mantenimiento.controllers.documentos import documentos
 from mantenimiento.controllers.empresas import empresas
+from mantenimiento.controllers.grupo_socio import grupo_socio
 from mantenimiento.controllers.usuarios_documentos import usuarios_documentos
 
 urlpatterns = [
@@ -35,5 +36,9 @@ urlpatterns = [
     path('canales/', canales.index, name='mantenimiento-canales'),
     path('canales/edit/<int:_id>', canales.edit, name='mantenimiento-canales_edit'),
     path('canales/create/', canales.create, name='mantenimiento-canales_create'),
+
+    path('grupo_socio/', grupo_socio.index, name='mantenimiento-grupo_socio'),
+    path('grupo_socio/edit/<int:_id>', grupo_socio.edit, name='mantenimiento-grupo_socio_edit'),
+    path('grupo_socio/create/', grupo_socio.create, name='mantenimiento-grupo_socio_create'),
 
 ]

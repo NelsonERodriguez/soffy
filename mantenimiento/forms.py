@@ -132,3 +132,10 @@ class McanalesForm(forms.Form):
     canal = forms.CharField(max_length=50, required=True)
     ocrcode = forms.CharField(max_length=10, required=False)
     agrupador = forms.CharField(max_length=30, required=True)
+
+
+class MgruposocioForm(forms.Form):
+    gruposocio = forms.CharField(max_length=50, required=True)
+    ctacontable = forms.ModelChoiceField(queryset=Mcuentas.objects.filter(activo=True), to_field_name='id',
+                                         required=False, widget=forms.Select(attrs={'class': 'form-control'}),
+                                         empty_label='Cuenta contable')

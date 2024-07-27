@@ -4,94 +4,102 @@
 
 {% block content %}
     <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-header card-header-primary card-header-icon">
-                    <div class="card-icon">
-                        <i class="material-icons">groups</i>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">groups</i>
+                        </div>
+                        <h4 class="card-title">Bancos</h4>
                     </div>
-                    <h4 class="card-title">Bancos</h4>
-                </div>
-                <div class="card-body">
-                    <div class="toolbar text-right">
-                        <a href="{% url 'mantenimiento-bancos_create' %}"
-                           class="btn btn-gradient-success text-right">
-                            <i class="material-icons">add</i>
-                            Nuevo
-                        </a>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
+                    <div class="card-body">
+                        <div class="toolbar text-right">
+                            <a href="{% url 'mantenimiento-bancos_create' %}"
+                               class="btn btn-gradient-success text-right">
+                                <i class="material-icons">add</i>
+                                Nuevo
+                            </a>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
 
-                            <div class="row">
-                                <div class="col-12">
-                                    <table class="table table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th class="px-4 py-2">Cueta Banco</th>
-                                            <th class="px-4 py-2">Nombre Banco</th>
-                                            <th class="px-4 py-2">ChequeSigue</th>
-                                            <th class="px-4 py-2">Cuenta Contable</th>
-                                            <th class="px-4 py-2">Moneda</th>
-                                            <th class="px-4 py-2">Saldo Inicial</th>
-                                            <th class="px-4 py-2">Fecha Inicial</th>
-                                            <th class="px-4 py-2">Acciones</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {% for banco in page_obj %}
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table class="table table-striped">
+                                            <thead>
                                             <tr>
-                                                <td class="border px-4 py-2">{% if banco.cueban %}{{ banco.cueban }}{% endif %}</td>
-                                                <td class="border px-4 py-2">{% if banco.nomban %}{{ banco.nomban }}{% endif %}</td>
-                                                <td class="border px-4 py-2">{% if banco.chequesigue %}{{ banco.chequesigue }}{% endif %}</td>
-                                                <td class="border px-4 py-2">{% if banco.ctacon %}{{ banco.ctacon }}{% endif %}</td>
-                                                <td class="border px-4 py-2">{% if banco.moneda %}{{ banco.moneda }}{% endif %}</td>
-                                                <td class="border px-4 py-2">{% if banco.saldoinicial %}{{ banco.saldoinicial }}{% endif %}</td>
-                                                <td class="border px-4 py-2">{% if banco.fechainicial %}{{ banco.fechainicial|date:'d/m/Y' }}{% endif %}</td>
-                                                <td class="border px-4 py-2 td-actions text-left">
-                                                    <a type="button" rel="tooltip"
-                                                       class="btn btn-just-icon btn-link btn-success"
-                                                       data-original-title="Editar"
-                                                       href="{% url 'mantenimiento-bancos_edit' banco.id %}">
-                                                        <i class="material-icons">edit</i>
-                                                    </a>
-                                                </td>
+                                                <th class="px-4 py-2">Cueta Banco</th>
+                                                <th class="px-4 py-2">Nombre Banco</th>
+                                                <th class="px-4 py-2">ChequeSigue</th>
+                                                <th class="px-4 py-2">Cuenta Contable</th>
+                                                <th class="px-4 py-2">Moneda</th>
+                                                <th class="px-4 py-2">Saldo Inicial</th>
+                                                <th class="px-4 py-2">Fecha Inicial</th>
+                                                <th class="px-4 py-2">Acciones</th>
                                             </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                            {% for banco in page_obj %}
+                                                <tr>
+                                                    <td class="border px-4 py-2">
+                                                        {% if banco.cueban %}{{ banco.cueban }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">
+                                                        {% if banco.nomban %}{{ banco.nomban }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if banco.chequesigue %}
+                                                        {{ banco.chequesigue }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">
+                                                        {% if banco.ctacon %}{{ banco.ctacon }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">
+                                                        {% if banco.moneda %}{{ banco.moneda }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if banco.saldoinicial %}
+                                                        {{ banco.saldoinicial }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if banco.fechainicial %}
+                                                        {{ banco.fechainicial|date:'d/m/Y' }}{% endif %}</td>
+                                                    <td class="border px-4 py-2 td-actions text-left">
+                                                        <a type="button" rel="tooltip"
+                                                           class="btn btn-just-icon btn-link btn-success"
+                                                           data-original-title="Editar"
+                                                           href="{% url 'mantenimiento-bancos_edit' banco.id %}">
+                                                            <i class="material-icons">edit</i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Paginación -->
-                            <div class="row">
+                                <!-- Paginación -->
+                                <div class="row">
                                 <span class="col-md-6">
                                     Mostrando {{ page_obj.start_index }} a {{ page_obj.end_index }} de {{ page_obj.paginator.count }} resultados
                                 </span>
-                                <div class="col-md-6 inline-flex mt-2">
-                                    {% if page_obj.has_previous %}
-                                        <a href="?page=1"
-                                           class="bg-blue-500 text-primary px-3 py-1 rounded-l">Primero</a>
-                                        <a href="?page={{ page_obj.previous_page_number }}"
-                                           class="bg-blue-500 text-primary px-3 py-1 ml-1">Anterior</a>
-                                    {% endif %}
-
-                                    {% for num in page_obj.paginator.page_range %}
-                                        {% if page_obj.number == num %}
-                                            <span class="bg-blue-500 text-primary px-3 py-1 ml-1">{{ num }}</span>
-                                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                            <a href="?page={{ num }}"
-                                               class="bg-blue-500 text-primary px-3 py-1 ml-1">{{ num }}</a>
+                                    <div class="col-md-6 inline-flex mt-2">
+                                        {% if page_obj.has_previous %}
+                                            <a href="?page=1"
+                                               class="bg-blue-500 text-primary px-3 py-1 rounded-l">Primero</a>
+                                            <a href="?page={{ page_obj.previous_page_number }}"
+                                               class="bg-blue-500 text-primary px-3 py-1 ml-1">Anterior</a>
                                         {% endif %}
-                                    {% endfor %}
 
-                                    {% if page_obj.has_next %}
-                                        <a href="?page={{ page_obj.next_page_number }}"
-                                           class="bg-blue-500 text-primary px-3 py-1 ml-1">Siguiente</a>
-                                        <a href="?page={{ page_obj.paginator.num_pages }}"
-                                           class="bg-blue-500 text-primary px-3 py-1 rounded-r ml-1">Último</a>
-                                    {% endif %}
+                                        {% for num in page_obj.paginator.page_range %}
+                                            {% if page_obj.number == num %}
+                                                <span class="bg-blue-500 text-primary px-3 py-1 ml-1">{{ num }}</span>
+                                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                                <a href="?page={{ num }}"
+                                                   class="bg-blue-500 text-primary px-3 py-1 ml-1">{{ num }}</a>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% if page_obj.has_next %}
+                                            <a href="?page={{ page_obj.next_page_number }}"
+                                               class="bg-blue-500 text-primary px-3 py-1 ml-1">Siguiente</a>
+                                            <a href="?page={{ page_obj.paginator.num_pages }}"
+                                               class="bg-blue-500 text-primary px-3 py-1 rounded-r ml-1">Último</a>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
                         </div>

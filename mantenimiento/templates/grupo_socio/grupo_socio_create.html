@@ -1,0 +1,86 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Bodega {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">groups</i>
+                        </div>
+                        <h4 class="card-title">Bodega</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar text-right">
+                            <a href="{% url 'mantenimiento-bodega' %}"
+                               class="btn btn-gradient-danger text-right">
+                                <i class="material-icons">arrow_back</i>
+                                Regresar
+                            </a>
+                        </div>
+                        <div class="col-12">
+
+                            <form action="{% url 'mantenimiento-grupo_socio_create' %}" method="POST">
+                                {% csrf_token %}
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.ctacontable.errors %}has-danger{% endif %}">
+                                            <select name="ctacontable" id="ctacontable"
+                                                    class="selectpicker {% if form.ctacontable.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.ctacontable.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}"
+                                                    title="Cuenta Padre">
+                                                {% for ctacontable in form.ctacontable %}
+                                                    {{ ctacontable }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.ctacontable.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group {% if form.gruposocio.errors %}has-danger{% endif %}">
+                                            <label for="gruposocio" class="bmd-label-floating">Grupo Socio</label>
+                                            <input type="text" name="gruposocio" id="gruposocio"
+                                                   class="form-control {% if form.gruposocio.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.gruposocio.value %}{{ form.gruposocio.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.gruposocio.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-gradient-success">
+                                            <i class="material-icons">save</i>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

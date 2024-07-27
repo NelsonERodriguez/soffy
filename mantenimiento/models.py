@@ -143,3 +143,11 @@ class Mcanales(models.Model):
 
     def __str__(self):
         return self.canal
+
+
+class Mgruposocio(models.Model):
+    gruposocio = models.CharField(db_column='GrupoSocio', max_length=50, blank=True, null=True)
+    ctacontable = models.ForeignKey(Mcuentas, db_column='CtaContable', blank=True, null=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.gruposocio
