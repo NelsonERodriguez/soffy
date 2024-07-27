@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Grupo Socio {% endblock title %}
+{% block title %} Gastos de Importación {% endblock title %}
 
 {% block content %}
     <div class="container-fluid">
@@ -11,11 +11,11 @@
                         <div class="card-icon">
                             <i class="material-icons">groups</i>
                         </div>
-                        <h4 class="card-title">Grupo Socio</h4>
+                        <h4 class="card-title">Gastos de Importación</h4>
                     </div>
                     <div class="card-body">
                         <div class="toolbar text-right">
-                            <a href="{% url 'mantenimiento-grupo_socio' %}"
+                            <a href="{% url 'mantenimiento-gasto_importacion' %}"
                                class="btn btn-gradient-danger text-right">
                                 <i class="material-icons">arrow_back</i>
                                 Regresar
@@ -23,23 +23,23 @@
                         </div>
                         <div class="col-12">
 
-                            <form action="{% url 'mantenimiento-grupo_socio_create' %}" method="POST">
+                            <form action="{% url 'mantenimiento-gasto_importacion_create' %}" method="POST">
                                 {% csrf_token %}
 
                                 <div class="row">
 
                                     <div class="col-md-6">
-                                        <div class="form-group {% if form.ctacontable.errors %}has-danger{% endif %}">
-                                            <select name="ctacontable" id="ctacontable"
-                                                    class="selectpicker {% if form.ctacontable.errors %}is-invalid{% endif %}"
-                                                    data-style="btn {% if form.ctacontable.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}"
-                                                    title="Cuenta Padre">
-                                                {% for ctacontable in form.ctacontable %}
-                                                    {{ ctacontable }}
+                                        <div class="form-group {% if form.ctagasto.errors %}has-danger{% endif %}">
+                                            <select name="ctagasto" id="ctagasto"
+                                                    class="selectpicker {% if form.ctagasto.errors %}is-invalid{% endif %}"
+                                                    data-style="btn {% if form.ctagasto.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}"
+                                                    title="Cuenta">
+                                                {% for ctagasto in form.ctagasto %}
+                                                    {{ ctagasto }}
                                                 {% endfor %}
                                             </select>
                                             <div class="text-danger">
-                                                {% for error in form.ctacontable.errors %}
+                                                {% for error in form.ctagasto.errors %}
                                                     {{ error }}
                                                 {% endfor %}
                                             </div>
@@ -51,13 +51,13 @@
                                 <div class="row">
 
                                     <div class="col-md-6">
-                                        <div class="form-group {% if form.gruposocio.errors %}has-danger{% endif %}">
-                                            <label for="gruposocio" class="bmd-label-floating">Grupo Socio</label>
-                                            <input type="text" name="gruposocio" id="gruposocio"
-                                                   class="form-control {% if form.gruposocio.errors %}is-invalid{% endif %}"
-                                                   value="{% if form.gruposocio.value %}{{ form.gruposocio.value }}{% endif %}">
+                                        <div class="form-group {% if form.nombregasto.errors %}has-danger{% endif %}">
+                                            <label for="nombregasto" class="bmd-label-floating">Nombre Gasto</label>
+                                            <input type="text" name="nombregasto" id="nombregasto"
+                                                   class="form-control {% if form.nombregasto.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.nombregasto.value %}{{ form.nombregasto.value }}{% endif %}">
                                             <div class="invalid-feedback">
-                                                {% for error in form.gruposocio.errors %}
+                                                {% for error in form.nombregasto.errors %}
                                                     {{ error }}
                                                 {% endfor %}
                                             </div>

@@ -5,6 +5,7 @@ from mantenimiento.controllers.bodega import bodega
 from mantenimiento.controllers.canales import canales
 from mantenimiento.controllers.documentos import documentos
 from mantenimiento.controllers.empresas import empresas
+from mantenimiento.controllers.gasto_importacion import gasto_importacion
 from mantenimiento.controllers.grupo_socio import grupo_socio
 from mantenimiento.controllers.usuarios_documentos import usuarios_documentos
 
@@ -40,5 +41,9 @@ urlpatterns = [
     path('grupo_socio/', grupo_socio.index, name='mantenimiento-grupo_socio'),
     path('grupo_socio/edit/<int:_id>', grupo_socio.edit, name='mantenimiento-grupo_socio_edit'),
     path('grupo_socio/create/', grupo_socio.create, name='mantenimiento-grupo_socio_create'),
+
+    path('gasto_importacion/', gasto_importacion.index, name='mantenimiento-gasto_importacion'),
+    path('gasto_importacion/edit/<int:_id>', gasto_importacion.edit, name='mantenimiento-gasto_importacion_edit'),
+    path('gasto_importacion/create/', gasto_importacion.create, name='mantenimiento-gasto_importacion_create'),
 
 ]

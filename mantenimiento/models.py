@@ -151,3 +151,12 @@ class Mgruposocio(models.Model):
 
     def __str__(self):
         return self.gruposocio
+
+
+class Mgtoi(models.Model):
+    nombregasto = models.CharField(db_column='NombreGasto', max_length=100, blank=True, null=True)
+    ctagasto = models.ForeignKey(Mcuentas, db_column='CtaGasto', max_length=10, blank=True, null=True,
+                                 on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.nombregasto

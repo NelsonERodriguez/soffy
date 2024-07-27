@@ -139,3 +139,10 @@ class MgruposocioForm(forms.Form):
     ctacontable = forms.ModelChoiceField(queryset=Mcuentas.objects.filter(activo=True), to_field_name='id',
                                          required=False, widget=forms.Select(attrs={'class': 'form-control'}),
                                          empty_label='Cuenta contable')
+
+
+class MgtoiForm(forms.Form):
+    nombregasto = forms.CharField(max_length=100, required=True)
+    ctagasto = forms.ModelChoiceField(queryset=Mcuentas.objects.filter(activo=True), to_field_name='id',
+                                      required=False, widget=forms.Select(attrs={'class': 'form-control'}),
+                                      empty_label='Cuenta contable')
