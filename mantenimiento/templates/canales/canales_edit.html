@@ -1,0 +1,92 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Canales {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">groups</i>
+                        </div>
+                        <h4 class="card-title">Canales</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar text-right">
+                            <a href="{% url 'mantenimiento-canales' %}"
+                               class="btn btn-gradient-danger text-right">
+                                <i class="material-icons">arrow_back</i>
+                                Regresar
+                            </a>
+                        </div>
+                        <div class="col-12">
+
+                            <form action="{% url 'mantenimiento-canales_edit' id %}" method="POST">
+                                {% csrf_token %}
+
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.canal.errors %}has-danger{% endif %}">
+                                            <label for="canal" class="bmd-label-floating">Canal</label>
+                                            <input type="text" name="canal" id="canal"
+                                                   class="form-control {% if form.canal.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.canal.value %}{{ form.canal.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.canal.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.ocrcode.errors %}has-danger{% endif %}">
+                                            <label for="ocrcode" class="bmd-label-floating">OcrCode</label>
+                                            <input type="text" name="ocrcode" id="ocrcode"
+                                                   class="form-control {% if form.ocrcode.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.ocrcode.value %}{{ form.ocrcode.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.ocrcode.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group {% if form.agrupador.errors %}has-danger{% endif %}">
+                                            <label for="agrupador" class="bmd-label-floating">Agrupador</label>
+                                            <input type="text" name="agrupador" id="agrupador"
+                                                   class="form-control {% if form.agrupador.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.agrupador.value %}{{ form.agrupador.value }}{% endif %}">
+                                            <div class="invalid-feedback">
+                                                {% for error in form.agrupador.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-gradient-success">
+                                            <i class="material-icons">save</i>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -126,3 +126,9 @@ class Mbodega02Form(forms.Form):
                                     widget=forms.Select(attrs={'class': 'form-control'}), empty_label='Usuario')
     idbodega = forms.ModelChoiceField(queryset=Mbodega.objects.all(), to_field_name='id', required=True,
                                       widget=forms.Select(attrs={'class': 'form-control'}), empty_label='Bodega')
+
+
+class McanalesForm(forms.Form):
+    canal = forms.CharField(max_length=50, required=True)
+    ocrcode = forms.CharField(max_length=10, required=False)
+    agrupador = forms.CharField(max_length=30, required=True)

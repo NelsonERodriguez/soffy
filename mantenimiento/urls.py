@@ -2,6 +2,7 @@ from django.urls import path
 from mantenimiento import views
 from mantenimiento.controllers.bancos import bancos
 from mantenimiento.controllers.bodega import bodega
+from mantenimiento.controllers.canales import canales
 from mantenimiento.controllers.documentos import documentos
 from mantenimiento.controllers.empresas import empresas
 from mantenimiento.controllers.usuarios_documentos import usuarios_documentos
@@ -30,4 +31,9 @@ urlpatterns = [
     path('usuarios_documentos/delete/', usuarios_documentos.delete, name='mantenimiento-usuarios_documentos_delete'),
     path('usuarios_documentos/create/<int:usuario_id>', usuarios_documentos.create,
          name='mantenimiento-usuarios_documentos_create'),
+
+    path('canales/', canales.index, name='mantenimiento-canales'),
+    path('canales/edit/<int:_id>', canales.edit, name='mantenimiento-canales_edit'),
+    path('canales/create/', canales.create, name='mantenimiento-canales_create'),
+
 ]

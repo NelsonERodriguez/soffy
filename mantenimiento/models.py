@@ -134,3 +134,12 @@ class Mbancos(models.Model):
 
     def __str__(self):
         return self.nomban
+
+
+class Mcanales(models.Model):
+    canal = models.CharField(db_column='Canal', unique=True, max_length=50)
+    ocrcode = models.CharField(db_column='OcrCode', max_length=10, blank=True, null=True)
+    agrupador = models.CharField(db_column='Agrupador', max_length=30, blank=True, null=True)
+
+    def __str__(self):
+        return self.canal
