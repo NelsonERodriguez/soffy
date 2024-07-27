@@ -42,10 +42,10 @@
                                             <tbody>
                                             {% for ccosto in page_obj %}
                                                 <tr>
-                                                    <td class="border px-4 py-2">{{ ccosto.idccos }}</td>
-                                                    <td class="border px-4 py-2">{{ ccosto.ccosnombre }}</td>
-                                                    <td class="border px-4 py-2">{{ ccosto.codccos }}</td>
-                                                    <td class="border px-4 py-2">{{ ccosto.dim }}</td>
+                                                    <td class="border px-4 py-2">{% if ccosto.idccos %}{{ ccosto.idccos }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if ccosto.ccosnombre %}{{ ccosto.ccosnombre }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if ccosto.codccos %}{{ ccosto.codccos }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if ccosto.dim %}{{ ccosto.dim }}{% endif %}</td>
                                                     <td class="border px-4 py-2">
                                                         {% if ccosto.activo %}
                                                             Si

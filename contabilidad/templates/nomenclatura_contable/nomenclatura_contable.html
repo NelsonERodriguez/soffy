@@ -41,11 +41,11 @@
                                             <tbody>
                                             {% for mcuenta in page_obj %}
                                                 <tr>
-                                                    <td class="border px-4 py-2">{{ mcuenta.ctacontable }}</td>
-                                                    <td class="border px-4 py-2">{{ mcuenta.ctanombre }}</td>
-                                                    <td class="border px-4 py-2">{{ mcuenta.efecto }}</td>
-                                                    <td class="border px-4 py-2">{{ mcuenta.nivel }}</td>
-                                                    <td class="border px-4 py-2">{{ mcuenta.moneda }}</td>
+                                                    <td class="border px-4 py-2">{% if mcuenta.ctacontable %}{{ mcuenta.ctacontable }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if mcuenta.ctanombre %}{{ mcuenta.ctanombre }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if mcuenta.efecto %}{{ mcuenta.efecto }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if mcuenta.nivel %}{{ mcuenta.nivel }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if mcuenta.moneda %}{{ mcuenta.moneda }}{% endif %}</td>
                                                     <td class="border px-4 py-2">
                                                         {% if mcuenta.activo %}
                                                             Si

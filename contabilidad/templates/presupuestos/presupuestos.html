@@ -37,8 +37,8 @@
                                             <tbody>
                                             {% for presupuesto in page_obj %}
                                                 <tr>
-                                                    <td class="border px-4 py-2">{{ presupuesto.id }}</td>
-                                                    <td class="border px-4 py-2">{{ presupuesto.fecha|date:"d/m/Y" }}</td>
+                                                    <td class="border px-4 py-2">{% if presupuesto.id %}{{ presupuesto.id }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if presupuesto.fecha %}{{ presupuesto.fecha|date:"d/m/Y" }}{% endif %}</td>
                                                     <td class="border px-4 py-2">{{ presupuesto.descripcion }}</td>
                                                     <td class="border px-4 py-2 td-actions text-left">
                                                         <a type="button" rel="tooltip"

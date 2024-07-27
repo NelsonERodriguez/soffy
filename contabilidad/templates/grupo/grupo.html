@@ -40,8 +40,8 @@
                                             <tbody>
                                             {% for grupo in page_obj %}
                                                 <tr>
-                                                    <td class="border px-4 py-2">{{ grupo.codigogrupo }}</td>
-                                                    <td class="border px-4 py-2">{{ grupo.grupo }}</td>
+                                                    <td class="border px-4 py-2">{% if grupo.codigogrupo %}{{ grupo.codigogrupo }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if grupo.grupo %}{{ grupo.grupo }}{% endif %}</td>
                                                     <td class="border px-4 py-2">
                                                         {% if grupo.activo %}
                                                             Si
