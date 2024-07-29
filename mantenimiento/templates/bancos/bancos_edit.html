@@ -76,7 +76,7 @@
 
                                     <div class="col-md-6">
                                         <div class="form-group {% if form.ctacon.errors %}has-danger{% endif %}">
-                                            <select name="ctacon" id="ctacon" class="selectpicker {% if form.ctacon.errors %}is-invalid{% endif %}"
+                                            <select name="ctacon" id="ctacon" class="selectpicker {% if form.ctacon.errors %}is-invalid{% endif %}" data-live-search="true"
                                                     data-style="btn {% if form.ctacon.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}" title="Cuenta Contable">
                                                 {% for ctacon in form.ctacon %}
                                                     {{ ctacon }}

@@ -158,7 +158,7 @@
 
                                     <div class="col-md-6">
                                         <div class="form-group {% if form.idsucursal.errors %}has-danger{% endif %}">
-                                            <select name="idsucursal" id="idsucursal" class="selectpicker {% if form.idsucursal.errors %}is-invalid{% endif %}"
+                                            <select name="idsucursal" id="idsucursal" class="selectpicker {% if form.idsucursal.errors %}is-invalid{% endif %}" data-live-search="true"
                                                     data-style="btn {% if form.idsucursal.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}" title="Bodega">
                                                 {% for idsucursal in form.idsucursal %}
                                                     {{ idsucursal }}

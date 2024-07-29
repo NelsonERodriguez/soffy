@@ -31,7 +31,7 @@
                                     <div class="col-md-6">
                                         <input type="hidden" name="iduser" value="{{ form.iduser.value }}">
                                         <div class="form-group {% if form.seriepedido.errors %}has-danger{% endif %}">
-                                            <select name="seriepedido" id="seriepedido"
+                                            <select name="seriepedido" id="seriepedido" data-live-search="true"
                                                     class="selectpicker {% if form.seriepedido.errors %}is-invalid{% endif %}"
                                                     data-style="btn {% if form.seriepedido.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}"
                                                     title="Serie Pedido">
@@ -49,7 +49,7 @@
 
                                     <div class="col-md-6">
                                         <div class="form-group {% if form.seriefactura.errors %}has-danger{% endif %}">
-                                            <select name="seriefactura" id="seriefactura"
+                                            <select name="seriefactura" id="seriefactura" data-live-search="true"
                                                     class="selectpicker {% if form.seriefactura.errors %}is-invalid{% endif %}"
                                                     data-style="btn {% if form.seriefactura.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}"
                                                     title="Serie Factura">
@@ -135,6 +135,7 @@
                                                                     id="idbodega_{{ forloop.counter0 }}"
                                                                     class="selectpicker"
                                                                     data-style="btn btn-outline-primary"
+                                                                    data-live-search="true"
                                                                     title="Bodega">
                                                                 <option value=""></option>
                                                                 {% for bodega in mbodegas %}
@@ -195,6 +196,7 @@
                         id="idbodega_${row.rowIndex}"
                         class="selectpicker"
                         data-style="btn btn-outline-primary"
+                        data-live-search="true"
                         title="Bodega">
                     ${arrBodegas.map((bodega) => '<option value="' + bodega.id +'">' + bodega.nbodega + ' - ' + bodega.ubicacion +'</option>')}
                 </select>`;

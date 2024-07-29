@@ -30,7 +30,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group {% if form.ctacontable.errors %}has-danger{% endif %}">
-                                            <select name="ctacontable" id="ctacontable" class="selectpicker {% if form.ctacontable.errors %}is-invalid{% endif %}"
+                                            <select name="ctacontable" id="ctacontable" class="selectpicker {% if form.ctacontable.errors %}is-invalid{% endif %}" data-live-search="true"
                                                     data-style="btn {% if form.ctacontable.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}" title="Cuenta Padre">
                                                 {% for ctacontable in form.ctacontable %}
                                                     {{ ctacontable }}
@@ -46,7 +46,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group {% if form.cencos.errors %}has-danger{% endif %}">
-                                            <select name="cencos" id="cencos" class="selectpicker {% if form.cencos.errors %}is-invalid{% endif %}"
+                                            <select name="cencos" id="cencos" class="selectpicker {% if form.cencos.errors %}is-invalid{% endif %}" data-live-search="true"
                                                     data-style="btn {% if form.cencos.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %} " title="Centro Costo">
                                                 {% for cencos in form.cencos %}
                                                     {{ cencos }}

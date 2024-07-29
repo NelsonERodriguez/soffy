@@ -92,6 +92,7 @@
                                                                     id="ctacontable_{{ forloop.counter0 }}"
                                                                     class="selectpicker"
                                                                     data-style="btn btn-outline-primary"
+                                                                    data-live-search="true"
                                                                     title="Cta Contable">
                                                                 <option value=""></option>
                                                                 {% for mcuenta in mcuentas %}
@@ -192,6 +193,7 @@
                         id="ctacontable_${row.rowIndex}"
                         class="selectpicker"
                         data-style="btn btn-outline-primary"
+                        data-live-search="true"
                         title="Cta Contable">
                     ${arrCuentas.map((cuenta) => '<option value="' + cuenta.id +'">' + cuenta.ctacontable + ' - ' + cuenta.ctanombre +'</option>')}
                 </select>`;

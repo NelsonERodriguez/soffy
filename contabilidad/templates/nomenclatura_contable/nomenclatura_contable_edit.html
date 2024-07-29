@@ -29,7 +29,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group {% if form.grupo.errors %}has-danger{% endif %}">
-                                            <select name="grupo" id="grupo" class="selectpicker {% if form.grupo.errors %}is-invalid{% endif %}"
+                                            <select name="grupo" id="grupo" class="selectpicker {% if form.grupo.errors %}is-invalid{% endif %}" data-live-search="true"
                                                     data-style="btn {% if form.grupo.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %} " title="Grupo">
                                                 {% for grupo in form.grupo %}
                                                     {{ grupo }}
@@ -45,7 +45,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group {% if form.ctapadre.errors %}has-danger{% endif %}">
-                                            <select name="ctapadre" id="ctapadre" class="selectpicker {% if form.ctapadre.errors %}is-invalid{% endif %}"
+                                            <select name="ctapadre" id="ctapadre" class="selectpicker {% if form.ctapadre.errors %}is-invalid{% endif %}" data-live-search="true"
                                                     data-style="btn {% if form.ctapadre.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}" title="Cuenta Padre">
                                                 {% for ctapadre in form.ctapadre %}
                                                     {{ ctapadre }}
@@ -61,7 +61,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group {% if form.efecto.errors %}has-danger{% endif %}">
-                                            <select name="efecto" id="efecto" class="selectpicker {% if form.efecto.errors %}is-invalid{% endif %}"
+                                            <select name="efecto" id="efecto" class="selectpicker {% if form.efecto.errors %}is-invalid{% endif %}" data-live-search="true"
                                                     data-style="btn {% if form.efecto.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}" title="Efecto">
                                                 {% for efecto in form.efecto %}
                                                     {{ efecto }}
@@ -77,7 +77,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group {% if form.nivel.errors %}has-danger{% endif %}">
-                                            <select name="nivel" id="nivel" class="selectpicker {% if form.nivel.errors %}is-invalid{% endif %}"
+                                            <select name="nivel" id="nivel" class="selectpicker {% if form.nivel.errors %}is-invalid{% endif %}" data-live-search="true"
                                                     data-style="btn {% if form.nivel.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}" title="Nivel">
                                                 {% for nivel in form.nivel %}
                                                     {{ nivel }}
@@ -93,7 +93,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group {% if form.moneda.errors %}has-danger{% endif %}">
-                                            <select name="moneda" id="moneda" class="selectpicker {% if form.moneda.errors %}is-invalid{% endif %}"
+                                            <select name="moneda" id="moneda" class="selectpicker {% if form.moneda.errors %}is-invalid{% endif %}" data-live-search="true"
                                                     data-style="btn {% if form.moneda.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}" title="Moneda">
                                                 {% for moneda in form.moneda %}
                                                     {{ moneda }}
@@ -109,7 +109,7 @@
                                 
                                     <div class="col-md-4">
                                         <div class="form-group {% if form.mccos.errors %}has-danger{% endif %}">
-                                            <select name="mccos" id="mccos" class="selectpicker {% if form.mccos.errors %}is-invalid{% endif %}"
+                                            <select name="mccos" id="mccos" class="selectpicker {% if form.mccos.errors %}is-invalid{% endif %}" data-live-search="true"
                                                     data-style="btn {% if form.mccos.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %} " title="Centro Costo">
                                                 {% for mccos in form.mccos %}
                                                     {{ mccos }}
