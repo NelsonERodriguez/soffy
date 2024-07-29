@@ -19,6 +19,7 @@ APPS = [
     'api_bridge',
     'mantenimiento',
     'contabilidad',
+    'bancos',
     # 'clientes', #robar de termino
     # 'ventas', #robar de termino
     # 'dashboard', #robar de termino
