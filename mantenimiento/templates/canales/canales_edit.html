@@ -7,17 +7,14 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header card-header-primary card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">groups</i>
-                        </div>
+                    <div class="card-header">
                         <h4 class="card-title">Canales</h4>
                     </div>
                     <div class="card-body">
                         <div class="toolbar text-right">
                             <a href="{% url 'mantenimiento-canales' %}"
                                class="btn btn-gradient-danger text-right">
-                                <i class="material-icons">arrow_back</i>
+                                <i class="fas fa-chevron-left"></i>
                                 Regresar
                             </a>
                         </div>
@@ -28,7 +25,7 @@
 
                                 <div class="row">
 
-                                    <div class="col-md-4">
+                                    <div class="col-12 col-md-4">
                                         <div class="form-group {% if form.canal.errors %}has-danger{% endif %}">
                                             <label for="canal" class="bmd-label-floating">Canal</label>
                                             <input type="text" name="canal" id="canal"
@@ -42,7 +39,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-6 col-md-4">
                                         <div class="form-group {% if form.ocrcode.errors %}has-danger{% endif %}">
                                             <label for="ocrcode" class="bmd-label-floating">OcrCode</label>
                                             <input type="text" name="ocrcode" id="ocrcode"
@@ -56,7 +53,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-6 col-md-4">
                                         <div class="form-group {% if form.agrupador.errors %}has-danger{% endif %}">
                                             <label for="agrupador" class="bmd-label-floating">Agrupador</label>
                                             <input type="text" name="agrupador" id="agrupador"

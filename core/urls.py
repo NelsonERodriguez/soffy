@@ -16,6 +16,8 @@ urlpatterns = [
     path('', views.pages, name='home_pages'),
     path('index/', views.index, name='home_core'),
     path('index/primera_carga', views.primera_carga, name='home_primera_carga'),
+    path('index/primera_ventanas', views.crear_ventanas_existentes,
+        name='home_primera_ventanas'),
     path('index_dashboard/', views.index_dashboard, name='core-dashboard'),
     path('login/', views.login, name="login"),
     path("logout/", views.logoutRequest, name="logout"),

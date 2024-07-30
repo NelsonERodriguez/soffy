@@ -7,18 +7,15 @@
 {% block content %}
     <div class="container-fluid">
         <div class="row">
-            <div class="offset-md-2 col-md-8">
+            <div class="col-12">
                 <div class="card">
-                    <div class="card-header card-header-primary card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">groups</i>
-                        </div>
+                    <div class="card-header">
                         <h4 class="card-title">Centros de costo</h4>
                     </div>
                     <div class="card-body">
                         <div class="toolbar text-right">
                             <a href="{% url 'contabilidad-centros_costo' %}" class="btn btn-gradient-danger text-right">
-                                <i class="material-icons">arrow_back</i>
+                                <i class="fas fa-chevron-left"></i>
                                 Regresar
                             </a>
                         </div>
@@ -28,7 +25,7 @@
                                 {% csrf_token %}
 
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-6 col-md-2">
                                         <div class="form-group {% if form.idccos.errors %}has-danger{% endif %}">
                                             <label for="idccos" class="bmd-label-floating">IdCcos</label>
                                             <input type="text" name="idccos" id="idccos"
@@ -42,7 +39,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-6 col-md-4">
                                         <div class="form-group {% if form.ccosnombre.errors %}has-danger{% endif %}">
                                             <label for="ccosnombre" class="bmd-label-floating">CcosNombre</label>
                                             <input type="text" name="ccosnombre" id="ccosnombre"
@@ -55,10 +52,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-6 col-md-3">
                                         <div class="form-group {% if form.codccos.errors %}has-danger{% endif %}">
                                             <label for="codccos" class="bmd-label-floating">CodCcos</label>
                                             <input type="text" name="codccos" id="codccos"
@@ -72,7 +66,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-6 col-md-3">
                                         <div class="form-group {% if form.dim.errors %}has-danger{% endif %}">
                                             <label for="dim" class="bmd-label-floating">Dimensión</label>
                                             <input type="number" name="dim" id="dim"

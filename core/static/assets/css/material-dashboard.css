@@ -6389,7 +6389,8 @@ a.text-dark:hover, a.text-dark:focus {
   .form-check .form-check-input:focus + .form-check-sign .check:after {
     opacity: 0.2; }
   .form-check .form-check-input:checked ~ .form-check-sign .check {
-    background: #9c27b0; }
+    background: var(--primary-color);
+  }
   .form-check .form-check-input:checked ~ .form-check-sign .check:before {
     color: #FFFFFF;
     box-shadow: 0 0 0 10px, 10px -10px 0 10px, 32px 0 0 20px, 0px 32px 0 20px, -5px 5px 0 10px, 20px -12px 0 11px;
@@ -7789,9 +7790,9 @@ fieldset[disabled][disabled] .has-rose .form-control, .has-rose .form-control.di
   .bmd-form-group input::-ms-input-placeholder {
     line-height: 1.1; }
 .bmd-form-group .form-control, .bmd-form-group label, .bmd-form-group input::placeholder {
-  line-height: 1.1;
+  line-height: 1.8;
   padding-left: .3vw;
-  padding-bottom: .6vw;
+  padding-bottom: .4vw;
 }
   .bmd-form-group label {
     color: #AAAAAA; }
@@ -10590,7 +10591,7 @@ form .checkbox-radios {
   margin-top: 8px; }
 
 .bmd-label-static {
-  top: -7px !important; }
+  top: -1.6vw !important; }
 
 .form-check .form-check-label {
   padding-right: 15px; }
@@ -17359,7 +17360,7 @@ select.selectpicker {
     box-shadow: 0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(156, 39, 176, 0.4); }
 
 .bootstrap-select .dropdown-item.active {
-  background: #9c27b0;
+  background: var(--primary-color);
   color: #ffffff; }
 
 select.bs-select-hidden,

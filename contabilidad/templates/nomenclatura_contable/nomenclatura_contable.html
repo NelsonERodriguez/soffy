@@ -7,25 +7,21 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header card-header-primary card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">groups</i>
-                        </div>
+                    <div class="card-header">
                         <h4 class="card-title">Nomenclatura Contable</h4>
                     </div>
                     <div class="card-body">
                         <div class="toolbar text-right">
                             <a href="{% url 'contabilidad-nomenclatura_contable_create' %}"
                                class="btn btn-gradient-success text-right">
-                                <i class="material-icons">add</i>
+                                <i class='fa fa-plus'></i>
                                 Nuevo
                             </a>
                         </div>
                         <div class="row">
                             <div class="col-12">
                                 <div class="row">
-                                    <div class="col-md-12">
-
+                                    <div class="col-md-12 cnt-table-responsive">
                                         <table class="table table-striped">
                                             <thead>
                                             <tr>
@@ -73,36 +69,12 @@
                                         </table>
                                     </div>
                                 </div>
-                                <!-- Paginación -->
-                                <div class="row">
-                                <span class="col-md-6">
-                                    Mostrando {{ page_obj.start_index }} a {{ page_obj.end_index }} de {{ page_obj.paginator.count }} resultados
-                                </span>
-                                    <div class="col-md-6 inline-flex mt-2">
-                                        {% if page_obj.has_previous %}
-                                            <a href="?page=1" class="bg-blue-500 text-primary px-3 py-1 rounded-l">Primero</a>
-                                            <a href="?page={{ page_obj.previous_page_number }}"
-                                               class="bg-blue-500 text-primary px-3 py-1 ml-1">Anterior</a>
-                                        {% endif %}
-
-                                        {% for num in page_obj.paginator.page_range %}
-                                            {% if page_obj.number == num %}
-                                                <span class="bg-blue-500 text-primary px-3 py-1 ml-1">{{ num }}</span>
-                                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                                <a href="?page={{ num }}"
-                                                   class="bg-blue-500 text-primary px-3 py-1 ml-1">{{ num }}</a>
-                                            {% endif %}
-                                        {% endfor %}
-
-                                        {% if page_obj.has_next %}
-                                            <a href="?page={{ page_obj.next_page_number }}"
-                                               class="bg-blue-500 text-primary px-3 py-1 ml-1">Siguiente</a>
-                                            <a href="?page={{ page_obj.paginator.num_pages }}"
-                                               class="bg-blue-500 text-primary px-3 py-1 rounded-r ml-1">Último</a>
-                                        {% endif %}
+                                
+                                <div class='row'>
+                                    <div class='col-12'>
+                                        {% include 'general/paginador.html' with page_obj=page_obj %}
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>

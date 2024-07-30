@@ -7,17 +7,14 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header card-header-primary card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">groups</i>
-                        </div>
+                    <div class="card-header">
                         <h4 class="card-title">Documentos</h4>
                     </div>
                     <div class="card-body">
                         <div class="toolbar text-right">
                             <a href="{% url 'mantenimiento-documentos_create' %}"
                                class="btn btn-gradient-success text-right">
-                                <i class="material-icons">add</i>
+                                <i class='fa fa-plus'></i>
                                 Nuevo
                             </a>
                         </div>
@@ -28,16 +25,16 @@
                                     <div class="col-12">
                                         <table class="table table-striped">
                                             <thead>
-                                            <tr>
-                                                <th class="px-4 py-2">Tipo Documento</th>
-                                                <th class="px-4 py-2">Fecha Vence</th>
-                                                <th class="px-4 py-2">Serie</th>
-                                                <th class="px-4 py-2">Desde</th>
-                                                <th class="px-4 py-2">Hasta</th>
-                                                <th class="px-4 py-2">Resolución</th>
-                                                <th class="px-4 py-2">Bodega</th>
-                                                <th class="px-4 py-2">Acciones</th>
-                                            </tr>
+                                                <tr>
+                                                    <th class="px-4 py-2">Tipo Documento</th>
+                                                    <th class="px-4 py-2">Fecha Vence</th>
+                                                    <th class="px-4 py-2">Serie</th>
+                                                    <th class="px-4 py-2">Desde</th>
+                                                    <th class="px-4 py-2">Hasta</th>
+                                                    <th class="px-4 py-2">Resolución</th>
+                                                    <th class="px-4 py-2">Bodega</th>
+                                                    <th class="px-4 py-2">Acciones</th>
+                                                </tr>
                                             </thead>
                                             <tbody>
                                             {% for documento in page_obj %}

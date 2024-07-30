@@ -7,17 +7,14 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header card-header-primary card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">groups</i>
-                        </div>
+                    <div class="card-header">
                         <h4 class="card-title">Impuestos</h4>
                     </div>
                     <div class="card-body">
                         <div class="toolbar text-right">
                             <a href="{% url 'mantenimiento-impuestos' %}"
                                class="btn btn-gradient-danger text-right">
-                                <i class="material-icons">arrow_back</i>
+                                <i class="fas fa-chevron-left"></i>
                                 Regresar
                             </a>
                         </div>
@@ -27,8 +24,7 @@
                                 {% csrf_token %}
 
                                 <div class="row">
-
-                                    <div class="col-md-6">
+                                    <div class="col-12 col-md-4">
                                         <div class="form-group {% if form.ctaconatble.errors %}has-danger{% endif %}">
                                             <select name="ctaconatble" id="ctaconatble" data-live-search="true"
                                                     class="selectpicker {% if form.ctaconatble.errors %}is-invalid{% endif %}"
@@ -45,12 +41,7 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="col-md-6">
+                                    <div class="col-12 col-md-4">
                                         <div class="form-group {% if form.nombreret.errors %}has-danger{% endif %}">
                                             <label for="nombreret" class="bmd-label-floating">Nombre Ret</label>
                                             <input type="text" name="nombreret" id="nombreret"
@@ -63,8 +54,7 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="col-md-6">
+                                    <div class="col-12 col-md-4">
                                         <div class="form-group {% if form.categoria.errors %}has-danger{% endif %}">
                                             <label for="categoria" class="bmd-label-floating">Categoría</label>
                                             <input type="text" name="categoria" id="categoria"
@@ -77,16 +67,13 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
-
                                 <div class="row">
-
-                                    <div class="col-md-6">
-                                        <div class="form-group {% if form.fechavalido.errors %}has-danger{% endif %}">
-                                            <label for="fechavalido" class="bmd-label-floating">Fecha Valido</label>
+                                    <div class="col-6 col-md-3">
+                                        <div class="form-group lleno {% if form.fechavalido.errors %}has-danger{% endif %}">
+                                            <label for="fechavalido" class="flotando">Fecha Valido</label>
                                             <input type="date" name="fechavalido" id="fechavalido"
-                                                   class="form-control {% if form.fechavalido.errors %}is-invalid{% endif %}"
+                                                   class="form-control selectFlotando {% if form.fechavalido.errors %}is-invalid{% endif %}"
                                                    value="{% if form.fechavalido.value %}{{ form.fechavalido.value }}{% endif %}">
                                             <div class="invalid-feedback">
                                                 {% for error in form.fechavalido.errors %}
@@ -95,8 +82,7 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="col-md-6">
+                                    <div class="col-6 col-md-3">
                                         <div class="form-group {% if form.tarifa.errors %}has-danger{% endif %}">
                                             <label for="tarifa" class="bmd-label-floating">Tarifa</label>
                                             <input type="number" name="tarifa" id="tarifa"
@@ -109,12 +95,7 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="col-md-6">
+                                    <div class="col-6 col-md-3">
                                         <div class="form-group {% if form.base.errors %}has-danger{% endif %}">
                                             <label for="base" class="bmd-label-floating">Base</label>
                                             <input type="text" name="base" id="base"
@@ -127,8 +108,7 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="col-md-6">
+                                    <div class="col-6 col-md-3">
                                         <div class="form-group {% if form.prcimpbase.errors %}has-danger{% endif %}">
                                             <label for="prcimpbase" class="bmd-label-floating">Porcentaje impuesto base</label>
                                             <input type="number" name="prcimpbase" id="prcimpbase"
@@ -141,7 +121,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
 
                                 <div class="row">

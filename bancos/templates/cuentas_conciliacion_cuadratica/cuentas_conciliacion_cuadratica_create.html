@@ -7,17 +7,14 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header card-header-primary card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">groups</i>
-                        </div>
+                    <div class="card-header">
                         <h4 class="card-title">Configuración de Cuentas Conciliación Cuadrática</h4>
                     </div>
                     <div class="card-body">
                         <div class="toolbar text-right">
                             <a href="{% url 'bancos-cuentas_conciliacion_cuadratica' %}"
                                class="btn btn-gradient-danger text-right">
-                                <i class="material-icons">arrow_back</i>
+                                <i class="fas fa-chevron-left"></i>
                                 Regresar
                             </a>
                         </div>
@@ -25,10 +22,8 @@
 
                             <form action="{% url 'bancos-cuentas_conciliacion_cuadratica_create' %}" method="POST">
                                 {% csrf_token %}
-
                                 <div class="row">
-
-                                    <div class="col-md-6">
+                                    <div class="col-12 col-md-6">
                                         <div class="form-group {% if form.ctacontable.errors %}has-danger{% endif %}">
                                             <select name="ctacontable" id="ctacontable"
                                                     class="selectpicker {% if form.ctacontable.errors %}is-invalid{% endif %}"
@@ -45,12 +40,7 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="col-md-6">
+                                    <div class="col-12 col-md-6">
                                         <div class="form-group {% if form.descri.errors %}has-danger{% endif %}">
                                             <label for="descri" class="bmd-label-floating">Descripción</label>
                                             <input type="text" name="descri" id="descri"

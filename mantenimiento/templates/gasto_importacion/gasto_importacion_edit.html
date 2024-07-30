@@ -7,28 +7,22 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header card-header-primary card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">groups</i>
-                        </div>
+                    <div class="card-header">
                         <h4 class="card-title">Gastos de Importación</h4>
                     </div>
                     <div class="card-body">
                         <div class="toolbar text-right">
                             <a href="{% url 'mantenimiento-gasto_importacion' %}"
                                class="btn btn-gradient-danger text-right">
-                                <i class="material-icons">arrow_back</i>
+                                <i class="fas fa-chevron-left"></i>
                                 Regresar
                             </a>
                         </div>
                         <div class="col-12">
-
                             <form action="{% url 'mantenimiento-gasto_importacion_edit' id %}" method="POST">
                                 {% csrf_token %}
-
                                 <div class="row">
-
-                                    <div class="col-md-6">
+                                    <div class="col-12 col-md-6">
                                         <div class="form-group {% if form.ctagasto.errors %}has-danger{% endif %}">
                                             <select name="ctagasto" id="ctagasto" data-live-search="true"
                                                     class="selectpicker {% if form.ctagasto.errors %}is-invalid{% endif %}"
@@ -45,12 +39,7 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="col-md-6">
+                                    <div class="col-12 col-md-6">
                                         <div class="form-group {% if form.nombregasto.errors %}has-danger{% endif %}">
                                             <label for="nombregasto" class="bmd-label-floating">Nombre Gasto</label>
                                             <input type="text" name="nombregasto" id="nombregasto"
@@ -63,7 +52,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
 
                                 <div class="row">

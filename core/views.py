@@ -8,10 +8,12 @@ from django import template
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 
-from core.functions import get_notification, get_query, desencriptar_datos, insert_query, execute_query
+from core.functions import get_notification, get_query, desencriptar_datos, \
+    insert_query, execute_query, get_single_query
 from soffybiz.debug import DEBUG, clave_compartida
 # from tickets.controllers.dashboard.dashboard import get_tickets
-from core.models import User_departamento, Menu_configuracion_usuarios, Menu_colores_fondo, Menu_colores_opciones, \
+from core.models import User_departamento, Menu_configuracion_usuarios, \
+    Menu_colores_fondo, Menu_colores_opciones, \
     Menu_imagenes, Emulacion_usuarios
 from datetime import datetime
 from user_auth.models import User
@@ -85,35 +87,48 @@ def login(request):
 
 
 def primera_carga(request):
-    data = { 'cargado': False }
-    str_qry = """ALTER TABLE django_content_type
-        ADD COLUMN modulo VARCHAR(200) NULL,
-        ADD COLUMN ventana VARCHAR(200) NULL,
-        ADD COLUMN link VARCHAR(200) NULL,
-        ADD COLUMN icono VARCHAR(200) NULL,
-        ADD COLUMN sub_modulo VARCHAR(200) NULL;"""
-    execute_query(sql=str_qry)
+    response = {'cargado': False }
+    try:
+        str_query = """SELECT * FROM django_content_type"""
+        data = get_query(str_query)
+        if not 'modulo' in data[0]:
+            str_qry = """ALTER TABLE django_content_type
+                ADD COLUMN modulo VARCHAR(200) NULL,
+                ADD COLUMN ventana VARCHAR(200) NULL,
+                ADD COLUMN link VARCHAR(200) NULL,
+                ADD COLUMN icono VARCHAR(200) NULL,
+                ADD COLUMN sub_modulo VARCHAR(200) NULL;"""
+            execute_query(sql=str_qry)
 
-    str_qry = """UPDATE django_content_type
-     SET modulo = 'Usuarios', ventana = 'Permisos', link = 'user/permissions/', icono = 'verified_user'
-     WHERE app_label = 'auth' AND model = 'permission';"""
-    execute_query(sql=str_qry)
+        str_qry = """UPDATE django_content_type
+            SET modulo = 'Sistema', ventana = 'Permisos', link = 'user/permissions/', icono = 'verified_user'
+            WHERE app_label = 'auth' AND model = 'permission';"""
+        execute_query(sql=str_qry)
 
-    str_qry = """UPDATE django_content_type
-     SET modulo = 'Usuarios', ventana = 'Roles', link = 'user/groups/', icono = 'dns'
-     WHERE app_label = 'auth' AND model = 'group';"""
-    execute_query(sql=str_qry)
+        str_qry = """UPDATE django_content_type
+            SET modulo = 'Core', ventana = 'Crear Ventanas', link = 'core/crear_ventanas/', icono = 'verified_user'
+        execute_query(sql=str_qry)
+            WHERE app_label = 'core' AND model = 'menu_colores_fondo';"""
 
-    str_qry = """INSERT django_content_type (modulo, ventana, link, icono, app_label, model)
-        VALUES ('Usuarios', 'Roles de Usuarios', 'user/users_groups/', 'dns', 'auth', 'users_groups');"""
-    insert_query(sql=str_qry)
+        str_qry = """UPDATE django_content_type
+            SET modulo = 'Sistema', ventana = 'Roles', link = 'user/groups/', icono = 'dns'
+            WHERE app_label = 'auth' AND model = 'group';"""
+        execute_query(sql=str_qry)
+        
 
-    str_qry = """INSERT django_content_type (modulo, ventana, link, icono, app_label, model)
-        VALUES ('Usuarios', 'Usuarios no Existentes', 'user/users/', 'format_list_numbered', 'auth', 'users');"""
-    insert_query(sql=str_qry)
+        qry_exist = """SELECT ventana FROM django_content_type WHERE ventana = 'Roles de Usuarios'"""
+        a = get_single_query(qry_exist)
+        if not 'ventana' in a:
+            str_qry = """INSERT INTO django_content_type (modulo, ventana, link, icono, app_label, model)
+                VALUES ('Sistema', 'Roles de Usuarios', 'user/users_groups/', 'dns', 'auth', 'users_groups');"""
+            execute_query(sql=str_qry)
 
-
-    # 
+            str_qry = """INSERT INTO django_content_type (modulo, ventana, link, icono, app_label, model)
+                VALUES ('Sistema', 'Usuarios del Sistema', 'user/users/', 'format_list_numbered', 'auth', 'users');"""
+            execute_query(sql=str_qry)
+        response['cargado'] = True
+    except ValueError as e:
+        response['cargado'] = False
 
     # str_qry = """UPDATE django_content_type
     #  SET modulo = 'Core', ventana = 'Empresas', link = 'core/empresas/', icono = 'account_box'
@@ -139,14 +154,98 @@ def primera_carga(request):
     #  SET modulo = 'Usuarios', ventana = 'Mi Cuenta', link = 'user/myaccount/', icono = 'people'
     #  WHERE app_label = 'user_auth' AND model = 'user';"""
     # insert_query(sql=str_qry)
+    return JsonResponse(response, safe=False)
 
-    # =====
 
+def crear_ventanas_existentes(request):
+    response = {'cargado': False }
+    # BANCOS
+    str_qry = """UPDATE django_content_type
+        SET modulo = 'Bancos', ventana = 'Cuent. C. Cuadratica', 
+        link = 'bancos/cuentas_conciliacion_cuadratica/',
+        icono = 'dns'
+        WHERE app_label = 'bancos' AND model = 'mcuadratica';"""
+    execute_query(sql=str_qry)
     
+    # MANTENIMIENTO
+    str_qry = """UPDATE django_content_type
+        SET modulo = 'Mantenimiento', ventana = 'Impuestos', 
+        link = 'mantenimiento/impuestos/',
+        icono = 'dns'
+        WHERE app_label = 'mantenimiento' AND model = 'mimpuestos';"""
+    execute_query(sql=str_qry)
 
+    str_qry = """UPDATE django_content_type
+        SET modulo = 'Mantenimiento', ventana = 'Gastos Import.', 
+        link = 'mantenimiento/gasto_importacion/',
+        icono = 'dns'
+        WHERE app_label = 'mantenimiento' AND model = 'mgtoi';"""
+    execute_query(sql=str_qry)
+
+    str_qry = """UPDATE django_content_type
+        SET modulo = 'Mantenimiento', ventana = 'Grupo Socio', 
+        link = 'mantenimiento/grupo_socio/',
+        icono = 'dns'
+        WHERE app_label = 'mantenimiento' AND model = 'mgruposocio';"""
+    execute_query(sql=str_qry)
+
+    str_qry = """UPDATE django_content_type
+        SET modulo = 'Mantenimiento', ventana = 'Canales', 
+        link = 'mantenimiento/canales/',
+        icono = 'dns'
+        WHERE app_label = 'mantenimiento' AND model = 'mcanales';"""
+    execute_query(sql=str_qry)
+
+    str_qry = """UPDATE django_content_type
+        SET modulo = 'Mantenimiento', ventana = 'Bancos', 
+        link = 'mantenimiento/bancos/',
+        icono = 'dns'
+        WHERE app_label = 'mantenimiento' AND model = 'mbancos';"""
+    execute_query(sql=str_qry)
+
+    str_qry = """UPDATE django_content_type
+        SET modulo = 'Mantenimiento', ventana = 'Bodegas', 
+        link = 'mantenimiento/bodega/',
+        icono = 'dns'
+        WHERE app_label = 'mantenimiento' AND model = 'mbodega';"""
+    execute_query(sql=str_qry)
+
+    str_qry = """UPDATE django_content_type
+        SET modulo = 'Mantenimiento', ventana = 'Asg. Docs. Usuarios', 
+        link = 'mantenimiento/usuarios_documentos/',
+        icono = 'dns'
+        WHERE app_label = 'mantenimiento' AND model = 'musers';"""
+    execute_query(sql=str_qry)
+
+    # Contabilidad
+    str_qry = """UPDATE django_content_type
+        SET modulo = 'Contabilidad', ventana = 'Presupuestos', 
+        link = 'contabilidad/presupuestos/',
+        icono = 'dns'
+        WHERE app_label = 'contabilidad' AND model = 'mpresu01';"""
+    execute_query(sql=str_qry)
     
-
-    return JsonResponse(data, safe=False)
+    str_qry = """UPDATE django_content_type
+        SET modulo = 'Contabilidad', ventana = 'Nomenclatura Contable', 
+        link = 'contabilidad/nomenclatura_contable/',
+        icono = 'dns'
+        WHERE app_label = 'contabilidad' AND model = 'mcuentas';"""
+    execute_query(sql=str_qry)
+    
+    str_qry = """UPDATE django_content_type
+        SET modulo = 'Contabilidad', ventana = 'Grupos', 
+        link = 'contabilidad/grupos/',
+        icono = 'dns'
+        WHERE app_label = 'contabilidad' AND model = 'mgrupoitm';"""
+    execute_query(sql=str_qry)
+    
+    str_qry = """UPDATE django_content_type
+        SET modulo = 'Contabilidad', ventana = 'Centros de Costo', 
+        link = 'contabilidad/centros_costo/',
+        icono = 'dns'
+        WHERE app_label = 'contabilidad' AND model = 'mccos';"""
+    execute_query(sql=str_qry)
+    return JsonResponse(response, safe=False)
 
 
 def logoutRequest(request):
