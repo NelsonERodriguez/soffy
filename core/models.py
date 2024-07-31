@@ -1,5 +1,19 @@
 from django.db import models
 
+
+class Logs(models.Model):
+    navegador = models.CharField(max_length=100, null=True, blank=True)
+    ip = models.GenericIPAddressField(null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    post = models.TextField(null=True, blank=True)
+    get = models.TextField(null=True, blank=True)
+    url = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.url} {self.ip} {self.navegador}"
+
+
 class Query_logs(models.Model):
     email = models.CharField(max_length=255)
     query = models.TextField()
@@ -8,6 +22,7 @@ class Query_logs(models.Model):
     query_error = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
 
 class Empresas(models.Model):
     codigo = models.CharField(max_length=50)
@@ -66,7 +81,7 @@ class User_departamento(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('user','departamento')
+        unique_together = ('user', 'departamento')
 
 
 class Menu_colores_fondo(models.Model):

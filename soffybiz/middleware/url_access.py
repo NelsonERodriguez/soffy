@@ -1,8 +1,9 @@
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.db import connection
-from sqlescapy import sqlescape
-from core.functions import insert_query
+# from sqlescapy import sqlescape
+# from core.functions import insert_query
+from core.models import Logs
 from soffybiz.debug import DEBUG
 
 
@@ -32,17 +33,15 @@ class ProfileAccessWindow:
 
                     request_list = get_request_data_as_string(request)
 
-                    str_sql = """
-                        INSERT INTO Logs_Tablas..Nova_Logs (navegador, ip, email, post, get, urt, created_at) VALUES
-                        (%s, %s, %s, %s, %s, %s, GETDATE())
-                    """
                     if not DEBUG:
-                        insert_query(sql=str_sql,
-                                     params=(sqlescape(request.META['HTTP_USER_AGENT']),
-                                             sqlescape(request.META['REMOTE_ADDR']),
-                                             sqlescape(request.user.email), sqlescape(request_list['POST']),
-                                             sqlescape(request_list['GET']), sqlescape(request.path)),
-                                     print_debug=False)
+                        Logs.objects.create(
+                            navegador=request.META['HTTP_USER_AGENT'],
+                            ip=request.META['REMOTE_ADDR'],
+                            email=request.user.email,
+                            post=request_list['POST'],
+                            get=request_list['GET'],
+                            url=request.path
+                        )
 
             except ValueError:
                 pass
