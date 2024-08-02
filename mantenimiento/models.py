@@ -1,6 +1,6 @@
 from django.db import models
 
-from contabilidad.models import Mccos, Mcuentas
+from contabilidad.models import Mccos, Mcuentas, Mgrupoitm
 from user_auth.models import User
 
 
@@ -174,3 +174,263 @@ class Mimpuestos(models.Model):
 
     def __str__(self):
         return self.nombreret
+
+
+class Mmoneda(models.Model):
+    moneda = models.CharField(db_column='Moneda', max_length=3, blank=True, null=True)
+    nombre = models.CharField(db_column='Nombre', max_length=20, blank=True, null=True)
+
+    def __str__(self):
+        return self.nombre
+
+
+class Mpais(models.Model):
+    pais = models.CharField(db_column='Pais', max_length=50, blank=True, null=True)
+    siglas = models.CharField(db_column='Siglas', max_length=2, blank=True, null=True)
+
+    def __str__(self):
+        return self.pais
+
+
+class Mciudades(models.Model):
+    idpais = models.ForeignKey(Mpais, db_column='IdPais', on_delete=models.CASCADE)
+    ciudad = models.CharField(db_column='Ciudad', max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return self.ciudad
+
+
+class Mmunicipio(models.Model):
+    idciudad = models.ForeignKey(Mciudades, db_column='IdCiudad', on_delete=models.CASCADE)
+    municipio = models.CharField(db_column='Municipio', max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return self.municipio
+
+
+class Mrutas(models.Model):
+    nombreruta = models.CharField(db_column='NombreRuta', max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return self.nombreruta
+
+
+class Msegmento(models.Model):
+    idsegmento = models.SmallAutoField(db_column='IdSegmento', primary_key=True)
+    codigo = models.CharField(db_column='Codigo', max_length=10, blank=True, null=True)
+    segmento = models.CharField(db_column='Segmento', max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.codigo} - {self.segmento}"
+
+
+class Mrutas(models.Model):
+    nombreruta = models.CharField(db_column='NombreRuta', max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return self.nombreruta
+
+
+class Mvendedores(models.Model):
+    nvendedor = models.CharField(db_column='NVendedor', max_length=100, blank=True, null=True)
+    comision = models.DecimalField(db_column='Comision', max_digits=10, decimal_places=2, blank=True, null=True)
+    ruta = models.ForeignKey(Mrutas, db_column='Ruta', blank=True, null=True, on_delete=models.CASCADE)
+    codigovendor = models.CharField(db_column='CodigoVendor', max_length=20, blank=True, null=True)
+    correo = models.EmailField(db_column='Correo', max_length=100, blank=True, null=True)
+    telefono = models.CharField(db_column='Telefono', max_length=10, blank=True, null=True)
+    idbodega = models.ForeignKey(Mbodega, db_column='IdBodega', blank=True, null=True, on_delete=models.CASCADE)
+    login = models.CharField(max_length=20, blank=True, null=True)
+    segmento = models.ForeignKey(Msegmento, db_column='Segmento', blank=True, null=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.nvendedor
+
+
+class Mcategoria(models.Model):
+    codigocategoria = models.CharField(db_column='CodigoCategoria', max_length=10, blank=True, null=True)
+    categoria = models.CharField(db_column='Categoria', max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return self.categoria
+
+
+class Msubcategoria(models.Model):
+    idcategoria = models.ForeignKey(Mcategoria, db_column='IdCategoria', blank=True, null=True,
+                                    on_delete=models.CASCADE)
+    subcategoria = models.CharField(db_column='SubCategoria', max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return self.subcategoria
+
+
+class Mmarca(models.Model):
+    idcategoria = models.ForeignKey(Mcategoria, db_column='IdCategoria', blank=True, null=True,
+                                    on_delete=models.CASCADE)
+    marca = models.CharField(db_column='Marca', max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return self.marca
+
+
+class Mcontactos(models.Model):
+    idsocio = models.ForeignKey("Msocios", db_column='IdSocio', blank=True, null=True, on_delete=models.CASCADE)
+    nombre = models.CharField(db_column='Nombre', max_length=50, blank=True, null=True)
+    puesto = models.CharField(db_column='Puesto', max_length=20, blank=True, null=True)
+    correo = models.CharField(max_length=100, blank=True, null=True)
+    telefono1 = models.CharField(max_length=10, blank=True, null=True)
+    telefono2 = models.CharField(max_length=10, blank=True, null=True)
+
+    def __str__(self):
+        return self.nombre
+
+
+class Mlinea(models.Model):
+    linea = models.CharField(db_column='Linea', max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return self.linea
+
+
+class Mmedidas(models.Model):
+    umedida = models.CharField(db_column='UMedida', unique=True, max_length=10)
+    nmedida = models.CharField(db_column='NMedida', max_length=50, blank=True, null=True)
+    unidades = models.DecimalField(db_column='Unidades', max_digits=10, decimal_places=2, blank=True, null=True)
+
+    def __str__(self):
+        return self.nmedida
+
+
+class Marticulos(models.Model):
+    idproducto = models.CharField(db_column='IdProducto', unique=True, max_length=20)
+    nmproducto = models.CharField(db_column='NmProducto', max_length=100, blank=True, null=True)
+    dsproducto = models.CharField(db_column='DsProducto', max_length=100, blank=True, null=True)
+    ref1 = models.CharField(db_column='Ref1', max_length=30, blank=True, null=True)
+    barcode = models.CharField(db_column='Barcode', max_length=20, blank=True, null=True)
+    idgrupo = models.ForeignKey(Mgrupoitm, db_column='IdGrupo', blank=True, null=True, on_delete=models.CASCADE)
+    idsegmento = models.ForeignKey(Msegmento, db_column='IdSegmento', blank=True, null=True, on_delete=models.CASCADE)
+    idcategoria = models.ForeignKey(Mcategoria, db_column='IdCategoria', blank=True, null=True,
+                                    on_delete=models.CASCADE)
+    idsubcategoria = models.ForeignKey(Msubcategoria, db_column='IdSubCategoria', blank=True, null=True,
+                                       on_delete=models.CASCADE)
+    idmarca = models.ForeignKey(Mmarca, db_column='IdMarca', blank=True, null=True, on_delete=models.CASCADE)
+    idtipo = models.CharField(db_column='IdTipo', max_length=50, blank=True, null=True)
+    idml = models.CharField(db_column='IdML', max_length=10, blank=True, null=True)
+    idlinea = models.ForeignKey(Mlinea, db_column='IdLinea', blank=True, null=True, on_delete=models.CASCADE)
+    facturanegativo = models.BooleanField(db_column='FacturaNegativo', blank=True, null=True)
+    existencia = models.DecimalField(db_column='Existencia', max_digits=18, decimal_places=2, blank=True, null=True)
+    activo = models.BooleanField(db_column='Activo', blank=True, null=True)
+    idsocio = models.ForeignKey("Msocios", db_column='IdSocio', blank=True, null=True, on_delete=models.CASCADE)
+    umedcompra = models.ForeignKey(Mmedidas, db_column='UmedCompra', blank=True, null=True, on_delete=models.CASCADE,
+                                   related_name='umedcompra')
+    costopromedio = models.DecimalField(db_column='CostoPromedio', max_digits=18, decimal_places=8, blank=True,
+                                        null=True)
+    ultimacompra = models.DecimalField(db_column='UltimaCompra', max_digits=18, decimal_places=4, blank=True, null=True)
+    longitud = models.SmallIntegerField(db_column='Longitud', blank=True, null=True)
+    alto = models.DecimalField(db_column='Alto', max_digits=18, decimal_places=2, blank=True, null=True)
+    ancho = models.DecimalField(db_column='Ancho', max_digits=18, decimal_places=2, blank=True, null=True)
+    volumen = models.DecimalField(db_column='Volumen', max_digits=18, decimal_places=2, blank=True, null=True)
+    peso = models.DecimalField(db_column='Peso', max_digits=18, decimal_places=2, blank=True, null=True)
+    inventario = models.SmallIntegerField(db_column='Inventario', blank=True, null=True)
+    sujetoreten = models.BooleanField(db_column='SujetoReten', blank=True, null=True)
+    umedventa = models.ForeignKey(Mmedidas, db_column='UmedVEnta', blank=True, null=True, on_delete=models.CASCADE,
+                                  related_name='umedventa')
+    sujetoiva = models.BooleanField(db_column='SujetoIva', blank=True, null=True)
+    imagen = models.ImageField(upload_to="articulos", db_column='Imagen', blank=True, null=True)
+    listaprecio1 = models.DecimalField(db_column='ListaPrecio1', max_digits=18, decimal_places=2, blank=True, null=True)
+    listaprecio2 = models.DecimalField(db_column='ListaPrecio2', max_digits=18, decimal_places=2, blank=True, null=True)
+    listaprecio3 = models.DecimalField(db_column='ListaPrecio3', max_digits=18, decimal_places=2, blank=True, null=True)
+    listaprecio4 = models.DecimalField(db_column='ListaPrecio4', max_digits=18, decimal_places=2, blank=True, null=True)
+    listaprecio5 = models.DecimalField(db_column='ListaPrecio5', max_digits=18, decimal_places=2, blank=True, null=True)
+    listaprecio6 = models.DecimalField(db_column='ListaPrecio6', max_digits=18, decimal_places=2, blank=True, null=True)
+    listaprecio7 = models.DecimalField(db_column='ListaPrecio7', max_digits=18, decimal_places=2, blank=True, null=True)
+    listaprecio8 = models.DecimalField(db_column='ListaPrecio8', max_digits=18, decimal_places=2, blank=True, null=True)
+    listaprecio9 = models.DecimalField(db_column='ListaPrecio9', max_digits=18, decimal_places=2, blank=True, null=True)
+    listaprecio10 = models.DecimalField(db_column='ListaPrecio10', max_digits=18, decimal_places=2, blank=True,
+                                        null=True)
+    margen = models.DecimalField(db_column='Margen', max_digits=18, decimal_places=2, blank=True, null=True)
+    fechacrea = models.DateField(db_column='FechaCrea', blank=True, null=True)
+    fechamodifica = models.DateField(db_column='FechaModifica', blank=True, null=True)
+    minimo = models.SmallIntegerField(db_column='Minimo', blank=True, null=True)
+    maximo = models.SmallIntegerField(db_column='Maximo', blank=True, null=True)
+    propiedad1 = models.CharField(db_column='Propiedad1', max_length=20, blank=True, null=True)
+    listaprecio = models.SmallIntegerField(db_column='ListaPrecio', blank=True, null=True)
+
+    def __str__(self):
+        return self.nmproducto
+
+
+class Marticulos2(models.Model):
+    marticulo = models.ForeignKey(Marticulos, db_column='Marticulo', on_delete=models.CASCADE)
+    idcombo = models.CharField(db_column='IdCombo', max_length=20, blank=True, null=True)
+    idproducto = models.CharField(db_column='IdProducto', max_length=20, blank=True, null=True)
+    cantidad = models.DecimalField(db_column='Cantidad', max_digits=18, decimal_places=2, blank=True, null=True)
+    preciouni = models.DecimalField(db_column='PrecioUni', max_digits=18, decimal_places=2, blank=True, null=True)
+
+
+class Mlistapre01(models.Model):
+    nombrelista = models.CharField(db_column='NombreLista', max_length=30, blank=True, null=True)
+    listapadre = models.ForeignKey('self', db_column='ListaPadre', blank=True, null=True, on_delete=models.CASCADE)
+    variacion = models.DecimalField(db_column='Variacion', max_digits=18, decimal_places=2, blank=True, null=True)
+    fechainicio = models.DateField(db_column='FechaInicio', blank=True, null=True)
+    tipolista = models.CharField(db_column='TipoLista', max_length=10, blank=True, null=True)
+    fechafin = models.DateField(db_column='FechaFin', blank=True, null=True)
+
+    def __str__(self):
+        return self.nombrelista
+
+
+class Mlistapre02(models.Model):
+    lista = models.ForeignKey(Mlistapre01, db_column='Lista', blank=True, null=True, on_delete=models.CASCADE)
+    idproducto = models.CharField(db_column='IdProducto', max_length=20, blank=True, null=True)
+    preciouni = models.DecimalField(db_column='PrecioUni', max_digits=18, decimal_places=2, blank=True, null=True)
+    registro = models.AutoField(db_column='Registro', primary_key=True)
+
+
+class Msocios(models.Model):
+    codsocio = models.CharField(db_column='CodSocio', max_length=10, blank=True, null=True)
+    tiposocio = models.CharField(db_column='TipoSocio', max_length=10, blank=True, null=True)
+    nombresocio = models.CharField(db_column='NombreSocio', max_length=200, blank=True, null=True)
+    direccion = models.CharField(db_column='Direccion', max_length=200, blank=True, null=True)
+    nit = models.CharField(db_column='Nit', max_length=15, blank=True, null=True)
+    telefono1 = models.CharField(db_column='Telefono1', max_length=15, blank=True, null=True)
+    telefono2 = models.CharField(db_column='Telefono2', max_length=15, blank=True, null=True)
+    correo = models.EmailField(db_column='Correo', max_length=100, blank=True, null=True)
+    idpais = models.ForeignKey(Mpais, db_column='IdPais', blank=True, null=True, on_delete=models.CASCADE)
+    idciudad = models.ForeignKey(Mciudades, db_column='IdCiudad', blank=True, null=True, on_delete=models.CASCADE)
+    idmunicipio = models.ForeignKey(Mmunicipio, db_column='IdMunicipio', blank=True, null=True,
+                                    on_delete=models.CASCADE)
+    activo = models.BooleanField(db_column='Activo', blank=True, null=True)
+    idruta = models.ForeignKey(Mrutas, db_column='IdRuta', blank=True, null=True, on_delete=models.CASCADE)
+    idvendedor = models.ForeignKey(Mvendedores, db_column='IdVendedor', blank=True, null=True, on_delete=models.CASCADE)
+    contacto = models.CharField(db_column='Contacto', max_length=50, blank=True, null=True)
+    idgruposocio = models.ForeignKey(Mgruposocio, db_column='IdGrupoSocio', on_delete=models.CASCADE)
+    listaprecio = models.SmallIntegerField(db_column='ListaPrecio', blank=True, null=True)
+    descto = models.DecimalField(db_column='Descto', max_digits=10, decimal_places=2, blank=True, null=True)
+    moneda = models.CharField(db_column='Moneda', max_length=3, blank=True, null=True)
+    diascredito = models.SmallIntegerField(db_column='DiasCredito', blank=True, null=True)
+    limitecredito = models.DecimalField(db_column='LimiteCredito', max_digits=18, decimal_places=2, blank=True,
+                                        null=True)
+    pagaiva = models.CharField(db_column='PagaIva', max_length=2, blank=True, null=True)
+    ctacontable = models.CharField(db_column='CtaContable', max_length=10, blank=True, null=True)
+    sujetoretencion = models.CharField(db_column='SujetoRetencion', max_length=2, blank=True, null=True)
+    ctagasto = models.CharField(db_column='CtaGasto', max_length=10, blank=True, null=True)
+    nombrenegocio = models.CharField(db_column='NombreNegocio', max_length=200, blank=True, null=True)
+    postal = models.CharField(db_column='Postal', max_length=10, blank=True, null=True)
+    fechacrea = models.DateField(db_column='FechaCrea', blank=True, null=True)
+    fechamodifica = models.DateField(db_column='FechaModifica', blank=True, null=True)
+    agenteret = models.CharField(db_column='AgenteRet', max_length=2, blank=True, null=True)
+    propi1 = models.CharField(db_column='Propi1', max_length=100, blank=True, null=True)
+    propi2 = models.CharField(db_column='Propi2', max_length=100, blank=True, null=True)
+    propi3 = models.CharField(db_column='Propi3', max_length=100, blank=True, null=True)
+    propi4 = models.CharField(db_column='Propi4', max_length=100, blank=True, null=True)
+    propi5 = models.CharField(db_column='Propi5', max_length=100, blank=True, null=True)
+    propi6 = models.CharField(db_column='Propi6', max_length=100, blank=True, null=True)
+    propi7 = models.CharField(db_column='Propi7', max_length=100, blank=True, null=True)
+    propi8 = models.CharField(db_column='Propi8', max_length=100, blank=True, null=True)
+    propi9 = models.CharField(db_column='Propi9', max_length=100, blank=True, null=True)
+    propi10 = models.CharField(db_column='Propi10', max_length=100, blank=True, null=True)
+    dpi = models.CharField(max_length=20, blank=True, null=True)
+    fecha = models.DateField(db_column='Fecha', blank=True, null=True)
+    idpaciente = models.CharField(db_column='IdPaciente', max_length=20, blank=True, null=True)
+    dirnegocio = models.CharField(db_column='DirNegocio', max_length=100, blank=True, null=True)
+    incoterm = models.CharField(max_length=3, blank=True, null=True)
