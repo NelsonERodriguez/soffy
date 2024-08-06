@@ -1,0 +1,319 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Pago a proveedores {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Pago a proveedores</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar text-right">
+                            <a href="{% url 'bancos-pago_proveedores' %}"
+                               class="btn btn-gradient-danger text-right">
+                                <i class="fas fa-chevron-left"></i>
+                                Regresar
+                            </a>
+                        </div>
+                        <div class="col-12">
+
+                            <form action="{% url 'bancos-pago_proveedores_create' %}" method="POST">
+                                {% csrf_token %}
+                                <div class="row">
+
+                                    <div class="col-12 col-md-2">
+                                        <div class="form-group {% if form.tipopago.errors %}has-danger{% endif %}">
+                                            <select name="tipopago" id="tipopago"
+                                                    class="selectpicker {% if form.tipopago.errors %}is-invalid{% endif %}"
+                                                    data-live-search="true"
+                                                    data-style="btn {% if form.tipopago.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}"
+                                                    title="Tipo pago">
+                                                {% for tipopago in form.tipopago %}
+                                                    {{ tipopago }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.efecto.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-3">
+                                        <div class="form-group {% if form.cueban.errors %}has-danger{% endif %}">
+                                            <select name="cueban" id="cueban"
+                                                    class="selectpicker {% if form.cueban.errors %}is-invalid{% endif %}"
+                                                    data-live-search="true"
+                                                    data-style="btn {% if form.cueban.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}"
+                                                    title="Tipo pago">
+                                                {% for cueban in form.cueban %}
+                                                    {{ cueban }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.efecto.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-3">
+                                        <div class="form-group {% if form.numero.errors %}has-danger{% endif %}">
+                                            <label for="numero" class="bmd-label-floating">Número</label>
+                                            <input type="number" name="numero" id="numero"
+                                                   class="form-control {% if form.numero.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.numero.value %}{{ form.numero.value }}{% endif %}"
+                                                   required>
+                                            <div class="invalid-feedback">
+                                                {% for error in form.numero.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-2">
+                                        <div class="form-group {% if form.fechapago.errors %}has-danger{% endif %}">
+                                            <label for="fechapago">Fecha pago</label>
+                                            <input type="date" name="fechapago" id="fechapago"
+                                                   class="form-control {% if form.fechapago.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.fechapago.value %}{{ form.fechapago.value }}{% endif %}"
+                                                   required>
+                                            <div class="invalid-feedback">
+                                                {% for error in form.fechapago.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-2">
+                                        <div class="form-group {% if form.fechaconta.errors %}has-danger{% endif %}">
+                                            <label for="fechaconta">Fecha conta</label>
+                                            <input type="date" name="fechaconta" id="fechaconta"
+                                                   class="form-control {% if form.fechaconta.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.fechaconta.value %}{{ form.fechaconta.value }}{% endif %}"
+                                                   required>
+                                            <div class="invalid-feedback">
+                                                {% for error in form.fechaconta.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h3>Datos del beneficiario</h3>
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group {% if form.idsocio.errors %}has-danger{% endif %}">
+                                            <select name="idsocio" id="idsocio"
+                                                    class="selectpicker {% if form.idsocio.errors %}is-invalid{% endif %}"
+                                                    data-live-search="true"
+                                                    data-style="btn {% if form.idsocio.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}"
+                                                    title="Tipo pago">
+                                                {% for idsocio in form.idsocio %}
+                                                    {{ idsocio }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.efecto.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group {% if form.montorecibo.errors %}has-danger{% endif %}">
+                                            <label for="montorecibo">Monto</label>
+                                            <input type="number" name="montorecibo" id="montorecibo"
+                                                   class="form-control {% if form.montorecibo.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.montorecibo.value %}{{ form.montorecibo.value }}{% endif %}"
+                                                   required>
+                                            <div class="invalid-feedback">
+                                                {% for error in form.montorecibo.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group {% if form.comentario.errors %}has-danger{% endif %}">
+                                            <label for="comentario">Comentario</label>
+                                            <textarea name="comentario" id="comentario"
+                                                      class="form-control {% if form.comentario.errors %}is-invalid{% endif %}"
+                                            >{% if form.comentario.value %}{{ form.comentario.value }}{% endif %}</textarea>
+                                            <div class="invalid-feedback">
+                                                {% for error in form.comentario.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h3>Datos de pago</h3>
+                                    </div>
+
+                                    <div class="col-12 col-md-3">
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" name="pagafacturas" id="pagafacturas" {% if form.pagafacturas.value %}checked{% endif %}>
+                                                <span class="toggle"></span>
+                                                Paga facturas
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-3">
+                                        <div class="form-group {% if form.moneda.errors %}has-danger{% endif %}">
+                                            <select name="moneda" id="moneda"
+                                                    class="selectpicker {% if form.moneda.errors %}is-invalid{% endif %}"
+                                                    data-live-search="true"
+                                                    data-style="btn {% if form.moneda.errors %}btn-outline-danger{% else %}btn-outline-primary{% endif %}"
+                                                    title="Moneda">
+                                                {% for moneda in form.moneda %}
+                                                    {{ moneda }}
+                                                {% endfor %}
+                                            </select>
+                                            <div class="text-danger">
+                                                {% for error in form.efecto.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-3">
+                                        <div class="form-group {% if form.tcusd.errors %}has-danger{% endif %}">
+                                            <label for="tcusd">Tc USD</label>
+                                            <input type="number" name="tcusd" id="tcusd"
+                                                   class="form-control {% if form.tcusd.errors %}is-invalid{% endif %}"
+                                                   value="{% if form.tcusd.value %}{{ form.tcusd.value }}{% endif %}"
+                                                   required>
+                                            <div class="invalid-feedback">
+                                                {% for error in form.tcusd.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-3">
+                                        <div class="togglebutton">
+                                            <label>
+                                                <input type="checkbox" name="nonegociable" id="nonegociable" {% if form.nonegociable.value %}checked{% endif %}>
+                                                <span class="toggle"></span>
+                                                No negociable
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-12">
+                                        <hr>
+                                        <div class="col-12 cnt-table-responsive">
+                                            <button type="button" id="addDetalle" class="btn btn-gradient-primary" onclick="createRow();">
+                                                <i class="material-icons">add</i>
+                                                Agregar
+                                            </button>
+                                            <table class="table table-striped" id="tableDetalles">
+                                                <thead>
+                                                <tr>
+                                                    <th class="px-4 py-2">Cta Contable</th>
+                                                    <th class="px-4 py-2">Serie Factura</th>
+                                                    <th class="px-4 py-2">Número Factura</th>
+                                                    <th class="px-4 py-2">Fecha</th>
+                                                    <th class="px-4 py-2">Total Factura</th>
+                                                    <th class="px-4 py-2">Abonos</th>
+                                                    <th class="px-4 py-2">Pago</th>
+                                                    <th class="px-4 py-2"></th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-gradient-success">
+                                            <i class="material-icons">save</i>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    <script async defer>
+        const arrCuentas = {{ mcuentas|safe }};
+        const removeRow = (intRow) => document.getElementById(`row_${intRow}`).remove();
+
+        const createRow = () => {
+            const table = document.getElementById("tableDetalles");
+
+            const row = table.insertRow(-1);
+            row.setAttribute('id', `row_${row.rowIndex}`);
+
+            const cell0 = row.insertCell(0);
+            cell0.innerHTML = `
+                <input type="hidden" name="id[]" id="id_${row.rowIndex}" value="0">
+                <select name="ctacontable[]"
+                        id="ctacontable_${row.rowIndex}"
+                        class="selectpicker"
+                        data-style="btn btn-outline-primary"
+                        data-live-search="true"
+                        title="Cta Contable">
+                    ${arrCuentas.map((cuenta) => '<option value="' + cuenta.id +'">' + cuenta.ctacontable + ' - ' + cuenta.ctanombre +'</option>')}
+                </select>`;
+
+            const cell1 = row.insertCell(1);
+            cell1.innerHTML = `<input type="text" name="serie[]" value="" id="serie_${row.rowIndex}" class="form-control" required>`;
+            const cell2 = row.insertCell(2);
+            cell2.innerHTML = `<input type="number" name="numero[]" value="" id="numero_${row.rowIndex}" class="form-control" required>`;
+            const cell3 = row.insertCell(3);
+            cell3.innerHTML = `<input type="date" name="fecha[]" value="" id="fecha_${row.rowIndex}" class="form-control">`;
+            const cell4 = row.insertCell(4);
+            cell4.innerHTML = `<input type="number" name="doctotal[]" value="" id="doctotal_${row.rowIndex}" class="form-control" required>`;
+            const cell5 = row.insertCell(5);
+            cell5.innerHTML = `<input type="number" name="abonos[]" value="" id="abonos_${row.rowIndex}" class="form-control">`;
+            const cell6 = row.insertCell(6);
+            cell6.innerHTML = `<input type="number" name="pago[]" value="" id="pago_${row.rowIndex}" class="form-control">`;
+            const cell7 = row.insertCell(7);
+            cell7.innerHTML = `
+                <button onclick="removeRow(${row.rowIndex});" type="button" class="btn btn-gradient-danger"><i class="material-icons">delete</i></button>
+            `;
+
+            $(`#ctacontable_${row.rowIndex}`).selectpicker();
+        };
+    </script>
+{% endblock %}

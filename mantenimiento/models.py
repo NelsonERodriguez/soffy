@@ -224,13 +224,6 @@ class Msegmento(models.Model):
         return f"{self.codigo} - {self.segmento}"
 
 
-class Mrutas(models.Model):
-    nombreruta = models.CharField(db_column='NombreRuta', max_length=50, blank=True, null=True)
-
-    def __str__(self):
-        return self.nombreruta
-
-
 class Mvendedores(models.Model):
     nvendedor = models.CharField(db_column='NVendedor', max_length=100, blank=True, null=True)
     comision = models.DecimalField(db_column='Comision', max_digits=10, decimal_places=2, blank=True, null=True)
@@ -406,12 +399,12 @@ class Msocios(models.Model):
     idgruposocio = models.ForeignKey(Mgruposocio, db_column='IdGrupoSocio', on_delete=models.CASCADE)
     listaprecio = models.SmallIntegerField(db_column='ListaPrecio', blank=True, null=True)
     descto = models.DecimalField(db_column='Descto', max_digits=10, decimal_places=2, blank=True, null=True)
-    moneda = models.CharField(db_column='Moneda', max_length=3, blank=True, null=True)
+    moneda = models.ForeignKey(Mmoneda, db_column='Moneda', blank=True, null=True, on_delete=models.CASCADE)
     diascredito = models.SmallIntegerField(db_column='DiasCredito', blank=True, null=True)
     limitecredito = models.DecimalField(db_column='LimiteCredito', max_digits=18, decimal_places=2, blank=True,
                                         null=True)
     pagaiva = models.CharField(db_column='PagaIva', max_length=2, blank=True, null=True)
-    ctacontable = models.CharField(db_column='CtaContable', max_length=10, blank=True, null=True)
+    ctacontable = models.ForeignKey(Mcuentas, db_column='CtaContable', blank=True, null=True, on_delete=models.CASCADE)
     sujetoretencion = models.CharField(db_column='SujetoRetencion', max_length=2, blank=True, null=True)
     ctagasto = models.CharField(db_column='CtaGasto', max_length=10, blank=True, null=True)
     nombrenegocio = models.CharField(db_column='NombreNegocio', max_length=200, blank=True, null=True)
@@ -434,3 +427,6 @@ class Msocios(models.Model):
     idpaciente = models.CharField(db_column='IdPaciente', max_length=20, blank=True, null=True)
     dirnegocio = models.CharField(db_column='DirNegocio', max_length=100, blank=True, null=True)
     incoterm = models.CharField(max_length=3, blank=True, null=True)
+
+    def __str__(self):
+        return self.nombresocio

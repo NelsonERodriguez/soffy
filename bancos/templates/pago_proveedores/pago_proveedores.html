@@ -1,0 +1,71 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Listado de Movimientos de Bancos {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Listado de Movimientos de Bancos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar text-right">
+                            <a href="{% url 'bancos-pago_proveedores_create' %}"
+                               class="btn btn-gradient-success text-right">
+                                <i class='fa fa-plus'></i>
+                                Nuevo
+                            </a>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-12 cnt-table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="px-4 py-2">Tipo Pago</th>
+                                                    <th class="px-4 py-2">Número</th>
+                                                    <th class="px-4 py-2">Proveedor</th>
+                                                    <th class="px-4 py-2">Fecha Pago</th>
+                                                    <th class="px-4 py-2">Monto</th>
+                                                    <th class="px-4 py-2">Comentario</th>
+                                                    <th class="px-4 py-2">Estatus</th>
+                                                    <th class="px-4 py-2">Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for tpago in page_obj %}
+                                                <tr>
+                                                    <td class="border px-4 py-2">{% if tpago.tipopago %}{{ tpago.tipopago }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if tpago.numero %}{{ tpago.numero }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if tpago.idsocio %}{{ tpago.idsocio }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if tpago.fechapago %}{{ tpago.fechapago|date:"d/m/Y" }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if tpago.montorecibo %}{{ tpago.montorecibo }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if tpago.comentario %}{{ tpago.comentario }}{% endif %}</td>
+                                                    <td class="border px-4 py-2">{% if tpago.status %}Abierto{% else %}Cerrado{% endif %}</td>
+                                                    <td class="border px-4 py-2 td-actions text-left">
+                                                        <a type="button" rel="tooltip"
+                                                           class="btn btn-just-icon btn-link btn-success"
+                                                           data-original-title="Editar"
+                                                           href="{% url 'bancos-pago_proveedores_edit' tpago.id %}">
+                                                            <i class="material-icons">edit</i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                {% include 'general/paginador.html' with page_obj=page_obj %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

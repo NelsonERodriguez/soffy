@@ -30,9 +30,11 @@ class Tpago01(models.Model):
     partida = models.IntegerField(blank=True, null=True)
     letras = models.CharField(db_column='Letras', max_length=200, blank=True, null=True)
     pagafacturas = models.BooleanField(db_column='PagaFacturas', blank=True, null=True)
-    ctacontableban = models.ForeignKey(Mcuentas, db_column='CtaContableBan',  blank=True, null=True, on_delete=models.CASCADE)
+    ctacontableban = models.ForeignKey(Mcuentas, db_column='CtaContableBan', blank=True, null=True,
+                                       on_delete=models.CASCADE)
     tcusd = models.DecimalField(db_column='TcUsd', max_digits=18, decimal_places=6, blank=True, null=True)
-    moneda = models.ForeignKey(Mmoneda, db_column='Moneda', max_length=3, blank=True, null=True, on_delete=models.CASCADE)
+    moneda = models.ForeignKey(Mmoneda, db_column='Moneda', max_length=3, blank=True, null=True,
+                               on_delete=models.CASCADE)
     login = models.CharField(db_column='Login', max_length=20, blank=True, null=True)
     horasys = models.TimeField(db_column='HoraSys', blank=True, null=True)
     nonegociable = models.BooleanField(db_column='NoNegociable', blank=True, null=True)
@@ -42,11 +44,12 @@ class Tpago01(models.Model):
 
 
 class Tpago02(models.Model):
-    pago = models.ForeignKey(Tpago01, db_column='Tpago01', on_delete=models.CASCADE)
+    tpago01 = models.ForeignKey(Tpago01, db_column='Tpago01', on_delete=models.CASCADE)
     baseentry = models.IntegerField(db_column='BaseEntry', blank=True, null=True)
     serie = models.CharField(db_column='Serie', max_length=20, blank=True, null=True)
     numero = models.CharField(db_column='Numero', max_length=20, blank=True, null=True)
-    ctacontable = models.ForeignKey(Mcuentas, db_column='CtaContable', max_length=10, blank=True, null=True, on_delete=models.CASCADE)
+    ctacontable = models.ForeignKey(Mcuentas, db_column='CtaContable', max_length=10, blank=True, null=True,
+                                    on_delete=models.CASCADE)
     fecha = models.DateField(db_column='Fecha', blank=True, null=True)
     doctotal = models.DecimalField(db_column='DocTotal', max_digits=18, decimal_places=2, blank=True, null=True)
     abonos = models.DecimalField(db_column='Abonos', max_digits=18, decimal_places=2, blank=True, null=True)
